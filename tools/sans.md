@@ -1,5 +1,6 @@
 ## rd01
 ### security(4624)
+tdunganから明示的なwacsvcログインを確認
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4624)] and EventData[Data[@Name='LogonType']=9]]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
@@ -94,4 +95,99 @@ Time                LogonType FailureReason IpAddress    IpPort WorkstationName 
 2023/01/19 18:48:08 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
 2023/01/19 20:25:23 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
 2023/01/23 20:52:47 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x408
+```
+
+## security(4648)
+プロセス名でグループ化
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #SubjectDomainName = $eventData["SubjectDomainName"]
+        #SubjectUserName   = $eventData["SubjectUserName"]
+        #IpAddress         = $eventData["IpAddress"]
+        #IpPort            = $eventData["IpPort"]
+        #TargetServerName  = $eventData["TargetServerName"]
+        #TargetDomainName  = $eventData["TargetDomainName"]
+        #TargetUserName    = $eventData["TargetUserName"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
+        ProcessName       = $eventData["ProcessName"]
+        #ProcessId     = $eventData["ProcessId"]
+    }
+} | Group-Object ProcessName | Format-Table -AutoSize -Wrap -Property Values,Count
+
+Values                                                      Count
+------                                                      -----
+{$null}                                                        15
+{C:\Windows\System32\taskhostw.exe}                           333
+{C:\Windows\System32\svchost.exe}                             704
+{C:\Windows\System32\winlogon.exe}                            228
+{C:\Windows\System32\wininit.exe}                              23
+{C:\Windows\System32\wbem\WMIC.exe}                             2
+{C:\Windows\System32\lsass.exe}                                 2
+{C:\Windows\System32\consent.exe}                               2
+{C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe}     5
+{C:\Windows\System32\oobe\msoobe.exe}                           1
+```
+powershell上で、dc01に対する管理者ログインを確認（ちなみにこのイベントIDのpowershell.exeはhayabusaでmimikatzと検知した）
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)] and EventData[Data[@Name='ProcessName']='C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe']]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+        IpAddress         = $eventData["IpAddress"]
+        IpPort            = $eventData["IpPort"]
+        TargetServerName  = $eventData["TargetServerName"]
+        TargetDomainName  = $eventData["TargetDomainName"]
+        TargetUserName    = $eventData["TargetUserName"]
+        TargetUserSid     = $eventData["TargetUserSid"]
+        ProcessName       = $eventData["ProcessName"]
+        ProcessId         = $eventData["ProcessId"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
+
+Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName    TargetDomainName TargetUserName TargetUserSid ProcessName                                               ProcessId
+----                ----------------- --------------- --------- ------ ----------------    ---------------- -------------- ------------- -----------                                               ---------
+2022/09/30 23:43:50 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30
+```
+consent.exeとはuacポップアップ  
+イベントID4624でconsent.exeログを複数確認したが、日時を見る限り失敗後にログイン成功していることがわかる
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)] and EventData[Data[@Name='ProcessName']='C:\Windows\System32\consent.exe']]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+        IpAddress         = $eventData["IpAddress"]
+        IpPort            = $eventData["IpPort"]
+        TargetServerName  = $eventData["TargetServerName"]
+        TargetDomainName  = $eventData["TargetDomainName"]
+        TargetUserName    = $eventData["TargetUserName"]
+        TargetUserSid     = $eventData["TargetUserSid"]
+        ProcessName       = $eventData["ProcessName"]
+        ProcessId         = $eventData["ProcessId"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
+
+Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName TargetDomainName TargetUserName TargetUserSid ProcessName                     ProcessId
+----                ----------------- --------------- --------- ------ ---------------- ---------------- -------------- ------------- -----------                     ---------
+2022/10/21 16:38:27 shieldbase        RD01$           ::1       0      localhost        RD01             SRLAdmin                     C:\Windows\System32\consent.exe 0x828    
+2023/01/05 21:41:01 shieldbase        RD01$           ::1       0      localhost        shieldbase       tdungan                      C:\Windows\System32\consent.exe 0x2904
 ```

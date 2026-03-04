@@ -353,3 +353,46 @@ Time                SubjectDomainName SubjectUserName IpAddress    IpPort Target
 2023/01/25 14:19:26 shieldbase        RD01$           172.16.30.23 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x60c    
 2023/01/25 14:38:50 shieldbase        RD01$           172.16.30.23 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5f8
 ```
+
+### security(4672)
+件数多いので、ユーザ名でグループ化、まあまあ時間かかる
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4672)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+    }
+} | Where-Object {$_.SubjectUserName -ne "SYSTEM"} | Group-Object SubjectUserName | Format-Table -AutoSize -Wrap -Property Values,Count
+
+Values            Count
+------            -----
+{RD01$}            3127
+{wacsvc}              9
+{DWM-2}              25
+{LOCAL SERVICE}      24
+{DWM-1}              42
+{NETWORK SERVICE}    24
+{cbarton-a}          26
+{DWM-5}              10
+{DWM-4}               8
+{DWM-3}              42
+{DWM-15}             10
+{rsydow-a}          818
+{DWM-14}             20
+{DWM-13}              2
+{DWM-12}              2
+{DWM-11}              8
+{DWM-10}              4
+{DWM-9}               8
+{DWM-8}              16
+{DWM-7}              12
+{DWM-6}              14
+{SRLAdmin}            1
+{Administrator}     625
+{defaultuser0}        2
+```

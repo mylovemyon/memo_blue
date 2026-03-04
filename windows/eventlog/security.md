@@ -68,8 +68,8 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     }
 } | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
 
-Time                LogonType FailureReason IpAddress    IpPort WorkstationName TargetDomainName TargetUserName LogonProcessName ProcessName                                                                             ProcessID
-----                --------- ------------- ---------   ------ ---------------- ---------------- -------------- ---------------- -----------                                                                             ---------
-2022/08/31 17:38:01 2         %%2313        -            -      TPL-PACKER       TPL-PACKER       Administrator  Advapi           C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
-2022/10/21 16:38:19 11        %%2304        ::1          0      RD01             RD01             srladmin       CredPro          C:\Windows\System32\consent.exe                                                         0x828    
+Time                LogonType FailureReason IpAddress   IpPort WorkstationName TargetDomainName TargetUserName LogonProcessName ProcessName                                                                             ProcessID
+----                --------- ------------- ---------   ------ --------------- ---------------- -------------- ---------------- -----------                                                                             ---------
+2022/08/31 17:38:01 2         %%2313        -            -      TPL-PACKER     TPL-PACKER       Administrator  Advapi           C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
+2022/10/21 16:38:19 11        %%2304        ::1          0      RD01           RD01             srladmin       CredPro          C:\Windows\System32\consent.exe                                                         0x828    
 ```

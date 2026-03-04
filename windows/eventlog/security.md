@@ -73,3 +73,72 @@ Time                LogonType FailureReason IpAddress   IpPort WorkstationName T
 2022/08/31 17:38:01 2         %%2313        -            -      TPL-PACKER     TPL-PACKER       Administrator  Advapi           C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
 2022/10/21 16:38:19 11        %%2304        ::1          0      RD01           RD01             srladmin       CredPro          C:\Windows\System32\consent.exe                                                         0x828    
 ```
+
+## 4648
+数が多いので、一旦プロセス名でグループ化
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #SubjectDomainName = $eventData["SubjectDomainName"]
+        #SubjectUserName   = $eventData["SubjectUserName"]
+        #IpAddress         = $eventData["IpAddress"]
+        #IpPort            = $eventData["IpPort"]
+        #TargetServerName  = $eventData["TargetServerName"]
+        #TargetInfo        = $eventData["TargetInfo"]
+        #TargetDomainName  = $eventData["TargetDomainName"]
+        #TargetUserName    = $eventData["TargetUserName"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
+        ProcessName       = $eventData["ProcessName"]
+        #ProcessId         = $eventData["ProcessId"]
+    }
+} | Group-Object ProcessName | Format-Table -AutoSize -Wrap -Property Values,Count
+
+Values                                                      Count
+------                                                      -----
+{$null}                                                        15
+{C:\Windows\System32\taskhostw.exe}                           333
+{C:\Windows\System32\svchost.exe}                             704
+{C:\Windows\System32\winlogon.exe}                            228
+{C:\Windows\System32\wininit.exe}                              23
+{C:\Windows\System32\wbem\WMIC.exe}                             2
+{C:\Windows\System32\lsass.exe}                                 2
+{C:\Windows\System32\consent.exe}                               2
+{C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe}     5
+{C:\Windows\System32\oobe\msoobe.exe}                           1
+```
+dcに対する認証を確認できる
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)] and EventData[Data[@Name='ProcessName']='C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe']]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+        IpAddress         = $eventData["IpAddress"]
+        IpPort            = $eventData["IpPort"]
+        TargetServerName  = $eventData["TargetServerName"]
+        TargetInfo        = $eventData["TargetInfo"]
+        TargetDomainName  = $eventData["TargetDomainName"]
+        TargetUserName    = $eventData["TargetUserName"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
+        ProcessName       = $eventData["ProcessName"]
+        ProcessId         = $eventData["ProcessId"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
+
+Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName    TargetInfo          TargetDomainName TargetUserName ProcessName                                               ProcessId
+----                ----------------- --------------- --------- ------ ----------------    ----------          ---------------- -------------- -----------                                               ---------
+2022/09/30 23:43:50 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30
+```

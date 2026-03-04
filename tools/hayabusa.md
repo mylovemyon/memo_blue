@@ -4,7 +4,7 @@
 - https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/default.aspx  
 - Evtxecmdのmapping  
   https://github.com/EricZimmerman/evtx/tree/master/evtx/Maps
-
+- https://www.appliedincidentresponse.com/files/Default-Windows-Processes-Quick-Reference.pdf
 
 ## COMMAND
 ### logon-summary

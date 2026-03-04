@@ -1,6 +1,7 @@
 ## rd01
+
 ### security(4624)
-tdunganから明示的なwacsvcログインを確認
+tdunganから明示的なwacsvc認証を確認
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4624)] and EventData[Data[@Name='LogonType']=9]]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
@@ -97,7 +98,7 @@ Time                LogonType FailureReason IpAddress    IpPort WorkstationName 
 2023/01/23 20:52:47 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x408
 ```
 
-## security(4648)
+### security(4648)
 プロセス名でグループ化
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)]]" | ForEach-Object {
@@ -112,11 +113,12 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         #IpAddress         = $eventData["IpAddress"]
         #IpPort            = $eventData["IpPort"]
         #TargetServerName  = $eventData["TargetServerName"]
+        #TargetInfo        = $eventData["TargetInfo"]
         #TargetDomainName  = $eventData["TargetDomainName"]
         #TargetUserName    = $eventData["TargetUserName"]
         #TargetUserSid     = $eventData["TargetUserSid"]
         ProcessName       = $eventData["ProcessName"]
-        #ProcessId     = $eventData["ProcessId"]
+        #ProcessId         = $eventData["ProcessId"]
     }
 } | Group-Object ProcessName | Format-Table -AutoSize -Wrap -Property Values,Count
 
@@ -133,7 +135,7 @@ Values                                                      Count
 {C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe}     5
 {C:\Windows\System32\oobe\msoobe.exe}                           1
 ```
-powershell上で、dc01に対する管理者ログインを確認（ちなみにこのイベントIDのpowershell.exeはhayabusaでmimikatzと検知した）
+powershell上で、dc01に対する管理者認証を確認（ちなみにこのイベントIDのpowershell.exeはhayabusaでmimikatzと検知した）
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)] and EventData[Data[@Name='ProcessName']='C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe']]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
@@ -147,21 +149,22 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         IpAddress         = $eventData["IpAddress"]
         IpPort            = $eventData["IpPort"]
         TargetServerName  = $eventData["TargetServerName"]
+        TargetInfo        = $eventData["TargetInfo"]
         TargetDomainName  = $eventData["TargetDomainName"]
         TargetUserName    = $eventData["TargetUserName"]
-        TargetUserSid     = $eventData["TargetUserSid"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
         ProcessName       = $eventData["ProcessName"]
         ProcessId         = $eventData["ProcessId"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
 
-Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName    TargetDomainName TargetUserName TargetUserSid ProcessName                                               ProcessId
-----                ----------------- --------------- --------- ------ ----------------    ---------------- -------------- ------------- -----------                                               ---------
-2022/09/30 23:43:50 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com SHIELDBASE       srl.admin                    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30
+Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName    TargetInfo          TargetDomainName TargetUserName ProcessName                                               ProcessId
+----                ----------------- --------------- --------- ------ ----------------    ----------          ---------------- -------------- -----------                                               ---------
+2022/09/30 23:43:50 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30
 ```
 consent.exeとはuacポップアップ  
 イベントID4625でconsent.exeログを複数確認したが、日時を見る限り失敗後にログイン成功していることがわかる
@@ -178,19 +181,21 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         IpAddress         = $eventData["IpAddress"]
         IpPort            = $eventData["IpPort"]
         TargetServerName  = $eventData["TargetServerName"]
+        TargetInfo        = $eventData["TargetInfo"]
         TargetDomainName  = $eventData["TargetDomainName"]
         TargetUserName    = $eventData["TargetUserName"]
-        TargetUserSid     = $eventData["TargetUserSid"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
         ProcessName       = $eventData["ProcessName"]
         ProcessId         = $eventData["ProcessId"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
 
-Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName TargetDomainName TargetUserName TargetUserSid ProcessName                     ProcessId
-----                ----------------- --------------- --------- ------ ---------------- ---------------- -------------- ------------- -----------                     ---------
-2022/10/21 16:38:27 shieldbase        RD01$           ::1       0      localhost        RD01             SRLAdmin                     C:\Windows\System32\consent.exe 0x828    
-2023/01/05 21:41:01 shieldbase        RD01$           ::1       0      localhost        shieldbase       tdungan                      C:\Windows\System32\consent.exe 0x2904
+Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName TargetInfo TargetDomainName TargetUserName ProcessName                     ProcessId
+----                ----------------- --------------- --------- ------ ---------------- ---------- ---------------- -------------- -----------                     ---------
+2022/10/21 16:38:27 shieldbase        RD01$           ::1       0      localhost        localhost  RD01             SRLAdmin       C:\Windows\System32\consent.exe 0x828    
+2023/01/05 21:41:01 shieldbase        RD01$           ::1       0      localhost        localhost  shieldbase       tdungan        C:\Windows\System32\consent.exe 0x2904
 ```
+dc01に対してrdp認証を確認
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)] and EventData[Data[@Name='ProcessName']='C:\Windows\System32\lsass.exe']]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
@@ -204,18 +209,19 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         IpAddress         = $eventData["IpAddress"]
         IpPort            = $eventData["IpPort"]
         TargetServerName  = $eventData["TargetServerName"]
+        TargetInfo        = $eventData["TargetInfo"]
         TargetDomainName  = $eventData["TargetDomainName"]
         TargetUserName    = $eventData["TargetUserName"]
-        TargetUserSid     = $eventData["TargetUserSid"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
         ProcessName       = $eventData["ProcessName"]
         ProcessId         = $eventData["ProcessId"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
 
-Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName     TargetDomainName TargetUserName TargetUserSid ProcessName                   ProcessId
-----                ----------------- --------------- --------- ------ ----------------     ---------------- -------------- ------------- -----------                   ---------
-2023/01/18 14:55:11 shieldbase        wacsvc          -         -      dev01.shieldbase.com SHIELDBASE.COM   wacsvc                       C:\Windows\System32\lsass.exe 0x2bc    
-2023/01/18 14:55:11 shieldbase        wacsvc          -         -      dev01.shieldbase.com SHIELDBASE.COM   wacsvc                       C:\Windows\System32\lsass.exe 0x2bc
+Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName     TargetInfo                   TargetDomainName TargetUserName ProcessName                   ProcessId
+----                ----------------- --------------- --------- ------ ----------------     ----------                   ---------------- -------------- -----------                   ---------
+2023/01/18 14:55:11 shieldbase        wacsvc          -         -      dev01.shieldbase.com TERMSRV/dev01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\lsass.exe 0x2bc    
+2023/01/18 14:55:11 shieldbase        wacsvc          -         -      dev01.shieldbase.com TERMSRV/dev01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\lsass.exe 0x2bc 
 ```
 横展開しているね
 ```powershell
@@ -231,18 +237,19 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         IpAddress         = $eventData["IpAddress"]
         IpPort            = $eventData["IpPort"]
         TargetServerName  = $eventData["TargetServerName"]
+        TargetInfo        = $eventData["TargetInfo"]
         TargetDomainName  = $eventData["TargetDomainName"]
         TargetUserName    = $eventData["TargetUserName"]
-        TargetUserSid     = $eventData["TargetUserSid"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
         ProcessName       = $eventData["ProcessName"]
         ProcessId         = $eventData["ProcessId"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
 
-Time                SubjectDomainName SubjectUserName IpAddress   IpPort TargetServerName       TargetDomainName TargetUserName TargetUserSid ProcessName                       ProcessId
-----                ----------------- --------------- ---------   ------ ----------------       ---------------- -------------- ------------- -----------                       ---------
-2023/01/23 15:14:06 shieldbase        tdungan         172.16.7.11 51022  wkstn01.shieldbase.com shieldbase       wacsvc                       C:\Windows\System32\wbem\WMIC.exe 0x218c   
-2023/01/23 15:14:06 shieldbase        tdungan         172.16.7.11 51022  wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc                       C:\Windows\System32\wbem\WMIC.exe 0x218c
+Time                SubjectDomainName SubjectUserName IpAddress   IpPort TargetServerName       TargetInfo                  TargetDomainName TargetUserName ProcessName                       ProcessId
+----                ----------------- --------------- ---------   ------ ----------------       ----------                  ---------------- -------------- -----------                       ---------
+2023/01/23 15:14:06 shieldbase        tdungan         172.16.7.11 51022  wkstn01.shieldbase.com wkstn01.shieldbase.com      shieldbase       wacsvc         C:\Windows\System32\wbem\WMIC.exe 0x218c   
+2023/01/23 15:14:06 shieldbase        tdungan         172.16.7.11 51022  wkstn01.shieldbase.com host/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\wbem\WMIC.exe 0x218c
 ```
 svchostでも通信ありの怪しいものを発見
 ```powershell
@@ -258,90 +265,91 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         IpAddress         = $eventData["IpAddress"]
         IpPort            = $eventData["IpPort"]
         TargetServerName  = $eventData["TargetServerName"]
+        TargetInfo        = $eventData["TargetInfo"]
         TargetDomainName  = $eventData["TargetDomainName"]
         TargetUserName    = $eventData["TargetUserName"]
-        TargetUserSid     = $eventData["TargetUserSid"]
+        #TargetUserSid     = $eventData["TargetUserSid"]
         ProcessName       = $eventData["ProcessName"]
         ProcessId         = $eventData["ProcessId"]
     }
 } | Where-Object {$_.IpAddress -like "*172*"} | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
 
-Time                SubjectDomainName SubjectUserName IpAddress    IpPort TargetServerName       TargetDomainName TargetUserName TargetUserSid ProcessName                     ProcessId
-----                ----------------- --------------- ---------    ------ ----------------       ---------------- -------------- ------------- -----------                     ---------
-2022/09/30 23:44:12 -                 -               172.16.4.4   49668  dc01.shieldbase.com    SHIELDBASE       srl.admin                    C:\Windows\System32\svchost.exe 0x7bc    
-2022/10/01 14:55:12 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xb74    
-2022/10/20 01:51:51 shieldbase        RD01$           172.16.30.6  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x604    
-2022/10/20 01:54:35 shieldbase        RD01$           172.16.30.6  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x598    
-2022/10/20 03:02:24 shieldbase        RD01$           172.16.30.6  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x5d4    
-2022/10/20 18:41:16 shieldbase        RD01$           172.16.30.6  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x644    
-2022/10/21 16:58:19 shieldbase        RD01$           172.16.30.6  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x5ec    
-2022/10/21 17:07:26 shieldbase        RD01$           172.16.30.6  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x5dc    
-2022/10/29 14:13:12 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x5dc    
-2022/11/06 21:23:04 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x5dc    
-2022/11/07 14:58:40 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x5dc    
-2022/11/13 12:51:13 shieldbase        RD01$           172.16.30.7  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/11/16 17:57:53 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/11/17 19:55:33 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/11/18 18:53:55 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/11/21 17:20:21 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/11/22 16:28:07 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/11/22 20:31:44 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/11/24 17:30:49 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/01 19:34:18 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/01 19:36:13 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/01 19:50:39 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/04 12:25:19 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/04 14:34:36 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/05 14:32:23 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/05 20:11:03 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/07 19:52:03 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/12 10:33:26 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/12 14:07:14 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/14 14:17:12 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/14 14:31:01 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/14 15:33:32 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x698    
-2022/12/16 17:35:28 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/20 21:03:58 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/21 21:54:42 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 00:01:46 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 00:06:08 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 00:07:16 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 00:08:13 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 00:32:32 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 15:51:50 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 16:26:16 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 16:34:54 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/22 16:37:40 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/24 05:51:02 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2022/12/26 21:22:44 shieldbase        RD01$           172.16.30.4  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2023/01/02 18:01:15 shieldbase        RD01$           172.16.30.20 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0xbb8    
-2023/01/02 22:56:33 shieldbase        RD01$           172.16.30.20 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/03 21:54:16 shieldbase        RD01$           172.16.30.20 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/04 04:35:14 shieldbase        RD01$           172.16.30.20 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/05 20:49:49 shieldbase        RD01$           172.16.30.20 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/09 16:57:25 shieldbase        RD01$           172.16.30.20 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/12 06:19:43 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/12 20:40:54 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/13 18:32:16 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/17 00:12:38 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/17 04:21:56 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/17 14:43:03 shieldbase        RD01$           172.16.6.18  0      localhost              shieldbase       wacsvc                       C:\Windows\System32\svchost.exe 0x888    
-2023/01/17 23:30:56 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/18 14:50:19 shieldbase        RD01$           172.16.6.18  0      localhost              shieldbase       wacsvc                       C:\Windows\System32\svchost.exe 0x888    
-2023/01/18 15:26:39 shieldbase        RD01$           172.16.6.18  0      localhost              shieldbase       wacsvc                       C:\Windows\System32\svchost.exe 0x888    
-2023/01/18 20:32:06 shieldbase        RD01$           172.16.6.18  0      localhost              shieldbase       wacsvc                       C:\Windows\System32\svchost.exe 0x888    
-2023/01/18 21:48:12 shieldbase        RD01$           172.16.6.18  0      localhost              shieldbase       wacsvc                       C:\Windows\System32\svchost.exe 0x888    
-2023/01/19 02:58:37 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/19 14:28:14 shieldbase        RD01$           172.16.6.18  0      localhost              shieldbase       wacsvc                       C:\Windows\System32\svchost.exe 0x888    
-2023/01/19 14:53:02 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/19 18:02:01 shieldbase        RD01$           172.16.30.3  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/22 23:31:01 shieldbase        RD01$           172.16.30.14 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/23 14:37:29 shieldbase        RD01$           172.16.30.14 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x888    
-2023/01/23 14:52:56 shieldbase        RD01$           172.16.30.14 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x628    
-2023/01/23 15:14:05 shieldbase        tdungan         172.16.7.11  135    wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc                       C:\Windows\System32\svchost.exe 0x3b4    
-2023/01/23 20:53:05 shieldbase        RD01$           172.16.4.9   0      localhost              shieldbase       wacsvc                       C:\Windows\System32\svchost.exe 0x628    
-2023/01/24 03:21:30 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x628    
-2023/01/24 14:17:13 shieldbase        RD01$           172.16.30.8  0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x628    
-2023/01/25 14:19:26 shieldbase        RD01$           172.16.30.23 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x60c    
-2023/01/25 14:38:50 shieldbase        RD01$           172.16.30.23 0      localhost              shieldbase       tdungan                      C:\Windows\System32\svchost.exe 0x5f8
+Time                SubjectDomainName SubjectUserName IpAddress    IpPort TargetServerName       TargetInfo                   TargetDomainName TargetUserName ProcessName                     ProcessId
+----                ----------------- --------------- ---------    ------ ----------------       ----------                   ---------------- -------------- -----------                     ---------
+2022/09/30 23:44:12 -                 -               172.16.4.4   49668  dc01.shieldbase.com    dc01.shieldbase.com          SHIELDBASE       srl.admin      C:\Windows\System32\svchost.exe 0x7bc    
+2022/10/01 14:55:12 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xb74    
+2022/10/20 01:51:51 shieldbase        RD01$           172.16.30.6  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x604    
+2022/10/20 01:54:35 shieldbase        RD01$           172.16.30.6  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x598    
+2022/10/20 03:02:24 shieldbase        RD01$           172.16.30.6  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5d4    
+2022/10/20 18:41:16 shieldbase        RD01$           172.16.30.6  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x644    
+2022/10/21 16:58:19 shieldbase        RD01$           172.16.30.6  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5ec    
+2022/10/21 17:07:26 shieldbase        RD01$           172.16.30.6  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5dc    
+2022/10/29 14:13:12 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5dc    
+2022/11/06 21:23:04 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5dc    
+2022/11/07 14:58:40 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5dc    
+2022/11/13 12:51:13 shieldbase        RD01$           172.16.30.7  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/11/16 17:57:53 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/11/17 19:55:33 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/11/18 18:53:55 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/11/21 17:20:21 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/11/22 16:28:07 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/11/22 20:31:44 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/11/24 17:30:49 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/01 19:34:18 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/01 19:36:13 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/01 19:50:39 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/04 12:25:19 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/04 14:34:36 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/05 14:32:23 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/05 20:11:03 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/07 19:52:03 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/12 10:33:26 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/12 14:07:14 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/14 14:17:12 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/14 14:31:01 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/14 15:33:32 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x698    
+2022/12/16 17:35:28 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/20 21:03:58 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/21 21:54:42 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 00:01:46 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 00:06:08 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 00:07:16 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 00:08:13 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 00:32:32 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 15:51:50 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 16:26:16 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 16:34:54 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/22 16:37:40 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/24 05:51:02 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2022/12/26 21:22:44 shieldbase        RD01$           172.16.30.4  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2023/01/02 18:01:15 shieldbase        RD01$           172.16.30.20 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0xbb8    
+2023/01/02 22:56:33 shieldbase        RD01$           172.16.30.20 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/03 21:54:16 shieldbase        RD01$           172.16.30.20 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/04 04:35:14 shieldbase        RD01$           172.16.30.20 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/05 20:49:49 shieldbase        RD01$           172.16.30.20 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/09 16:57:25 shieldbase        RD01$           172.16.30.20 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/12 06:19:43 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/12 20:40:54 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/13 18:32:16 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/17 00:12:38 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/17 04:21:56 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/17 14:43:03 shieldbase        RD01$           172.16.6.18  0      localhost              localhost                    shieldbase       wacsvc         C:\Windows\System32\svchost.exe 0x888    
+2023/01/17 23:30:56 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/18 14:50:19 shieldbase        RD01$           172.16.6.18  0      localhost              localhost                    shieldbase       wacsvc         C:\Windows\System32\svchost.exe 0x888    
+2023/01/18 15:26:39 shieldbase        RD01$           172.16.6.18  0      localhost              localhost                    shieldbase       wacsvc         C:\Windows\System32\svchost.exe 0x888    
+2023/01/18 20:32:06 shieldbase        RD01$           172.16.6.18  0      localhost              localhost                    shieldbase       wacsvc         C:\Windows\System32\svchost.exe 0x888    
+2023/01/18 21:48:12 shieldbase        RD01$           172.16.6.18  0      localhost              localhost                    shieldbase       wacsvc         C:\Windows\System32\svchost.exe 0x888    
+2023/01/19 02:58:37 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/19 14:28:14 shieldbase        RD01$           172.16.6.18  0      localhost              localhost                    shieldbase       wacsvc         C:\Windows\System32\svchost.exe 0x888    
+2023/01/19 14:53:02 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/19 18:02:01 shieldbase        RD01$           172.16.30.3  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/22 23:31:01 shieldbase        RD01$           172.16.30.14 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/23 14:37:29 shieldbase        RD01$           172.16.30.14 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x888    
+2023/01/23 14:52:56 shieldbase        RD01$           172.16.30.14 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x628    
+2023/01/23 15:14:05 shieldbase        tdungan         172.16.7.11  135    wkstn01.shieldbase.com RPCSS/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\svchost.exe 0x3b4    
+2023/01/23 20:53:05 shieldbase        RD01$           172.16.4.9   0      localhost              localhost                    shieldbase       wacsvc         C:\Windows\System32\svchost.exe 0x628    
+2023/01/24 03:21:30 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x628    
+2023/01/24 14:17:13 shieldbase        RD01$           172.16.30.8  0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x628    
+2023/01/25 14:19:26 shieldbase        RD01$           172.16.30.23 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x60c    
+2023/01/25 14:38:50 shieldbase        RD01$           172.16.30.23 0      localhost              localhost                    shieldbase       tdungan        C:\Windows\System32\svchost.exe 0x5f8
 ```

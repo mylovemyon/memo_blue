@@ -537,6 +537,7 @@ Values                                       Count
 
 
 ### security(4697)
+怪しいサービス登録はたぶんなさそう
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4697)]]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
@@ -653,4 +654,39 @@ Values                                                                          
 {rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1EAD4465-81D8-4836-9AD1-9A3093B8861A}\MpKslDrv.sys}                1
 {rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{D82DF3AC-CDB9-45F6-AC48-F309DDA76F54}\MpKslDrv.sys}                1
 {rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DE440370-3AFA-40FF-91C3-2BF3DDF2AE36}\MpKslDrv.sys}                1
+```
+
+
+### security(4717)
+関係ないログっぽい
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4717)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer          = $xml.Event.System.Computer
+        #SubjectLogonId    = $eventData["SubjectLogonId"]
+        #SubjectUserSid    = $eventData["SubjectUserSid"]
+        #SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+        TargetSid         = $eventData["TargetSid"]
+        AccessGranted     = $eventData["AccessGranted"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Computer        SubjectUserName TargetSid                                                      AccessGranted                
+--------        --------------- ---------                                                      -------------                
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-80-0                                                     SeServiceLogonRight          
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-555                                                   SeRemoteInteractiveLogonRight
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeDenyNetworkLogonRight      
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeDenyInteractiveLogonRight  
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-559                                                   SeBatchLogonRight            
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-551                                                   SeBatchLogonRight            
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-551                                                   SeNetworkLogonRight          
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-544                                                   SeRemoteInteractiveLogonRight
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 SeServiceLogonRight
 ```

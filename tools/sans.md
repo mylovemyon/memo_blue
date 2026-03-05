@@ -797,3 +797,47 @@ Time                Computer   SubjectDomainName SubjectUserName TargetDomainNam
 2022/08/31 19:36:10 tpl-packer WORKGROUP         TPL-PACKER$     TPL-PACKER       defaultuser0  
 2022/09/30 23:38:54 rd01       WORKGROUP         RD01$           RD01             SRLAdmin  
 ```
+
+
+### security(4724)
+sqladminのパスワードリセット試行を確認
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4724)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time                = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer            = $xml.Event.System.Computer
+        #SubjectLogonId      = $eventData["SubjectLogonId"]
+        #SubjectUserSid      = $eventData["SubjectUserSid"]
+        #SubjectDomainName   = $eventData["SubjectDomainName"]
+        SubjectUserName     = $eventData["SubjectUserName"]
+        #TargetUserSid       = $eventData["TargetUserSid"]
+        #TargetDomainName    = $eventData["TargetDomainName"]
+        TargetUserName      = $eventData["TargetUserName"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Time                Computer            SubjectUserName TargetUserName
+----                --------            --------------- --------------
+2022/08/31 19:36:09 tpl-packer          TPL-PACKER$     Administrator 
+2022/08/31 19:36:10 tpl-packer          TPL-PACKER$     defaultuser0  
+2022/08/31 19:36:10 tpl-packer          TPL-PACKER$     defaultuser0  
+2022/09/30 23:38:54 rd01                RD01$           SRLAdmin      
+2022/09/30 23:38:54 rd01                RD01$           SRLAdmin      
+2022/09/30 23:46:08 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/01 07:42:24 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/02 16:43:08 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/12 08:15:33 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/14 16:12:18 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/20 01:53:17 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/20 03:01:44 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/20 18:39:54 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/21 16:52:48 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/10/21 17:04:01 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/11/11 23:30:57 rd01.shieldbase.com RD01$           SRLAdmin      
+2022/11/12 06:17:22 rd01.shieldbase.com RD01$           SRLAdmin      
+2023/01/02 19:59:48 rd01.shieldbase.com RD01$           SRLAdmin
+```

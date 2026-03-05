@@ -499,3 +499,37 @@ Time                Computer            SubjectLogonId SubjectUserSid           
 2023/01/02 18:01:26 rd01.shieldbase.com 0x26a9c239     S-1-5-21-2838623409-1327563992-2591358621-1136 shieldbase        tdungan                       23027cbe-10ef-4c1c-9827-15c1511d33fe                5a29a8b3-26f3-42f5-8abd-854ce52aa72f
 2023/01/17 14:43:25 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc                        7ce88ffb-d59c-4e66-9123-5ac40901cdb8                5a29a8b3-26f3-42f5-8abd-854ce52aa72f
 ```
+
+
+## security(4694)
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4694)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time               = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer           = $xml.Event.System.Computer
+        SubjectLogonId     = $eventData["SubjectLogonId"]
+        SubjectUserSid     = $eventData["SubjectUserSid"]
+        SubjectDomainName  = $eventData["SubjectDomainName"]
+        SubjectUserName    = $eventData["SubjectUserName"]
+        FailureReason      = $eventData["FailureReason "]
+        MasterKeyId        = $eventData["MasterKeyId"]
+        ProtectedDataFlags = $eventData["ProtectedDataFlags"]
+        CryptoAlgorithms   = $eventData["CryptoAlgorithms"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Time                Computer            SubjectLogonId SubjectUserSid                                 SubjectDomainName SubjectUserName FailureReason MasterKeyId ProtectedDataFlags CryptoAlgorithms    
+----                --------            -------------- --------------                                 ----------------- --------------- ------------- ----------- ------------------ ----------------    
+2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecb8      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin                      Resync      0x20000000         AES-256 , SHA2-512  
+2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecd6      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin                      Resync      0x20000000         AES-256 , SHA2-512  
+2022/11/06 23:32:09 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      Export Flag 0x0                3DES-192 , SHA1-160 
+2022/11/06 23:32:10 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      Export Flag 0x0                3DES-192 , SHA1-160 
+2022/11/06 23:32:10 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      Export Flag 0x0                3DES-192 , SHA1-160 
+2023/01/17 14:43:38 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc                        Edge        0x10               3DES-192 , SHA1-160 
+2023/01/17 14:45:41 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc                        Edge        0x10               3DES-192 , SHA1-160 
+2023/01/17 14:50:37 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc                        Edge        0x10               3DES-192 , SHA1-160
+```

@@ -246,7 +246,7 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         SubjectUserSid    = $eventData["SubjectUserSid"]
         SubjectDomainName = $eventData["SubjectDomainName"]
         SubjectUserName   = $eventData["SubjectUserName"]
-        FailureReason     = $eventData["FailureReason "]
+        FailureReason     = $eventData["FailureReason"]
         MasterKeyId       = $eventData["MasterKeyId"]
         RecoveryServer    = $eventData["RecoveryServer"]
         RecoveryKeyId     = $eventData["RecoveryKeyId"]
@@ -255,8 +255,8 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
 Time                Computer            SubjectLogonId SubjectUserSid                                 SubjectDomainName SubjectUserName FailureReason MasterKeyId                          RecoveryServer RecoveryKeyId                       
 ----                --------            -------------- --------------                                 ----------------- --------------- ------------- -----------                          -------------- -------------                       
-2022/11/06 23:32:09 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      7ff8a496-3871-4c2d-ad25-2ee9bcd363fe                                                    
-2022/11/06 23:32:10 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      44effb1e-f066-43fa-b032-c5602f4a5121                                                    
+2022/11/06 23:32:09 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a        0x80090345    7ff8a496-3871-4c2d-ad25-2ee9bcd363fe                                                    
+2022/11/06 23:32:10 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a        0x80090345    44effb1e-f066-43fa-b032-c5602f4a5121                                                                                                  
 ```
 
 
@@ -274,15 +274,17 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         SubjectUserSid     = $eventData["SubjectUserSid"]
         SubjectDomainName  = $eventData["SubjectDomainName"]
         SubjectUserName    = $eventData["SubjectUserName"]
-        FailureReason      = $eventData["FailureReason "]
+        FailureReason      = $eventData["FailureReason"]
         MasterKeyId        = $eventData["MasterKeyId"]
+        DataDescription    = $eventData["DataDescription"]
         ProtectedDataFlags = $eventData["ProtectedDataFlags"]
         CryptoAlgorithms   = $eventData["CryptoAlgorithms"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                Computer            SubjectLogonId SubjectUserSid                                 SubjectDomainName SubjectUserName FailureReason MasterKeyId ProtectedDataFlags CryptoAlgorithms    
-----                --------            -------------- --------------                                 ----------------- --------------- ------------- ----------- ------------------ ----------------    
-2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecb8      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin                      Resync      0x20000000         AES-256 , SHA2-512  
-2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecd6      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin                      Resync      0x20000000         AES-256 , SHA2-512  
+Time                Computer            SubjectLogonId SubjectUserSid                                 SubjectDomainName SubjectUserName FailureReason MasterKeyId DataDescription                      ProtectedDataFlags CryptoAlgorithms    
+----                --------            -------------- --------------                                 ----------------- --------------- ------------- ----------- ---------------                      ------------------ ----------------    
+2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecb8      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin        0x2           Resync                                           0x20000000         AES-256 , SHA2-512  
+2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecd6      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin        0x2           Resync                                           0x20000000         AES-256 , SHA2-512  
+2022/11/06 23:32:09 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a        0x80090345    Export Flag                                      0x0                3DES-192 , SHA1-160 
 ```

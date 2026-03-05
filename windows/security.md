@@ -169,10 +169,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        #Computer                  = $xml.Event.System.Computer
-        #SubjectDomainName = $eventData["SubjectDomainName"]
-        SubjectUserName   = $eventData["SubjectUserName"]
+        #Time               = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #Computer           = $xml.Event.System.Computer
+        #SubjectDomainName  = $eventData["SubjectDomainName"]
+        SubjectUserName    = $eventData["SubjectUserName"]
     }
 } | Where-Object {$_.SubjectUserName -ne "SYSTEM"} | Group-Object SubjectUserName | Format-Table -AutoSize -Property Values,Count
 
@@ -197,8 +197,8 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        #Computer                  = $xml.Event.System.Computer
+        #Time               = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #Computer           = $xml.Event.System.Computer
         #SubjectLogonId     = $eventData["SubjectLogonId"]
         #SubjectUserSid     = $eventData["SubjectUserSid"]
         #SubjectDomainName  = $eventData["SubjectDomainName"]
@@ -228,4 +228,36 @@ Values                             Count
 {C:\Windows\System32\autochk.exe}     26
 {Registry}                            26
 {C:\Windows\System32\setupcl.exe}      1
+```
+
+
+## 4689
+dpapiアクセスを確認
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4692)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer          = $xml.Event.System.Computer
+        SubjectLogonId    = $eventData["SubjectLogonId"]
+        SubjectUserSid    = $eventData["SubjectUserSid"]
+        SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+        FailureReason     = $eventData["FailureReason "]
+        MasterKeyId       = $eventData["MasterKeyId"]
+        RecoveryServer    = $eventData["RecoveryServer"]
+        RecoveryKeyId     = $eventData["RecoveryKeyId"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Time                Computer            SubjectLogonId SubjectUserSid                                 SubjectDomainName SubjectUserName FailureReason MasterKeyId                          RecoveryServer RecoveryKeyId                       
+----                --------            -------------- --------------                                 ----------------- --------------- ------------- -----------                          -------------- -------------                       
+2022/11/06 23:32:09 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      7ff8a496-3871-4c2d-ad25-2ee9bcd363fe                                                    
+2022/11/06 23:32:10 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      44effb1e-f066-43fa-b032-c5602f4a5121                                                    
+2022/11/06 23:32:10 rd01.shieldbase.com 0x249ae982     S-1-5-21-2838623409-1327563992-2591358621-1125 shieldbase        rsydow-a                      8367f31a-23cc-41ec-92e9-cc34bdaef213                                                    
+2023/01/02 18:01:26 rd01.shieldbase.com 0x26a9c239     S-1-5-21-2838623409-1327563992-2591358621-1136 shieldbase        tdungan                       23027cbe-10ef-4c1c-9827-15c1511d33fe                5a29a8b3-26f3-42f5-8abd-854ce52aa72f
+2023/01/17 14:43:25 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc                        7ce88ffb-d59c-4e66-9123-5ac40901cdb8                5a29a8b3-26f3-42f5-8abd-854ce52aa72f
 ```

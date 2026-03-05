@@ -231,7 +231,7 @@ Values                             Count
 ```
 
 
-## 4689
+## 4692
 dpapiアクセスを確認
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4692)]]" | ForEach-Object {

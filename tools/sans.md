@@ -690,3 +690,37 @@ OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-551                                    
 OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-544                                                   SeRemoteInteractiveLogonRight
 OFFDEVS-TUHMGJE MINWINPC$       S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 SeServiceLogonRight
 ```
+
+
+### security(4718)
+関係ないログっぽい
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4718)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer          = $xml.Event.System.Computer
+        #SubjectLogonId    = $eventData["SubjectLogonId"]
+        #SubjectUserSid    = $eventData["SubjectUserSid"]
+        #SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+        TargetSid         = $eventData["TargetSid"]
+        AccessRemoved     = $eventData["AccessRemoved"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Computer        SubjectUserName TargetSid                                                      AccessRemoved                
+--------        --------------- ---------                                                      -------------                
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-90-0                                                     SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE MINWINPC$       S-1-1-0                                                        SeRemoteInteractiveLogonRight
+OFFDEVS-TUHMGJE MINWINPC$       S-1-1-0                                                        SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 SeServiceLogonRight          
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-583                                                   SeNetworkLogonRight          
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-583                                                   SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-581                                                   SeNetworkLogonRight          
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-581                                                   SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-546                                                   SeInteractiveLogonRight
+```

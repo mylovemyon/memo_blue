@@ -62,25 +62,30 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        Time             = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        LogonType        = $eventData["LogonType"]
-        FailureReason    = $eventData["FailureReason"]
-        IpAddress        = $eventData["IpAddress"]
-        IpPort           = $eventData["IpPort"]
-        WorkstationName  = $eventData["WorkstationName"]
-        TargetDomainName = $eventData["TargetDomainName"]
-        TargetUserName   = $eventData["TargetUserName"]
-        #TargetUserSid   = $eventData["TargetUserSid"]
-        LogonProcessName = $eventData["LogonProcessName"]
-        ProcessName      = $eventData["ProcessName"]
-        ProcessID        = $eventData["ProcessID"]
+        Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        IpAddress                 = $eventData["IpAddress"]
+        IpPort                    = $eventData["IpPort"]
+        WorkstationName           = $eventData["WorkstationName"]
+        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectUserSid            = $eventData["SubjectUserSid"]
+        #SubjectDomainName         = $eventData["SubjectDomainName"]
+        #SubjectUserName           = $eventData["SubjectUserName "]
+        #TargetUserSid             = $eventData["TargetUserSid"]
+        TargetDomainName          = $eventData["TargetDomainName"]
+        TargetUserName            = $eventData["TargetUserName"]
+        LogonType                 = $eventData["LogonType"]
+        FailureReason             = $eventData["FailureReason"]
+        #LogonProcessName          = $eventData["LogonProcessName"]
+        #AuthenticationPackageName = $eventData["AuthenticationPackageName"]
+        ProcessName               = $eventData["ProcessName"]
+        ProcessID                 = $eventData["ProcessID"]
     }
-} | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
+} | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                LogonType FailureReason IpAddress   IpPort WorkstationName TargetDomainName TargetUserName LogonProcessName ProcessName                                                                             ProcessID
-----                --------- ------------- ---------   ------ --------------- ---------------- -------------- ---------------- -----------                                                                             ---------
-2022/08/31 17:38:01 2         %%2313        -            -      TPL-PACKER     TPL-PACKER       Administrator  Advapi           C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
-2022/10/21 16:38:19 11        %%2304        ::1          0      RD01           RD01             srladmin       CredPro          C:\Windows\System32\consent.exe                                                         0x828    
+Time                IpAddress    IpPort WorkstationName TargetDomainName TargetUserName LogonType FailureReason ProcessName                                                                             ProcessID
+----                ---------    ------ --------------- ---------------- -------------- --------- ------------- -----------                                                                             ---------
+2022/08/31 17:38:01 -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
+2022/08/31 17:40:23 -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0xd88    
 ```
 
 ## 4648

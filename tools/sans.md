@@ -727,7 +727,7 @@ OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-546                                    
 
 
 ### security(4720)
-ユーザ作成を確認
+ローカルユーザ作成を確認
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4720)]]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
@@ -768,4 +768,32 @@ Time                Computer        SubjectUserName TargetUserName     SamAccoun
 2022/08/31 19:34:47 OFFDEVS-TUHMGJE MINWINPC$       WDAGUtilityAccount WDAGUtilityAccount %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
 2022/08/31 19:36:10 tpl-packer      TPL-PACKER$     defaultuser0       defaultuser0       %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
 2022/09/30 23:38:54 rd01            RD01$           SRLAdmin           SRLAdmin           %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
+```
+
+
+### security(4722)
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4722)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time                = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer            = $xml.Event.System.Computer
+        #SubjectLogonId      = $eventData["SubjectLogonId"]
+        #SubjectUserSid      = $eventData["SubjectUserSid"]
+        #SubjectDomainName   = $eventData["SubjectDomainName"]
+        SubjectUserName     = $eventData["SubjectUserName"]
+        #TargetUserSid       = $eventData["TargetUserSid"]
+        #TargetDomainName    = $eventData["TargetDomainName"]
+        TargetUserName      = $eventData["TargetUserName"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Time                Computer   SubjectUserName TargetUserName
+----                --------   --------------- --------------
+2022/08/31 19:36:09 tpl-packer TPL-PACKER$     Administrator 
+2022/08/31 19:36:10 tpl-packer TPL-PACKER$     defaultuser0  
+2022/09/30 23:38:54 rd01       RD01$           SRLAdmin
 ```

@@ -392,9 +392,9 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
     [PSCustomObject]@{
         #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        #Computer                  = $xml.Event.System.Computer
+        #Computer          = $xml.Event.System.Computer
         #SubjectDomainName = $eventData["SubjectDomainName"]
-        SubjectUserName   = $eventData["SubjectUserName"]
+        SubjectUserName    = $eventData["SubjectUserName"]
     }
 } | Where-Object {$_.SubjectUserName -ne "SYSTEM"} | Group-Object SubjectUserName | Format-Table -AutoSize -Property Values,Count
 
@@ -435,8 +435,8 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        #Computer                  = $xml.Event.System.Computer
+        #Time               = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #Computer           = $xml.Event.System.Computer
         #SubjectLogonId     = $eventData["SubjectLogonId"]
         #SubjectUserSid     = $eventData["SubjectUserSid"]
         #SubjectDomainName  = $eventData["SubjectDomainName"]
@@ -479,14 +479,14 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
     [PSCustomObject]@{
         Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        Computer                  = $xml.Event.System.Computer
-        SubjectLogonId     = $eventData["SubjectLogonId"]
-        SubjectUserSid     = $eventData["SubjectUserSid"]
-        SubjectDomainName  = $eventData["SubjectDomainName"]
-        SubjectUserName    = $eventData["SubjectUserName"]
-        FailureReason    = $eventData["FailureReason "]
-        MasterKeyId  = $eventData["MasterKeyId"]
-        RecoveryServer       = $eventData["RecoveryServer"]
+        Computer          = $xml.Event.System.Computer
+        SubjectLogonId    = $eventData["SubjectLogonId"]
+        SubjectUserSid    = $eventData["SubjectUserSid"]
+        SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectUserName   = $eventData["SubjectUserName"]
+        FailureReason     = $eventData["FailureReason "]
+        MasterKeyId       = $eventData["MasterKeyId"]
+        RecoveryServer    = $eventData["RecoveryServer"]
         RecoveryKeyId     = $eventData["RecoveryKeyId"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *

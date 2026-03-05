@@ -484,7 +484,7 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer           = $xml.Event.System.Computer
         #SubjectLogonId     = $eventData["SubjectLogonId"]
         #SubjectUserSid     = $eventData["SubjectUserSid"]
-        #SubjectDomainName  = $eventData["SubjectDomainName"]
+        SubjectDomainName  = $eventData["SubjectDomainName"]
         SubjectUserName    = $eventData["SubjectUserName"]
         FailureReason      = $eventData["FailureReason"]
         MasterKeyId        = $eventData["MasterKeyId"]
@@ -492,12 +492,12 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         ProtectedDataFlags = $eventData["ProtectedDataFlags"]
         CryptoAlgorithms   = $eventData["CryptoAlgorithms"]
     }
-} | Group-Object Computer,SubjectUserName,FailureReason,MasterKeyId,DataDescription,ProtectedDataFlags,CryptoAlgorithms | Format-Table -AutoSize -Property Values,Count
+} | Group-Object Computer,SubjectDomainName,SubjectUserName,FailureReason,MasterKeyId,DataDescription,ProtectedDataFlags,CryptoAlgorithms | Format-Table -AutoSize -Property Values,Count
 
-Values                                                                                                     Count
-------                                                                                                     -----
-{rd01.shieldbase.com, tdungan, 0x0, Edge, 3d0bc92f-bf43-432e-b348-b4310b829180, 0x0, 3DES-192 , SHA1-160 }   105
-{rd01.shieldbase.com, wacsvc, 0x0, Edge, 7ce88ffb-d59c-4e66-9123-5ac40901cdb8, 0x0, 3DES-192 , SHA1-160 }     21
+Values                                                                                                                 Count
+------                                                                                                                 -----
+{rd01.shieldbase.com, shieldbase, tdungan, 0x0, Edge, 3d0bc92f-bf43-432e-b348-b4310b829180, 0x0, 3DES-192 , SHA1-160 }   105
+{rd01.shieldbase.com, shieldbase, wacsvc, 0x0, Edge, 7ce88ffb-d59c-4e66-9123-5ac40901cdb8, 0x0, 3DES-192 , SHA1-160 }     21
 ```
 
 
@@ -514,25 +514,25 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer          = $xml.Event.System.Computer
         #SubjectLogonId    = $eventData["SubjectLogonId"]
         #SubjectUserSid    = $eventData["SubjectUserSid"]
-        #SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectDomainName = $eventData["SubjectDomainName"]
         SubjectUserName   = $eventData["SubjectUserName"]
         #TargetLogonId     = $eventData["TargetLogonId"]
         #TargetUserSid     = $eventData["TargetUserSid"]
-        #TargetDomainName  = $eventData["TargetDomainName"]
+        TargetDomainName  = $eventData["TargetDomainName"]
         TargetUserName    = $eventData["TargetUserName"]
         #TargetProcessId   = $eventData["TargetProcessId"]
-        TargetProcessName       = $eventData["TargetProcessName"]
+        TargetProcessName = $eventData["TargetProcessName"]
         #ProcessId         = $eventData["ProcessId"]
         ProcessName       = $eventData["ProcessName"]
     }
-} | Group-Object Computer,SubjectUserName,TargetUserName,TargetProcessName,ProcessName | Format-Table -AutoSize -Property Values,Count
+} | Group-Object Computer,SubjectDomainName,SubjectUserName,TargetDomainName,TargetUserName,TargetProcessName,ProcessName | Format-Table -AutoSize -Property Values,Count
 
-Values                                       Count
-------                                       -----
-{rd01.shieldbase.com, -, -, Registry, $null}    18
-{rd01, -, -, Registry, $null}                    1
-{tpl-packer, -, -, Registry, $null}              6
-{OFFDEVS-TUHMGJE, -, -, Registry, $null}         1
+Values                                             Count
+------                                             -----
+{rd01.shieldbase.com, -, -, -, -, Registry, $null}    18
+{rd01, -, -, -, -, Registry, $null}                    1
+{tpl-packer, -, -, -, -, Registry, $null}              6
+{OFFDEVS-TUHMGJE, -, -, -, -, Registry, $null}         1
 ```
 
 
@@ -551,10 +551,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         #SubjectUserSid    = $eventData["SubjectUserSid"]
         #SubjectDomainName = $eventData["SubjectDomainName"]
         #SubjectUserName   = $eventData["SubjectUserName"]
-        #ServiceType     = $eventData["ServiceType"]
-        #ServiceStartType     = $eventData["ServiceStartType"]
-        #ServiceName   = $eventData["ServiceName"]
-        ServiceFileName    = $eventData["ServiceFileName"]
+        #ServiceType       = $eventData["ServiceType"]
+        #ServiceStartType  = $eventData["ServiceStartType"]
+        #ServiceName       = $eventData["ServiceName"]
+        ServiceFileName   = $eventData["ServiceFileName"]
         #ServiceAccount    = $eventData["ServiceAccount"]
     }
 } | Group-Object Computer,ServiceFileName | Format-Table -AutoSize -Property Values,Count
@@ -670,25 +670,25 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer          = $xml.Event.System.Computer
         #SubjectLogonId    = $eventData["SubjectLogonId"]
         #SubjectUserSid    = $eventData["SubjectUserSid"]
-        #SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectDomainName = $eventData["SubjectDomainName"]
         SubjectUserName   = $eventData["SubjectUserName"]
         TargetSid         = $eventData["TargetSid"]
         AccessGranted     = $eventData["AccessGranted"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Computer        SubjectUserName TargetSid                                                      AccessGranted                
---------        --------------- ---------                                                      -------------                
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-80-0                                                     SeServiceLogonRight          
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-555                                                   SeRemoteInteractiveLogonRight
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeDenyNetworkLogonRight      
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeDenyInteractiveLogonRight  
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeInteractiveLogonRight      
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-559                                                   SeBatchLogonRight            
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-551                                                   SeBatchLogonRight            
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-551                                                   SeNetworkLogonRight          
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-544                                                   SeRemoteInteractiveLogonRight
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 SeServiceLogonRight
+Computer        SubjectDomainName SubjectUserName TargetSid                                                      AccessGranted                
+--------        ----------------- --------------- ---------                                                      -------------                
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-80-0                                                     SeServiceLogonRight          
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-555                                                   SeRemoteInteractiveLogonRight
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeDenyNetworkLogonRight      
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeDenyInteractiveLogonRight  
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-21-2908624845-2463485410-257172065-501                   SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-559                                                   SeBatchLogonRight            
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-551                                                   SeBatchLogonRight            
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-551                                                   SeNetworkLogonRight          
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-544                                                   SeRemoteInteractiveLogonRight
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 SeServiceLogonRight          
 ```
 
 
@@ -705,24 +705,24 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer          = $xml.Event.System.Computer
         #SubjectLogonId    = $eventData["SubjectLogonId"]
         #SubjectUserSid    = $eventData["SubjectUserSid"]
-        #SubjectDomainName = $eventData["SubjectDomainName"]
+        SubjectDomainName = $eventData["SubjectDomainName"]
         SubjectUserName   = $eventData["SubjectUserName"]
         TargetSid         = $eventData["TargetSid"]
         AccessRemoved     = $eventData["AccessRemoved"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Computer        SubjectUserName TargetSid                                                      AccessRemoved                
---------        --------------- ---------                                                      -------------                
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-90-0                                                     SeInteractiveLogonRight      
-OFFDEVS-TUHMGJE MINWINPC$       S-1-1-0                                                        SeRemoteInteractiveLogonRight
-OFFDEVS-TUHMGJE MINWINPC$       S-1-1-0                                                        SeInteractiveLogonRight      
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 SeServiceLogonRight          
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-583                                                   SeNetworkLogonRight          
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-583                                                   SeInteractiveLogonRight      
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-581                                                   SeNetworkLogonRight          
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-581                                                   SeInteractiveLogonRight      
-OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-546                                                   SeInteractiveLogonRight
+Computer        SubjectDomainName SubjectUserName TargetSid                                                      AccessRemoved                
+--------        ----------------- --------------- ---------                                                      -------------                
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-90-0                                                     SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-1-0                                                        SeRemoteInteractiveLogonRight
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-1-0                                                        SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 SeServiceLogonRight          
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-583                                                   SeNetworkLogonRight          
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-583                                                   SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-581                                                   SeNetworkLogonRight          
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-581                                                   SeInteractiveLogonRight      
+OFFDEVS-TUHMGJE                   MINWINPC$       S-1-5-32-546                                                   SeInteractiveLogonRight      
 ```
 
 
@@ -739,10 +739,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer            = $xml.Event.System.Computer
         #SubjectLogonId      = $eventData["SubjectLogonId"]
         #SubjectUserSid      = $eventData["SubjectUserSid"]
-        #SubjectDomainName   = $eventData["SubjectDomainName"]
+        SubjectDomainName   = $eventData["SubjectDomainName"]
         SubjectUserName     = $eventData["SubjectUserName"]
         #TargetUserSid       = $eventData["TargetUserSid"]
-        #TargetDomainName    = $eventData["TargetDomainName"]
+        TargetDomainName    = $eventData["TargetDomainName"]
         TargetUserName      = $eventData["TargetUserName"]
         SamAccountName      = $eventData["SamAccountName"]
         DisplayName         = $eventData["DisplayName"]
@@ -763,11 +763,11 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                Computer        SubjectUserName TargetUserName     SamAccountName     DisplayName UserPrincipalName HomeDirectory HomePath ScriptPath ProfilePath UserWorkstations PasswordLastSet AccountExpires PrimaryGroupId AllowedToDelegateTo OldUacValue NewUacValue SidHistory LogonHours
-----                --------        --------------- --------------     --------------     ----------- ----------------- ------------- -------- ---------- ----------- ---------------- --------------- -------------- -------------- ------------------- ----------- ----------- ---------- ----------
-2022/08/31 19:34:47 OFFDEVS-TUHMGJE MINWINPC$       WDAGUtilityAccount WDAGUtilityAccount %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
-2022/08/31 19:36:10 tpl-packer      TPL-PACKER$     defaultuser0       defaultuser0       %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
-2022/09/30 23:38:54 rd01            RD01$           SRLAdmin           SRLAdmin           %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
+Time                Computer        SubjectDomainName SubjectUserName TargetDomainName TargetUserName     SamAccountName     DisplayName UserPrincipalName HomeDirectory HomePath ScriptPath ProfilePath UserWorkstations PasswordLastSet AccountExpires PrimaryGroupId AllowedToDelegateTo OldUacValue NewUacValue SidHistory LogonHours
+----                --------        ----------------- --------------- ---------------- --------------     --------------     ----------- ----------------- ------------- -------- ---------- ----------- ---------------- --------------- -------------- -------------- ------------------- ----------- ----------- ---------- ----------
+2022/08/31 19:34:47 OFFDEVS-TUHMGJE                   MINWINPC$       MINWINPC         WDAGUtilityAccount WDAGUtilityAccount %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
+2022/08/31 19:36:10 tpl-packer      WORKGROUP         TPL-PACKER$     TPL-PACKER       defaultuser0       defaultuser0       %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
+2022/09/30 23:38:54 rd01            WORKGROUP         RD01$           RD01             SRLAdmin           SRLAdmin           %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
 ```
 
 
@@ -783,17 +783,17 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer            = $xml.Event.System.Computer
         #SubjectLogonId      = $eventData["SubjectLogonId"]
         #SubjectUserSid      = $eventData["SubjectUserSid"]
-        #SubjectDomainName   = $eventData["SubjectDomainName"]
+        SubjectDomainName   = $eventData["SubjectDomainName"]
         SubjectUserName     = $eventData["SubjectUserName"]
         #TargetUserSid       = $eventData["TargetUserSid"]
-        #TargetDomainName    = $eventData["TargetDomainName"]
+        TargetDomainName    = $eventData["TargetDomainName"]
         TargetUserName      = $eventData["TargetUserName"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                Computer   SubjectUserName TargetUserName
-----                --------   --------------- --------------
-2022/08/31 19:36:09 tpl-packer TPL-PACKER$     Administrator 
-2022/08/31 19:36:10 tpl-packer TPL-PACKER$     defaultuser0  
-2022/09/30 23:38:54 rd01       RD01$           SRLAdmin
+Time                Computer   SubjectDomainName SubjectUserName TargetDomainName TargetUserName
+----                --------   ----------------- --------------- ---------------- --------------
+2022/08/31 19:36:09 tpl-packer WORKGROUP         TPL-PACKER$     TPL-PACKER       Administrator 
+2022/08/31 19:36:10 tpl-packer WORKGROUP         TPL-PACKER$     TPL-PACKER       defaultuser0  
+2022/09/30 23:38:54 rd01       WORKGROUP         RD01$           RD01             SRLAdmin  
 ```

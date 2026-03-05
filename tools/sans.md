@@ -9,17 +9,26 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        Time                     = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        IpAddress                = $eventData["IpAddress"]
-        IpPort                   = $eventData["IpPort"]
-        WorkstationName          = $eventData["WorkstationName"]
-        TargetDomainName         = $eventData["TargetDomainName"]
-        TargetUserName           = $eventData["TargetUserName"]
-        #TargetUserSid            = $eventData["TargetUserSid"]
-        TargetOutboundDomainName = $eventData["TargetOutboundDomainName"]
-        TargetOutboundUserName   = $eventData["TargetOutboundUserName"]
-        ProcessName              = $eventData["ProcessName"]
-        ProcessID                = $eventData["ProcessID"]
+        Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        IpAddress                 = $eventData["IpAddress"]
+        IpPort                    = $eventData["IpPort"]
+        WorkstationName           = $eventData["WorkstationName"]
+        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectUserSid            = $eventData["SubjectUserSid"]
+        #SubjectDomainName         = $eventData["SubjectDomainName"]
+        #SubjectUserName           = $eventData["SubjectUserName "]
+        #TargetLogonId             = $eventData["TargetLogonId"]
+        #TargetUserSid             = $eventData["TargetUserSid"]
+        TargetDomainName          = $eventData["TargetDomainName"]
+        TargetUserName            = $eventData["TargetUserName"]
+        TargetOutboundDomainName  = $eventData["TargetOutboundDomainName"]
+        TargetOutboundUserName    = $eventData["TargetOutboundUserName"]
+        #LogonType                 = $eventData["LogonType"]
+        #LogonProcessName          = $eventData["LogonProcessName"]
+        #AuthenticationPackageName = $eventData["AuthenticationPackageName"]
+        #ImpersonationLevel        = $eventData["ImpersonationLevel"]
+        ProcessName               = $eventData["ProcessName"]
+        ProcessID                 = $eventData["ProcessID"]
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
@@ -43,7 +52,7 @@ Time                IpAddress IpPort WorkstationName TargetDomainName TargetUser
 2023/01/25 14:57:21 ::1       0      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Windows\System32\svchost.exe                              0x410    
 2023/01/25 14:58:29 ::1       0      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Windows\System32\svchost.exe                              0x410    
 2023/01/25 15:07:50 ::1       0      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Windows\System32\svchost.exe                              0x410    
-2023/01/25 15:07:55 ::1       0      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Windows\System32\svchost.exe                              0x410    
+2023/01/25 15:07:55 ::1       0      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Windows\System32\svchost.exe                              0x410   
 ```
 
 ### security(4625)

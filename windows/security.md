@@ -287,3 +287,32 @@ Time                Computer            SubjectLogonId SubjectUserSid           
 2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecb8      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin        0x2           Resync                                           0x20000000         AES-256 , SHA2-512  
 2022/10/21 16:38:27 rd01.shieldbase.com 0x225ecd6      S-1-5-21-2908624845-2463485410-257172065-1001  RD01              SRLAdmin        0x2           Resync                                           0x20000000         AES-256 , SHA2-512  
 ```
+
+
+### 4695
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4695)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time               = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer           = $xml.Event.System.Computer
+        #SubjectLogonId     = $eventData["SubjectLogonId"]
+        #SubjectUserSid     = $eventData["SubjectUserSid"]
+        #SubjectDomainName  = $eventData["SubjectDomainName"]
+        SubjectUserName    = $eventData["SubjectUserName"]
+        FailureReason      = $eventData["FailureReason"]
+        MasterKeyId        = $eventData["MasterKeyId"]
+        DataDescription    = $eventData["DataDescription"]
+        ProtectedDataFlags = $eventData["ProtectedDataFlags"]
+        CryptoAlgorithms   = $eventData["CryptoAlgorithms"]
+    }
+} | Group-Object Computer,SubjectUserName,FailureReason,MasterKeyId,DataDescription,ProtectedDataFlags,CryptoAlgorithms | Format-Table -AutoSize -Property Values,Count
+
+Values                                                                                                     Count
+------                                                                                                     -----
+{rd01.shieldbase.com, tdungan, 0x0, Edge, 3d0bc92f-bf43-432e-b348-b4310b829180, 0x0, 3DES-192 , SHA1-160 }   105
+{rd01.shieldbase.com, wacsvc, 0x0, Edge, 7ce88ffb-d59c-4e66-9123-5ac40901cdb8, 0x0, 3DES-192 , SHA1-160 }     21
+```

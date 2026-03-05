@@ -14,10 +14,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
         WorkstationName           = $eventData["WorkstationName"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         #SubjectDomainName         = $eventData["SubjectDomainName"]
-        #SubjectUserName           = $eventData["SubjectUserName "]
+        #SubjectUserName           = $eventData["SubjectUserName"]
         #TargetLogonId             = $eventData["TargetLogonId"]
         #TargetUserSid             = $eventData["TargetUserSid"]
         TargetDomainName          = $eventData["TargetDomainName"]
@@ -69,10 +69,10 @@ PS C:\Users\SANSDFIR>  Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
         WorkstationName           = $eventData["WorkstationName"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         #SubjectDomainName         = $eventData["SubjectDomainName"]
-        #SubjectUserName           = $eventData["SubjectUserName "]
+        #SubjectUserName           = $eventData["SubjectUserName"]
         #TargetUserSid             = $eventData["TargetUserSid"]
         TargetDomainName          = $eventData["TargetDomainName"]
         TargetUserName            = $eventData["TargetUserName"]
@@ -127,10 +127,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 		#Computer                  = $xml.Event.System.Computer
         #IpAddress                 = $eventData["IpAddress"]
         #IpPort                    = $eventData["IpPort"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         #SubjectDomainName         = $eventData["SubjectDomainName"]
-        #SubjectUserName           = $eventData["SubjectUserName "]
+        #SubjectUserName           = $eventData["SubjectUserName"]
         #TargetServerName          = $eventData["TargetServerName"]
         #TargetInfo                = $eventData["TargetInfo"]
         #TargetDomainName          = $eventData["TargetDomainName"]
@@ -165,10 +165,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer                  = $xml.Event.System.Computer
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         SubjectDomainName         = $eventData["SubjectDomainName"]
-        SubjectUserName           = $eventData["SubjectUserName "]
+        SubjectUserName           = $eventData["SubjectUserName"]
         TargetServerName          = $eventData["TargetServerName"]
         TargetInfo                = $eventData["TargetInfo"]
         TargetDomainName          = $eventData["TargetDomainName"]
@@ -180,11 +180,11 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
 Time                Computer IpAddress IpPort SubjectDomainName SubjectUserName TargetServerName    TargetInfo          TargetDomainName TargetUserName ProcessName                                               ProcessID
 ----                -------- --------- ------ ----------------- --------------- ----------------    ----------          ---------------- -------------- -----------                                               ---------
-2022/09/30 23:43:50 rd01     -         -      -                                 dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:51 rd01     -         -      -                                 dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:51 rd01     -         -      -                                 dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:53 rd01     -         -      -                                 dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:53 rd01     -         -      -                                 dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30 
+2022/09/30 23:43:50 rd01     -         -      -                 -               dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 rd01     -         -      -                 -               dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 rd01     -         -      -                 -               dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 rd01     -         -      -                 -               dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:53 rd01     -         -      -                 -               dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
 ```
 consent.exeとはuacポップアップ  
 イベントID4625でconsent.exeログを複数確認したが、日時を見る限り失敗後にログイン成功していることがわかる
@@ -199,10 +199,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer                  = $xml.Event.System.Computer
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         SubjectDomainName         = $eventData["SubjectDomainName"]
-        SubjectUserName           = $eventData["SubjectUserName "]
+        SubjectUserName           = $eventData["SubjectUserName"]
         TargetServerName          = $eventData["TargetServerName"]
         TargetInfo                = $eventData["TargetInfo"]
         TargetDomainName          = $eventData["TargetDomainName"]
@@ -214,8 +214,8 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
 Time                Computer            IpAddress IpPort SubjectDomainName SubjectUserName TargetServerName TargetInfo TargetDomainName TargetUserName ProcessName                     ProcessID
 ----                --------            --------- ------ ----------------- --------------- ---------------- ---------- ---------------- -------------- -----------                     ---------
-2022/10/21 16:38:27 rd01.shieldbase.com ::1       0      shieldbase                        localhost        localhost  RD01             SRLAdmin       C:\Windows\System32\consent.exe 0x828    
-2023/01/05 21:41:01 rd01.shieldbase.com ::1       0      shieldbase                        localhost        localhost  shieldbase       tdungan        C:\Windows\System32\consent.exe 0x2904 
+2022/10/21 16:38:27 rd01.shieldbase.com ::1       0      shieldbase        RD01$           localhost        localhost  RD01             SRLAdmin       C:\Windows\System32\consent.exe 0x828    
+2023/01/05 21:41:01 rd01.shieldbase.com ::1       0      shieldbase        RD01$           localhost        localhost  shieldbase       tdungan        C:\Windows\System32\consent.exe 0x2904   
 ```
 dc01に対してrdp認証を確認
 ```powershell
@@ -229,10 +229,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer                  = $xml.Event.System.Computer
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         SubjectDomainName         = $eventData["SubjectDomainName"]
-        SubjectUserName           = $eventData["SubjectUserName "]
+        SubjectUserName           = $eventData["SubjectUserName"]
         TargetServerName          = $eventData["TargetServerName"]
         TargetInfo                = $eventData["TargetInfo"]
         TargetDomainName          = $eventData["TargetDomainName"]
@@ -244,8 +244,8 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
 Time                Computer            IpAddress IpPort SubjectDomainName SubjectUserName TargetServerName     TargetInfo                   TargetDomainName TargetUserName ProcessName                   ProcessID
 ----                --------            --------- ------ ----------------- --------------- ----------------     ----------                   ---------------- -------------- -----------                   ---------
-2023/01/18 14:55:11 rd01.shieldbase.com -         -      shieldbase                        dev01.shieldbase.com TERMSRV/dev01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\lsass.exe 0x2bc    
-2023/01/18 14:55:11 rd01.shieldbase.com -         -      shieldbase                        dev01.shieldbase.com TERMSRV/dev01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\lsass.exe 0x2bc  
+2023/01/18 14:55:11 rd01.shieldbase.com -         -      shieldbase        wacsvc          dev01.shieldbase.com TERMSRV/dev01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\lsass.exe 0x2bc    
+2023/01/18 14:55:11 rd01.shieldbase.com -         -      shieldbase        wacsvc          dev01.shieldbase.com TERMSRV/dev01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\lsass.exe 0x2bc    
 ```
 横展開しているね
 ```powershell
@@ -259,10 +259,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer                  = $xml.Event.System.Computer
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         SubjectDomainName         = $eventData["SubjectDomainName"]
-        SubjectUserName           = $eventData["SubjectUserName "]
+        SubjectUserName           = $eventData["SubjectUserName"]
         TargetServerName          = $eventData["TargetServerName"]
         TargetInfo                = $eventData["TargetInfo"]
         TargetDomainName          = $eventData["TargetDomainName"]
@@ -274,8 +274,8 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
 Time                Computer            IpAddress   IpPort SubjectDomainName SubjectUserName TargetServerName       TargetInfo                  TargetDomainName TargetUserName ProcessName                       ProcessID
 ----                --------            ---------   ------ ----------------- --------------- ----------------       ----------                  ---------------- -------------- -----------                       ---------
-2023/01/23 15:14:06 rd01.shieldbase.com 172.16.7.11 51022  shieldbase                        wkstn01.shieldbase.com wkstn01.shieldbase.com      shieldbase       wacsvc         C:\Windows\System32\wbem\WMIC.exe 0x218c   
-2023/01/23 15:14:06 rd01.shieldbase.com 172.16.7.11 51022  shieldbase                        wkstn01.shieldbase.com host/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\wbem\WMIC.exe 0x218c
+2023/01/23 15:14:06 rd01.shieldbase.com 172.16.7.11 51022  shieldbase        tdungan         wkstn01.shieldbase.com wkstn01.shieldbase.com      shieldbase       wacsvc         C:\Windows\System32\wbem\WMIC.exe 0x218c   
+2023/01/23 15:14:06 rd01.shieldbase.com 172.16.7.11 51022  shieldbase        tdungan         wkstn01.shieldbase.com host/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc         C:\Windows\System32\wbem\WMIC.exe 0x218c   
 ```
 svchostでも通信ありの怪しいものを発見
 ```powershell
@@ -289,10 +289,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         Computer                  = $xml.Event.System.Computer
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
-        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
         #SubjectUserSid            = $eventData["SubjectUserSid"]
         SubjectDomainName         = $eventData["SubjectDomainName"]
-        SubjectUserName           = $eventData["SubjectUserName "]
+        SubjectUserName           = $eventData["SubjectUserName"]
         TargetServerName          = $eventData["TargetServerName"]
         TargetInfo                = $eventData["TargetInfo"]
         TargetDomainName          = $eventData["TargetDomainName"]
@@ -302,20 +302,20 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     }
 } | Where-Object {$_.IpAddress -like "*172*"} | Group-Object Computer,IpAddress,IpPort,SubjectUserName,TargetServerName,TargetInfo,TargetDomainName,TargetUserName,ProcessName | Format-Table -AutoSize -Property Values,Count
 
-Values                                                                                                                                                        Count
-------                                                                                                                                                        -----
-{rd01.shieldbase.com, 172.16.30.23, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                         2
-{rd01.shieldbase.com, 172.16.30.8, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                         19
-{rd01.shieldbase.com, 172.16.4.9, 0, $null, localhost, localhost, shieldbase, wacsvc, C:\Windows\System32\svchost.exe}                                            1
-{rd01.shieldbase.com, 172.16.7.11, 135, $null, wkstn01.shieldbase.com, RPCSS/wkstn01.shieldbase.com, SHIELDBASE.COM, wacsvc, C:\Windows\System32\svchost.exe}     1
-{rd01.shieldbase.com, 172.16.30.14, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                         3
-{rd01.shieldbase.com, 172.16.30.3, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                         11
-{rd01.shieldbase.com, 172.16.6.18, 0, $null, localhost, localhost, shieldbase, wacsvc, C:\Windows\System32\svchost.exe}                                           6
-{rd01.shieldbase.com, 172.16.30.20, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                         6
-{rd01.shieldbase.com, 172.16.30.4, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                         19
-{rd01.shieldbase.com, 172.16.30.7, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                          1
-{rd01.shieldbase.com, 172.16.30.6, 0, $null, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                          6
-{rd01, 172.16.4.4, 49668, $null, dc01.shieldbase.com, dc01.shieldbase.com, SHIELDBASE, srl.admin, C:\Windows\System32\svchost.exe}                                1
+Values                                                                                                                                                          Count
+------                                                                                                                                                          -----
+{rd01.shieldbase.com, 172.16.30.23, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                           2
+{rd01.shieldbase.com, 172.16.30.8, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                           19
+{rd01.shieldbase.com, 172.16.4.9, 0, RD01$, localhost, localhost, shieldbase, wacsvc, C:\Windows\System32\svchost.exe}                                              1
+{rd01.shieldbase.com, 172.16.7.11, 135, tdungan, wkstn01.shieldbase.com, RPCSS/wkstn01.shieldbase.com, SHIELDBASE.COM, wacsvc, C:\Windows\System32\svchost.exe}     1
+{rd01.shieldbase.com, 172.16.30.14, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                           3
+{rd01.shieldbase.com, 172.16.30.3, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                           11
+{rd01.shieldbase.com, 172.16.6.18, 0, RD01$, localhost, localhost, shieldbase, wacsvc, C:\Windows\System32\svchost.exe}                                             6
+{rd01.shieldbase.com, 172.16.30.20, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                           6
+{rd01.shieldbase.com, 172.16.30.4, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                           19
+{rd01.shieldbase.com, 172.16.30.7, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                            1
+{rd01.shieldbase.com, 172.16.30.6, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                            6
+{rd01, 172.16.4.4, 49668, -, dc01.shieldbase.com, dc01.shieldbase.com, SHIELDBASE, srl.admin, C:\Windows\System32\svchost.exe}
 ```
 
 ### security(4672)
@@ -383,7 +383,7 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         #TargetUserName     = $eventData["TargetUserName"]
         #MandatoryLabel     = $eventData["MandatoryLabel"]
         #TokenElevationType = $eventData["TokenElevationType"]
-        #ParentProcessId    = $eventData["ProcessId "]
+        #ProcessId          = $eventData["ProcessId"]
         #ParentProcessName  = $eventData["ParentProcessName"]
         #NewProcessId       = $eventData["NewProcessId"]
         NewProcessName     = $eventData["NewProcessName"]

@@ -511,7 +511,7 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
     [PSCustomObject]@{
         #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        #Computer          = $xml.Event.System.Computer
+        Computer          = $xml.Event.System.Computer
         #SubjectLogonId    = $eventData["SubjectLogonId"]
         #SubjectUserSid    = $eventData["SubjectUserSid"]
         #SubjectDomainName = $eventData["SubjectDomainName"]
@@ -525,11 +525,14 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         #ProcessId         = $eventData["ProcessId"]
         ProcessName       = $eventData["ProcessName"]
     }
-} | Group-Object SubjectUserName,TargetUserName,TargetProcessName,ProcessName | Format-Table -AutoSize -Property Values,Count
+} | Group-Object Computer,SubjectUserName,TargetUserName,TargetProcessName,ProcessName | Format-Table -AutoSize -Property Values,Count
 
-Values                  Count
-------                  -----
-{-, -, Registry, $null}    26
+Values                                       Count
+------                                       -----
+{rd01.shieldbase.com, -, -, Registry, $null}    18
+{rd01, -, -, Registry, $null}                    1
+{tpl-packer, -, -, Registry, $null}              6
+{OFFDEVS-TUHMGJE, -, -, Registry, $null}         1
 ```
 
 
@@ -542,7 +545,7 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
     [PSCustomObject]@{
         #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        #Computer          = $xml.Event.System.Computer
+        Computer          = $xml.Event.System.Computer
         #SubjectLogonId    = $eventData["SubjectLogonId"]
         #SubjectUserSid    = $eventData["SubjectUserSid"]
         #SubjectDomainName = $eventData["SubjectDomainName"]
@@ -553,101 +556,101 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         ServiceFileName    = $eventData["ServiceFileName"]
         #ServiceAccount    = $eventData["ServiceAccount"]
     }
-} | Group-Object ServiceFileName | Format-Table -AutoSize -Property Values,Count
+} | Group-Object Computer,ServiceFileName | Format-Table -AutoSize -Property Values,Count
 
-Values                                                                                                                        Count
-------                                                                                                                        -----
-{C:\Windows\system32\svchost.exe -k UnistackSvcGroup}                                                                           273
-{C:\Windows\system32\svchost.exe -k UdkSvcGroup}                                                                                 39
-{C:\Windows\system32\svchost.exe -k PrintWorkflow}                                                                               39
-{C:\Windows\system32\svchost.exe -k PenService}                                                                                  39
-{C:\Windows\system32\svchost.exe -k P9RdrService -p}                                                                             39
-{C:\Windows\system32\svchost.exe -k LocalService -p}                                                                             78
-{C:\Windows\system32\svchost.exe -k DevicesFlow}                                                                                117
-{C:\Windows\system32\svchost.exe -k DevicesFlow -p}                                                                              39
-{C:\Windows\system32\CredentialEnrollmentManager.exe}                                                                            39
-{C:\Windows\system32\svchost.exe -k ClipboardSvcGroup -p}                                                                        39
-{C:\Windows\system32\svchost.exe -k BthAppGroup -p}                                                                              39
-{C:\Windows\system32\svchost.exe -k BcastDVRUserService}                                                                         39
-{C:\Windows\system32\svchost.exe -k AarSvcGroup -p}                                                                              39
-{C:\windows/Mnemosyne.sys}                                                                                                        2
-{"C:\windows\subject_srv.exe" -s "172.16.5.25:5682" -l 3262 -v "F-Response Subject Service" -k "155522845"}                       1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1FEC7FC9-D47D-4480-85E5-AE4DD6CCA988}\MpKslDrv.sys}                1
-{"C:\Program Files\Amazon\Ec2ConfigService\Ec2Config.exe"}                                                                        1
-{C:\Windows\system32\MpEngineStore\MpKslDrv.sys}                                                                                 17
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{A0638AC4-7F42-4619-900A-6971E7AD116E}\MpKslDrv.sys}                1
-{"C:\Program Files\Velociraptor\Velociraptor.exe"  --config "C:\Program Files\Velociraptor\/client.config.yaml" service run }     1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{24528CF9-8D64-474D-9D9C-30AFB08D4D67}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{86516CAC-6376-4FBF-A7FA-192676A321FE}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{32A2C6DB-0411-4CFC-B3E6-70DDA2F015A8}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{21D418C2-5C25-4FC2-8CEF-15E5F856D979}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{3246E6BB-2507-479C-8B17-2BA91F1A0BE3}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1D3FF1B2-7860-4BD2-AEC3-E7D91260AEFB}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{F9A8FA83-EBB6-4FD2-B714-24AFD2F898E2}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B58C05AE-3427-477D-B3AC-0788B8A81BB7}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{7324D37E-F38A-459F-B066-88930B9D0F12}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B004DCDD-2BE8-4CD2-896B-64E532B4C741}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{77C4C2F2-51B5-497E-9864-A777038D47E1}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{D862184F-8E06-4A7C-89C1-2A1E2E974DC9}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4DF489B5-2633-4895-B7E0-623B637F6629}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{FF164DF6-19E2-4853-BEEA-E60ACB80BEDE}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CE3A3E64-98AF-4E1C-841B-5C065174CD8C}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{FB7350FB-29F9-4741-A2DA-465467FA2264}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{8A717F01-7A5D-431A-979D-7C6B8D58CA92}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{236972CC-D79A-4B14-AB1D-CDC9498BF155}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{73919D2E-CDE5-424D-A375-3BA5FEF0FE1E}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{BCB20E31-B458-42D0-9404-F41D8B687600}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{9D00F7BA-5F6E-4647-9F5A-89CBCD782C75}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{5F3D24C1-3115-45E2-B9A1-BDBD56760597}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1884BE8D-ABD1-43E7-AD40-1D211AB01B88}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1D4155F3-64B8-4676-8F87-E2DF09A954D4}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CFFAD193-E012-4461-B3A8-554909F7D28F}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4C8C2B94-A2DC-4E16-AF23-D79AD151C9BA}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{46C40000-85F3-4561-9963-6C4D4C853D3B}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DB5BA17F-5CB1-4633-B20D-B81F971A10E3}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{839DFD5E-3419-429A-B13E-43A2263DF7E3}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{66BE480C-5B8F-4B85-8E29-59EAA304A6E6}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CE2729BA-DA1B-4FC9-9BD1-5CAE17CDCB5E}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B48F4E00-ACC4-4E88-9DFB-E5D6A53AB858}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{607F7734-C10D-4D56-9647-4DF2551A34D8}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{17D75271-95E9-4480-B556-1203DFEF3562}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{7CD272AC-2EA6-47B9-9753-E8EA180BDA70}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{6FF8CABC-D3FB-472F-934F-F653B6D56D39}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4D31E84D-5E0D-49C7-8DC7-C94A636BCF51}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{98088365-28B3-4556-BF96-FF16FF44CA7A}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{35295CA9-D440-417B-ADBB-FAAB0C230A37}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2E685413-DCC6-4616-943C-BAE6442253E7}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{E0ABBCCF-B2C7-4DCE-BA69-0B9C27D17FF4}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{EADA6ABC-205A-48A7-9EDF-D3A10D2E2BE0}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1C019127-C96D-4A6A-8331-79947712D532}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{F28510DE-C4F8-4146-851A-3F2F101AD8EB}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{C16190E6-8F8D-4050-88FF-E03B8D95DB5C}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CBF1CA42-B2DE-42A8-82FC-FAF59D67592B}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{7792244A-7A1B-4AB9-9A41-4F3A219175DF}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2ACF8CCF-495B-49F9-A474-627B0EC268DE}\MpKslDrv.sys}                1
-{"C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReaderUpdateService.exe"}                                        1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{40DB57DA-113E-4963-94F5-7705059A29C6}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B3B47647-DB65-4924-B5BF-F3929FE1003A}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DFB0F502-63D6-48C4-980C-52BE1008A79A}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{38181567-E532-47BA-BB3D-79DABFA5C8F9}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{AB5E3EE9-F100-42CB-8F06-8D5EA8A9F769}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{04926DA5-A48D-4603-825E-8F5DC7789F7D}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4783882F-8630-471A-AA0A-19CEA184B3E1}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B39D94ED-7528-4EBB-ADA2-F3FA59B44EAB}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{9C6D2B05-6327-4FA6-A3C8-2CDC93BAC8CB}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CF3833AE-C3A6-49FB-9338-1F55FC7CEB20}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DBA063FF-F85F-4CE5-B775-639FA8F871A2}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{8733F3B8-4BEB-4221-BBC9-9A9F80DFF621}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2A2C8C59-8D56-4DAD-8644-8E4D3B527730}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2E004DB6-C30F-49BC-8A98-06F13B6F464E}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{C6A92A7F-AB09-42FA-B1D0-8C44ACDE6B1B}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{98415CBF-4B52-4B5D-B40C-1461D1632BC6}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{AD6B2DB7-944A-4E0E-9A47-EFE45FE9EBF2}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B6D5D1A1-237D-4483-ABF0-6CF6907CCAE3}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{D77CC778-81FD-4F28-822B-962E9AC1754E}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{F669AA27-6B0E-4E0B-80CE-6071F1969A37}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{05C40E94-20BE-43E1-9857-6F9288F4D341}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1EAD4465-81D8-4836-9AD1-9A3093B8861A}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{D82DF3AC-CDB9-45F6-AC48-F309DDA76F54}\MpKslDrv.sys}                1
-{C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DE440370-3AFA-40FF-91C3-2BF3DDF2AE36}\MpKslDrv.sys}                1
+Values                                                                                                                                             Count
+------                                                                                                                                             -----
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k UnistackSvcGroup}                                                                           273
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k UdkSvcGroup}                                                                                 39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k PrintWorkflow}                                                                               39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k PenService}                                                                                  39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k P9RdrService -p}                                                                             39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k LocalService -p}                                                                             78
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k DevicesFlow}                                                                                117
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k DevicesFlow -p}                                                                              39
+{rd01.shieldbase.com, C:\Windows\system32\CredentialEnrollmentManager.exe}                                                                            39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k ClipboardSvcGroup -p}                                                                        39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k BthAppGroup -p}                                                                              39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k BcastDVRUserService}                                                                         39
+{rd01.shieldbase.com, C:\Windows\system32\svchost.exe -k AarSvcGroup -p}                                                                              39
+{rd01.shieldbase.com, C:\windows/Mnemosyne.sys}                                                                                                        2
+{rd01.shieldbase.com, "C:\windows\subject_srv.exe" -s "172.16.5.25:5682" -l 3262 -v "F-Response Subject Service" -k "155522845"}                       1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1FEC7FC9-D47D-4480-85E5-AE4DD6CCA988}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, "C:\Program Files\Amazon\Ec2ConfigService\Ec2Config.exe"}                                                                        1
+{rd01.shieldbase.com, C:\Windows\system32\MpEngineStore\MpKslDrv.sys}                                                                                 17
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{A0638AC4-7F42-4619-900A-6971E7AD116E}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, "C:\Program Files\Velociraptor\Velociraptor.exe"  --config "C:\Program Files\Velociraptor\/client.config.yaml" service run }     1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{24528CF9-8D64-474D-9D9C-30AFB08D4D67}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{86516CAC-6376-4FBF-A7FA-192676A321FE}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{32A2C6DB-0411-4CFC-B3E6-70DDA2F015A8}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{21D418C2-5C25-4FC2-8CEF-15E5F856D979}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{3246E6BB-2507-479C-8B17-2BA91F1A0BE3}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1D3FF1B2-7860-4BD2-AEC3-E7D91260AEFB}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{F9A8FA83-EBB6-4FD2-B714-24AFD2F898E2}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B58C05AE-3427-477D-B3AC-0788B8A81BB7}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{7324D37E-F38A-459F-B066-88930B9D0F12}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B004DCDD-2BE8-4CD2-896B-64E532B4C741}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{77C4C2F2-51B5-497E-9864-A777038D47E1}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{D862184F-8E06-4A7C-89C1-2A1E2E974DC9}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4DF489B5-2633-4895-B7E0-623B637F6629}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{FF164DF6-19E2-4853-BEEA-E60ACB80BEDE}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CE3A3E64-98AF-4E1C-841B-5C065174CD8C}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{FB7350FB-29F9-4741-A2DA-465467FA2264}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{8A717F01-7A5D-431A-979D-7C6B8D58CA92}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{236972CC-D79A-4B14-AB1D-CDC9498BF155}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{73919D2E-CDE5-424D-A375-3BA5FEF0FE1E}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{BCB20E31-B458-42D0-9404-F41D8B687600}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{9D00F7BA-5F6E-4647-9F5A-89CBCD782C75}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{5F3D24C1-3115-45E2-B9A1-BDBD56760597}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1884BE8D-ABD1-43E7-AD40-1D211AB01B88}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1D4155F3-64B8-4676-8F87-E2DF09A954D4}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CFFAD193-E012-4461-B3A8-554909F7D28F}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4C8C2B94-A2DC-4E16-AF23-D79AD151C9BA}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{46C40000-85F3-4561-9963-6C4D4C853D3B}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DB5BA17F-5CB1-4633-B20D-B81F971A10E3}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{839DFD5E-3419-429A-B13E-43A2263DF7E3}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{66BE480C-5B8F-4B85-8E29-59EAA304A6E6}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CE2729BA-DA1B-4FC9-9BD1-5CAE17CDCB5E}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B48F4E00-ACC4-4E88-9DFB-E5D6A53AB858}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{607F7734-C10D-4D56-9647-4DF2551A34D8}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{17D75271-95E9-4480-B556-1203DFEF3562}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{7CD272AC-2EA6-47B9-9753-E8EA180BDA70}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{6FF8CABC-D3FB-472F-934F-F653B6D56D39}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4D31E84D-5E0D-49C7-8DC7-C94A636BCF51}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{98088365-28B3-4556-BF96-FF16FF44CA7A}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{35295CA9-D440-417B-ADBB-FAAB0C230A37}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2E685413-DCC6-4616-943C-BAE6442253E7}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{E0ABBCCF-B2C7-4DCE-BA69-0B9C27D17FF4}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{EADA6ABC-205A-48A7-9EDF-D3A10D2E2BE0}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1C019127-C96D-4A6A-8331-79947712D532}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{F28510DE-C4F8-4146-851A-3F2F101AD8EB}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{C16190E6-8F8D-4050-88FF-E03B8D95DB5C}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CBF1CA42-B2DE-42A8-82FC-FAF59D67592B}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{7792244A-7A1B-4AB9-9A41-4F3A219175DF}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2ACF8CCF-495B-49F9-A474-627B0EC268DE}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, "C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReaderUpdateService.exe"}                                        1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{40DB57DA-113E-4963-94F5-7705059A29C6}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B3B47647-DB65-4924-B5BF-F3929FE1003A}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DFB0F502-63D6-48C4-980C-52BE1008A79A}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{38181567-E532-47BA-BB3D-79DABFA5C8F9}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{AB5E3EE9-F100-42CB-8F06-8D5EA8A9F769}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{04926DA5-A48D-4603-825E-8F5DC7789F7D}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{4783882F-8630-471A-AA0A-19CEA184B3E1}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B39D94ED-7528-4EBB-ADA2-F3FA59B44EAB}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{9C6D2B05-6327-4FA6-A3C8-2CDC93BAC8CB}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{CF3833AE-C3A6-49FB-9338-1F55FC7CEB20}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DBA063FF-F85F-4CE5-B775-639FA8F871A2}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{8733F3B8-4BEB-4221-BBC9-9A9F80DFF621}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2A2C8C59-8D56-4DAD-8644-8E4D3B527730}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{2E004DB6-C30F-49BC-8A98-06F13B6F464E}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{C6A92A7F-AB09-42FA-B1D0-8C44ACDE6B1B}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{98415CBF-4B52-4B5D-B40C-1461D1632BC6}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{AD6B2DB7-944A-4E0E-9A47-EFE45FE9EBF2}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{B6D5D1A1-237D-4483-ABF0-6CF6907CCAE3}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{D77CC778-81FD-4F28-822B-962E9AC1754E}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{F669AA27-6B0E-4E0B-80CE-6071F1969A37}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{05C40E94-20BE-43E1-9857-6F9288F4D341}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1EAD4465-81D8-4836-9AD1-9A3093B8861A}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{D82DF3AC-CDB9-45F6-AC48-F309DDA76F54}\MpKslDrv.sys}                1
+{rd01.shieldbase.com, C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{DE440370-3AFA-40FF-91C3-2BF3DDF2AE36}\MpKslDrv.sys}                1
 ```

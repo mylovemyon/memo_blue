@@ -26,6 +26,7 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
     [PSCustomObject]@{
         Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer                  = $xml.Event.System.Computer
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
         WorkstationName           = $eventData["WorkstationName"]
@@ -48,21 +49,22 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                IpAddress IpPort WorkstationName TargetDomainName TargetUserName TargetOutboundDomainName TargetOutboundUserName ProcessName                                                  ProcessID
-----                --------- ------ --------------- ---------------- -------------- ------------------------ ---------------------- -----------                                                  ---------
-2023/01/23 15:00:42 -         -      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe 0xc8c    
-2023/01/23 15:14:05 ::1       0      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Windows\System32\svchost.exe                              0x1cb8   
+Time                Computer            IpAddress IpPort WorkstationName TargetDomainName TargetUserName TargetOutboundDomainName TargetOutboundUserName ProcessName                                                  ProcessID
+----                --------            --------- ------ --------------- ---------------- -------------- ------------------------ ---------------------- -----------                                                  ---------
+2023/01/23 15:00:42 rd01.shieldbase.com -         -      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe 0xc8c    
+2023/01/23 15:14:05 rd01.shieldbase.com ::1       0      -               shieldbase       tdungan        shieldbase               wacsvc                 C:\Windows\System32\svchost.exe                              0x1cb8   
 ```
 
 ## 4625
 ```powershell
-PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4625)]]" | ForEach-Object {
+PS C:\Users\SANSDFIR>  Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4625)]]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
     $eventData = @{}
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
         Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+		Computer                  = $xml.Event.System.Computer
         IpAddress                 = $eventData["IpAddress"]
         IpPort                    = $eventData["IpPort"]
         WorkstationName           = $eventData["WorkstationName"]
@@ -82,10 +84,10 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     }
 } | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                IpAddress    IpPort WorkstationName TargetDomainName TargetUserName LogonType FailureReason ProcessName                                                                             ProcessID
-----                ---------    ------ --------------- ---------------- -------------- --------- ------------- -----------                                                                             ---------
-2022/08/31 17:38:01 -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
-2022/08/31 17:40:23 -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0xd88    
+Time                Computer            IpAddress    IpPort WorkstationName TargetDomainName TargetUserName LogonType FailureReason ProcessName                                                                             ProcessID
+----                --------            ---------    ------ --------------- ---------------- -------------- --------- ------------- -----------                                                                             ---------
+2022/08/31 17:38:01 tpl-packer          -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
+2022/08/31 17:40:23 tpl-packer          -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0xd88    
 ```
 
 ## 4648
@@ -97,18 +99,20 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        #SubjectDomainName = $eventData["SubjectDomainName"]
-        #SubjectUserName   = $eventData["SubjectUserName"]
-        #IpAddress         = $eventData["IpAddress"]
-        #IpPort            = $eventData["IpPort"]
-        #TargetServerName  = $eventData["TargetServerName"]
-        #TargetInfo        = $eventData["TargetInfo"]
-        #TargetDomainName  = $eventData["TargetDomainName"]
-        #TargetUserName    = $eventData["TargetUserName"]
-        #TargetUserSid     = $eventData["TargetUserSid"]
-        ProcessName       = $eventData["ProcessName"]
-        #ProcessId         = $eventData["ProcessId"]
+        #Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+		    #Computer                  = $xml.Event.System.Computer
+        #IpAddress                 = $eventData["IpAddress"]
+        #IpPort                    = $eventData["IpPort"]
+        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectUserSid            = $eventData["SubjectUserSid"]
+        #SubjectDomainName         = $eventData["SubjectDomainName"]
+        #SubjectUserName           = $eventData["SubjectUserName "]
+        #TargetServerName          = $eventData["TargetServerName"]
+        #TargetInfo                = $eventData["TargetInfo"]
+        #TargetDomainName          = $eventData["TargetDomainName"]
+        #TargetUserName            = $eventData["TargetUserName"]
+        ProcessName               = $eventData["ProcessName"]
+        #ProcessID                 = $eventData["ProcessID"]
     }
 } | Group-Object ProcessName | Format-Table -AutoSize -Wrap -Property Values,Count
 
@@ -133,28 +137,27 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        SubjectDomainName = $eventData["SubjectDomainName"]
-        SubjectUserName   = $eventData["SubjectUserName"]
-        IpAddress         = $eventData["IpAddress"]
-        IpPort            = $eventData["IpPort"]
-        TargetServerName  = $eventData["TargetServerName"]
-        TargetInfo        = $eventData["TargetInfo"]
-        TargetDomainName  = $eventData["TargetDomainName"]
-        TargetUserName    = $eventData["TargetUserName"]
-        #TargetUserSid     = $eventData["TargetUserSid"]
-        ProcessName       = $eventData["ProcessName"]
-        ProcessId         = $eventData["ProcessId"]
+        Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer                  = $xml.Event.System.Computer
+        IpAddress                 = $eventData["IpAddress"]
+        IpPort                    = $eventData["IpPort"]
+        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectUserSid            = $eventData["SubjectUserSid"]
+        SubjectDomainName         = $eventData["SubjectDomainName"]
+        SubjectUserName           = $eventData["SubjectUserName "]
+        TargetServerName          = $eventData["TargetServerName"]
+        TargetInfo                = $eventData["TargetInfo"]
+        TargetDomainName          = $eventData["TargetDomainName"]
+        TargetUserName            = $eventData["TargetUserName"]
+        ProcessName               = $eventData["ProcessName"]
+        ProcessID                 = $eventData["ProcessID"]
     }
-} | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
+} | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                SubjectDomainName SubjectUserName IpAddress IpPort TargetServerName    TargetInfo          TargetDomainName TargetUserName ProcessName                                               ProcessId
-----                ----------------- --------------- --------- ------ ----------------    ----------          ---------------- -------------- -----------                                               ---------
-2022/09/30 23:43:50 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:51 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
-2022/09/30 23:43:53 -                 -               -         -      dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30
+Time                Computer IpAddress IpPort SubjectDomainName SubjectUserName TargetServerName    TargetInfo          TargetDomainName TargetUserName ProcessName                                               ProcessID
+----                -------- --------- ------ ----------------- --------------- ----------------    ----------          ---------------- -------------- -----------                                               ---------
+2022/09/30 23:43:50 rd01     -         -      -                                 dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
+2022/09/30 23:43:51 rd01     -         -      -                                 dc01.shieldbase.com dc01.shieldbase.com SHIELDBASE       srl.admin      C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 0xa30    
 ```
 
 
@@ -167,10 +170,11 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
 
     [PSCustomObject]@{
         #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #Computer                  = $xml.Event.System.Computer
         #SubjectDomainName = $eventData["SubjectDomainName"]
         SubjectUserName   = $eventData["SubjectUserName"]
     }
-} | Where-Object {$_.SubjectUserName -ne "SYSTEM"} | Group-Object SubjectUserName | Format-Table -AutoSize -Wrap -Property Values,Count
+} | Where-Object {$_.SubjectUserName -ne "SYSTEM"} | Group-Object SubjectUserName | Format-Table -AutoSize -Property Values,Count
 
 Values            Count
 ------            -----

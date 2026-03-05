@@ -501,7 +501,7 @@ Time                Computer            SubjectLogonId SubjectUserSid           
 ```
 
 
-## security(4694)
+### security(4694)
 ```powershell
 PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4694)]]" | ForEach-Object {
     $xml = [xml]$_.ToXml()
@@ -533,4 +533,33 @@ Time                Computer            SubjectLogonId SubjectUserSid           
 2023/01/17 14:43:38 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc          0x0           Edge        7ce88ffb-d59c-4e66-9123-5ac40901cdb8 0x10               3DES-192 , SHA1-160 
 2023/01/17 14:45:41 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc          0x0           Edge        7ce88ffb-d59c-4e66-9123-5ac40901cdb8 0x10               3DES-192 , SHA1-160 
 2023/01/17 14:50:37 rd01.shieldbase.com 0x1f84faa1     S-1-5-21-2838623409-1327563992-2591358621-1220 shieldbase        wacsvc          0x0           Edge        7ce88ffb-d59c-4e66-9123-5ac40901cdb8 0x10               3DES-192 , SHA1-160 
+```
+
+
+### security(4695)
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4695)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time               = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer           = $xml.Event.System.Computer
+        #SubjectLogonId     = $eventData["SubjectLogonId"]
+        #SubjectUserSid     = $eventData["SubjectUserSid"]
+        #SubjectDomainName  = $eventData["SubjectDomainName"]
+        SubjectUserName    = $eventData["SubjectUserName"]
+        FailureReason      = $eventData["FailureReason"]
+        MasterKeyId        = $eventData["MasterKeyId"]
+        DataDescription    = $eventData["DataDescription"]
+        ProtectedDataFlags = $eventData["ProtectedDataFlags"]
+        CryptoAlgorithms   = $eventData["CryptoAlgorithms"]
+    }
+} | Group-Object Computer,SubjectUserName,FailureReason,MasterKeyId,DataDescription,ProtectedDataFlags,CryptoAlgorithms | Format-Table -AutoSize -Property Values,Count
+
+Values                                                                                                     Count
+------                                                                                                     -----
+{rd01.shieldbase.com, tdungan, 0x0, Edge, 3d0bc92f-bf43-432e-b348-b4310b829180, 0x0, 3DES-192 , SHA1-160 }   105
+{rd01.shieldbase.com, wacsvc, 0x0, Edge, 7ce88ffb-d59c-4e66-9123-5ac40901cdb8, 0x0, 3DES-192 , SHA1-160 }     21
 ```

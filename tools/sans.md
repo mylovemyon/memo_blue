@@ -63,48 +63,54 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
     $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
 
     [PSCustomObject]@{
-        Time             = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
-        LogonType        = $eventData["LogonType"]
-        FailureReason    = $eventData["FailureReason"]
-        IpAddress        = $eventData["IpAddress"]
-        IpPort           = $eventData["IpPort"]
-        WorkstationName  = $eventData["WorkstationName"]
-        TargetDomainName = $eventData["TargetDomainName"]
-        TargetUserName   = $eventData["TargetUserName"]
-        #TargetUserSid   = $eventData["TargetUserSid"]
-        LogonProcessName = $eventData["LogonProcessName"]
-        ProcessName      = $eventData["ProcessName"]
-        ProcessID        = $eventData["ProcessID"]
+        Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        IpAddress                 = $eventData["IpAddress"]
+        IpPort                    = $eventData["IpPort"]
+        WorkstationName           = $eventData["WorkstationName"]
+        #SubjectLogonId            = $eventData["SubjectLogonId "]
+        #SubjectUserSid            = $eventData["SubjectUserSid"]
+        #SubjectDomainName         = $eventData["SubjectDomainName"]
+        #SubjectUserName           = $eventData["SubjectUserName "]
+        #TargetUserSid             = $eventData["TargetUserSid"]
+        TargetDomainName          = $eventData["TargetDomainName"]
+        TargetUserName            = $eventData["TargetUserName"]
+        LogonType                 = $eventData["LogonType"]
+        FailureReason             = $eventData["FailureReason"]
+        #LogonProcessName          = $eventData["LogonProcessName"]
+        #AuthenticationPackageName = $eventData["AuthenticationPackageName"]
+        #ImpersonationLevel        = $eventData["ImpersonationLevel"]
+        ProcessName               = $eventData["ProcessName"]
+        ProcessID                 = $eventData["ProcessID"]
     }
-} | Sort-Object Time | Format-Table -AutoSize -Wrap -Property *
+} | Sort-Object Time | Format-Table -AutoSize -Property *
 
-Time                LogonType FailureReason IpAddress    IpPort WorkstationName TargetDomainName TargetUserName LogonProcessName ProcessName                                                                             ProcessID
-----                --------- ------------- ---------    ------ --------------- ---------------- -------------- ---------------- -----------                                                                             ---------
-2022/08/31 17:38:01 2         %%2313        -            -      TPL-PACKER      TPL-PACKER       Administrator  Advapi           C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
-2022/08/31 17:40:23 2         %%2313        -            -      TPL-PACKER      TPL-PACKER       Administrator  Advapi           C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0xd88    
-2022/10/21 16:38:19 11        %%2304        ::1          0      RD01            RD01             srladmin       CredPro          C:\Windows\System32\consent.exe                                                         0x828    
-2022/10/21 16:38:19 2         %%2313        ::1          0      RD01            RD01             srladmin       CredPro          C:\Windows\System32\consent.exe                                                         0x828    
-2022/10/21 16:38:27 11        %%2304        ::1          0      RD01            RD01             srladmin       CredPro          C:\Windows\System32\consent.exe                                                         0x828    
-2023/01/02 22:54:24 3         %%2304        172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        NtLmSsp          -                                                                                       0x0      
-2023/01/02 22:55:06 3         %%2304        172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        NtLmSsp          -                                                                                       0x0      
-2023/01/02 22:55:29 3         %%2304        -            -      RD01            shieldbase       tdungan        Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/02 22:55:31 10        %%2313        172.16.30.20 0      RD01            shieldbase       tdungan        User32           C:\Windows\System32\svchost.exe                                                         0x888    
-2023/01/03 21:53:49 3         %%2313        172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        NtLmSsp          -                                                                                       0x0      
-2023/01/03 21:54:02 3         %%2313        172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        NtLmSsp          -                                                                                       0x0      
-2023/01/17 14:41:59 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 14:49:51 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 14:50:31 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 15:26:20 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 15:26:51 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 20:30:15 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 20:31:27 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 21:34:00 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/18 21:47:56 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/19 14:27:56 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/19 18:45:34 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/19 18:48:08 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/19 20:25:23 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x30c    
-2023/01/23 20:52:47 3         %%2313        -            -      RD01                             sprx           Advapi           C:\Windows\System32\svchost.exe                                                         0x408
+Time                IpAddress    IpPort WorkstationName TargetDomainName TargetUserName LogonType FailureReason ProcessName                                                                             ProcessID
+----                ---------    ------ --------------- ---------------- -------------- --------- ------------- -----------                                                                             ---------
+2022/08/31 17:38:01 -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0x1cbc   
+2022/08/31 17:40:23 -            -      TPL-PACKER      TPL-PACKER       Administrator  2         %%2313        C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe 0xd88    
+2022/10/21 16:38:19 ::1          0      RD01            RD01             srladmin       11        %%2304        C:\Windows\System32\consent.exe                                                         0x828    
+2022/10/21 16:38:19 ::1          0      RD01            RD01             srladmin       2         %%2313        C:\Windows\System32\consent.exe                                                         0x828    
+2022/10/21 16:38:27 ::1          0      RD01            RD01             srladmin       11        %%2304        C:\Windows\System32\consent.exe                                                         0x828    
+2023/01/02 22:54:24 172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        3         %%2304        -                                                                                       0x0      
+2023/01/02 22:55:06 172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        3         %%2304        -                                                                                       0x0      
+2023/01/02 22:55:29 -            -      RD01            shieldbase       tdungan        3         %%2304        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/02 22:55:31 172.16.30.20 0      RD01            shieldbase       tdungan        10        %%2313        C:\Windows\System32\svchost.exe                                                         0x888    
+2023/01/03 21:53:49 172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        3         %%2313        -                                                                                       0x0      
+2023/01/03 21:54:02 172.16.30.20 0      DUNGANATOR      shieldbase       tdungan        3         %%2313        -                                                                                       0x0      
+2023/01/17 14:41:59 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 14:49:51 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 14:50:31 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 15:26:20 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 15:26:51 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 20:30:15 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 20:31:27 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 21:34:00 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/18 21:47:56 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/19 14:27:56 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/19 18:45:34 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/19 18:48:08 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/19 20:25:23 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x30c    
+2023/01/23 20:52:47 -            -      RD01                             sprx           3         %%2313        C:\Windows\System32\svchost.exe                                                         0x408
 ```
 
 ### security(4648)

@@ -78,7 +78,6 @@ PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[
         FailureReason             = $eventData["FailureReason"]
         #LogonProcessName          = $eventData["LogonProcessName"]
         #AuthenticationPackageName = $eventData["AuthenticationPackageName"]
-        #ImpersonationLevel        = $eventData["ImpersonationLevel"]
         ProcessName               = $eventData["ProcessName"]
         ProcessID                 = $eventData["ProcessID"]
     }

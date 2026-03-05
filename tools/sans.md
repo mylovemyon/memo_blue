@@ -724,3 +724,48 @@ OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-581                                    
 OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-581                                                   SeInteractiveLogonRight      
 OFFDEVS-TUHMGJE MINWINPC$       S-1-5-32-546                                                   SeInteractiveLogonRight
 ```
+
+
+### security(4720)
+ユーザ作成を確認
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4720)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time                = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer            = $xml.Event.System.Computer
+        #SubjectLogonId      = $eventData["SubjectLogonId"]
+        #SubjectUserSid      = $eventData["SubjectUserSid"]
+        #SubjectDomainName   = $eventData["SubjectDomainName"]
+        SubjectUserName     = $eventData["SubjectUserName"]
+        #TargetUserSid       = $eventData["TargetUserSid"]
+        #TargetDomainName    = $eventData["TargetDomainName"]
+        TargetUserName      = $eventData["TargetUserName"]
+        SamAccountName      = $eventData["SamAccountName"]
+        DisplayName         = $eventData["DisplayName"]
+        UserPrincipalName   = $eventData["UserPrincipalName"]
+        HomeDirectory       = $eventData["HomeDirectory"]
+        HomePath            = $eventData["HomePath"]
+        ScriptPath          = $eventData["ScriptPath"]
+        ProfilePath         = $eventData["ProfilePath"]
+        UserWorkstations    = $eventData["UserWorkstations"]
+        PasswordLastSet     = $eventData["PasswordLastSet"]
+        AccountExpires      = $eventData["AccountExpires"]
+        PrimaryGroupId      = $eventData["PrimaryGroupId"]
+        AllowedToDelegateTo = $eventData["AllowedToDelegateTo"]
+        OldUacValue         = $eventData["OldUacValue"]
+        NewUacValue         = $eventData["NewUacValue"]
+        SidHistory          = $eventData["SidHistory"]
+        LogonHours          = $eventData["LogonHours"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Time                Computer        SubjectUserName TargetUserName     SamAccountName     DisplayName UserPrincipalName HomeDirectory HomePath ScriptPath ProfilePath UserWorkstations PasswordLastSet AccountExpires PrimaryGroupId AllowedToDelegateTo OldUacValue NewUacValue SidHistory LogonHours
+----                --------        --------------- --------------     --------------     ----------- ----------------- ------------- -------- ---------- ----------- ---------------- --------------- -------------- -------------- ------------------- ----------- ----------- ---------- ----------
+2022/08/31 19:34:47 OFFDEVS-TUHMGJE MINWINPC$       WDAGUtilityAccount WDAGUtilityAccount %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
+2022/08/31 19:36:10 tpl-packer      TPL-PACKER$     defaultuser0       defaultuser0       %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
+2022/09/30 23:38:54 rd01            RD01$           SRLAdmin           SRLAdmin           %%1793      -                 %%1793        %%1793   %%1793     %%1793      %%1793           %%1794          %%1794         513            -                   0x0         0x15        -          %%1797    
+```

@@ -425,3 +425,45 @@ Values            Count
 {Administrator}     625
 {defaultuser0}        2
 ```
+
+### security(4688)
+あんまログとれてなさそうね
+```powershell
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4688)]]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        #Time              = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        #Computer                  = $xml.Event.System.Computer
+        #SubjectLogonId     = $eventData["SubjectLogonId"]
+        #SubjectUserSid     = $eventData["SubjectUserSid"]
+        #SubjectDomainName  = $eventData["SubjectDomainName"]
+        #SubjectUserName    = $eventData["SubjectUserName"]
+        #TargetLogonId      = $eventData["TargetLogonId"]
+        #TargetUserSid      = $eventData["TargetUserSid"]
+        #TargetDomainName   = $eventData["TargetDomainName"]
+        #TargetUserName     = $eventData["TargetUserName"]
+        #MandatoryLabel     = $eventData["MandatoryLabel"]
+        #TokenElevationType = $eventData["TokenElevationType"]
+        #ParentProcessId    = $eventData["ProcessId "]
+        #ParentProcessName  = $eventData["ParentProcessName"]
+        #NewProcessId       = $eventData["NewProcessId"]
+        NewProcessName     = $eventData["NewProcessName"]
+        #CommandLine        = $eventData["CommandLine"]
+    }
+} | Group-Object NewProcessName | Format-Table -AutoSize -Property Values,Count
+
+Values                             Count
+------                             -----
+{C:\Windows\System32\lsass.exe}       26
+{C:\Windows\System32\services.exe}    26
+{C:\Windows\System32\winlogon.exe}    26
+{C:\Windows\System32\csrss.exe}       52
+{C:\Windows\System32\wininit.exe}     26
+{C:\Windows\System32\smss.exe}        78
+{C:\Windows\System32\autochk.exe}     26
+{Registry}                            26
+{C:\Windows\System32\setupcl.exe}      1
+```

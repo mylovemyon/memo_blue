@@ -317,6 +317,51 @@ Values                                                                          
 {rd01.shieldbase.com, 172.16.30.6, 0, RD01$, localhost, localhost, shieldbase, tdungan, C:\Windows\System32\svchost.exe}                                            6
 {rd01, 172.16.4.4, 49668, -, dc01.shieldbase.com, dc01.shieldbase.com, SHIELDBASE, srl.admin, C:\Windows\System32\svchost.exe}
 ```
+プロセス名ないやつ
+```powershell
+
+PS C:\Users\SANSDFIR> Get-WinEvent -Path .\Security.evtx -FilterXPath "*[System[(EventID=4648)] and EventData[Data[@Name='ProcessName']='']]" | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $eventData = @{}
+    $xml.Event.EventData.Data | ForEach-Object { $eventData[$_.Name] = $_.'#text' }
+
+    [PSCustomObject]@{
+        Time                      = ("{0:yyyy/MM/dd HH:mm:ss}" -f $_.TimeCreated)
+        Computer                  = $xml.Event.System.Computer
+        IpAddress                 = $eventData["IpAddress"]
+        IpPort                    = $eventData["IpPort"]
+        #SubjectLogonId            = $eventData["SubjectLogonId"]
+        #SubjectUserSid            = $eventData["SubjectUserSid"]
+        SubjectDomainName         = $eventData["SubjectDomainName"]
+        SubjectUserName           = $eventData["SubjectUserName"]
+        TargetServerName          = $eventData["TargetServerName"]
+        TargetInfo                = $eventData["TargetInfo"]
+        TargetDomainName          = $eventData["TargetDomainName"]
+        TargetUserName            = $eventData["TargetUserName"]
+        ProcessName               = $eventData["ProcessName"]
+        ProcessID                 = $eventData["ProcessID"]
+    }
+} | Sort-Object Time | Format-Table -AutoSize -Property *
+
+Time                Computer            IpAddress                 IpPort SubjectDomainName SubjectUserName TargetServerName       TargetInfo                  TargetDomainName TargetUserName ProcessName ProcessID
+----                --------            ---------                 ------ ----------------- --------------- ----------------       ----------                  ---------------- -------------- ----------- ---------
+2022/09/30 23:44:12 rd01                172.16.4.4                445    -                 -               dc01.shieldbase.com    dc01.shieldbase.com         SHIELDBASE       srl.admin                  0x4      
+2023/01/23 15:05:05 rd01.shieldbase.com 172.16.7.11               445    shieldbase        tdungan         wkstn01.shieldbase.com cifs/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 15:06:27 rd01.shieldbase.com 172.16.7.11               445    shieldbase        tdungan         wkstn01.shieldbase.com cifs/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 15:06:27 rd01.shieldbase.com 172.16.7.11               445    shieldbase        tdungan         wkstn01.shieldbase.com cifs/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 15:06:27 rd01.shieldbase.com 172.16.7.11               445    shieldbase        tdungan         wkstn01.shieldbase.com cifs/wkstn01.shieldbase.com SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 16:08:23 rd01.shieldbase.com fe80::7e6b:763c:b405:22b4 445    shieldbase        tdungan         rd01                   cifs/rd01                   SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 18:15:20 rd01.shieldbase.com 172.16.4.9                445    shieldbase        tdungan         dev01.shieldbase.com   cifs/dev01.shieldbase.com   SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 18:15:46 rd01.shieldbase.com 172.16.4.9                445    shieldbase        tdungan         dev01.shieldbase.com   cifs/dev01.shieldbase.com   SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 18:16:17 rd01.shieldbase.com 172.16.4.9                445    shieldbase        tdungan         dev01.shieldbase.com   cifs/dev01.shieldbase.com   SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/23 18:17:01 rd01.shieldbase.com 172.16.4.9                445    shieldbase        tdungan         dev01.shieldbase.com   cifs/dev01.shieldbase.com   SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/25 14:51:14 rd01.shieldbase.com 172.16.6.12               445    shieldbase        tdungan         rd02.shieldbase.com    rd02.shieldbase.com         shieldbase       wacsvc                     0x4      
+2023/01/25 14:52:42 rd01.shieldbase.com 172.16.6.12               445    shieldbase        tdungan         rd02.shieldbase.com    rd02.shieldbase.com         shieldbase       wacsvc                     0x4      
+2023/01/25 14:54:01 rd01.shieldbase.com 172.16.6.14               445    shieldbase        tdungan         rd04.shieldbase.com    cifs/rd04.shieldbase.com    SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/25 14:54:59 rd01.shieldbase.com 172.16.6.20               445    shieldbase        tdungan         rd10.shieldbase.com    cifs/rd10.shieldbase.com    SHIELDBASE.COM   wacsvc                     0x4      
+2023/01/25 15:07:50 rd01.shieldbase.com 172.16.4.5                445    shieldbase        tdungan         file01.shieldbase.com  file01.shieldbase.com       shieldbase       wacsvc                     0x4
+```
+
 
 ### security(4672)
 件数多いので、ユーザ名でグループ化、まあまあ時間かかる

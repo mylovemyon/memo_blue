@@ -87,7 +87,7 @@ Options:
 ```
 
 
-## -0 
+## -o
 ```powershell
 PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f security.json E:\Windows\System32\winevt\Logs\Security.evtx
 PS C:\Users\SANSDFIR>
@@ -95,15 +95,93 @@ PS C:\Users\SANSDFIR>
 
 
 
-# sql
+# duckdb
+## cli
+```powershell
+PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 1000" .\security.json
+DuckDB v1.5.6 (Variegata)
+Enter ".help" for usage hints.
+```
+
+## .databases
+```sql
+security D .databases
+┌───────────────────┐
+│     databases     │
+│                   │
+│ security (memory) │
+└───────────────────┘
+```
+
+## .tables
+```sql
+security D .tables
+ ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── security ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── main ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                                           file                                                                                                                           │
+│                                                                                                                                                                                                                                                          │
+│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid varchar)), eventid bigint, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated stru… │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                                         security                                                                                                                         │
+│                                                                                                                                                                                                                                                          │
+│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid varchar)), eventid bigint, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated stru… │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+# DESCRIBE
+```sql
+security D DESCRIBE;
+┌──────────┬─────────┬──────────┬──────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────┐
+│ database │ schema  │   name   │ column_names │                                                                                         column_types                                                                                          │ temporary │
+│ varchar  │ varchar │ varchar  │  varchar[]   │                                                                                           varchar[]                                                                                           │  boolean  │
+├──────────┼─────────┼──────────┼──────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┤
+│ security │ main    │ file     │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid VARCHAR)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIG │ false     │
+│          │         │          │              │ INT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execut │           │
+│          │         │          │              │ ion STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" JSON), EventData STRUCT(SubjectUserSid VARCHAR, SubjectUserName VARCHAR, S │           │
+│          │         │          │              │ ubjectDomainName VARCHAR, SubjectLogonId VARCHAR, PrivilegeList VARCHAR, TargetUserSid VARCHAR, TargetUserName VARCHAR, TargetDomainName VARCHAR, TargetLogonId VARCHAR, LogonType BIGINT, Lo │           │
+│          │         │          │              │ gonProcessName VARCHAR, AuthenticationPackageName VARCHAR, WorkstationName VARCHAR, LogonGuid UUID, TransmittedServices VARCHAR, LmPackageName VARCHAR, KeyLength BIGINT, ProcessId VARCHAR,  │           │
+│          │         │          │              │ ProcessName VARCHAR, IpAddress VARCHAR, IpPort VARCHAR, ImpersonationLevel VARCHAR, RestrictedAdminMode VARCHAR, TargetOutboundUserName VARCHAR, TargetOutboundDomainName VARCHAR, VirtualAcc │           │
+│          │         │          │              │ ount VARCHAR, TargetLinkedLogonId VARCHAR, ElevatedToken VARCHAR, Status VARCHAR, FailureReason VARCHAR, SubStatus VARCHAR, TargetSid VARCHAR, CallerProcessId VARCHAR, CallerProcessName VAR │           │
+│          │         │          │              │ CHAR, ProviderName VARCHAR, AlgorithmName VARCHAR, KeyName VARCHAR, KeyType VARCHAR, Operation VARCHAR, ReturnCode VARCHAR, TargetLogonGuid UUID, TargetServerName VARCHAR, TargetInfo VARCHA │           │
+│          │         │          │              │ R, ProfileChanged VARCHAR, RuleId VARCHAR, RuleName VARCHAR, AuditSourceName VARCHAR, EventSourceId VARCHAR, SessionId BIGINT, PreviousTime TIMESTAMP, NewTime TIMESTAMP, LoadOptions VARCHAR │           │
+│          │         │          │              │ , AdvancedOptions VARCHAR, ConfigAccessPolicy VARCHAR, RemoteEventLogging VARCHAR, KernelDebug VARCHAR, VsmLaunchType VARCHAR, TestSigning VARCHAR, FlightSigning VARCHAR, DisableIntegrityCh │           │
+│          │         │          │              │ ecks VARCHAR, HypervisorLoadOptions VARCHAR, HypervisorLaunchType VARCHAR, HypervisorDebug VARCHAR, NewProcessId VARCHAR, NewProcessName VARCHAR, TokenElevationType VARCHAR, CommandLine VAR │           │
+│          │         │          │              │ CHAR, ParentProcessName VARCHAR, MandatoryLabel VARCHAR, SecurityPackageName VARCHAR, PuaCount BIGINT, PuaPolicyId VARCHAR, NotificationPackageName VARCHAR, ShareName VARCHAR, ShareLocalPat │           │
+│          │         │          │              │ h VARCHAR, GroupPolicyApplied VARCHAR, Profile VARCHAR, OperationMode VARCHAR, RemoteAdminEnabled VARCHAR, MulticastFlowsEnabled VARCHAR, LogDroppedPacketsEnabled VARCHAR, LogSuccessfulConn │           │
+│          │         │          │              │ ectionsEnabled VARCHAR, ProfileUsed VARCHAR, ActiveProfile VARCHAR, ServiceName VARCHAR, ServiceFileName VARCHAR, ServiceType VARCHAR, ServiceStartType BIGINT, ServiceAccount VARCHAR, Maste │           │
+│          │         │          │              │ rKeyId UUID, RecoveryServer VARCHAR, RecoveryKeyId UUID, ObjectType VARCHAR, AccessMask VARCHAR, AccessList VARCHAR), UserData STRUCT(AuditEventsDropped STRUCT("#attributes" STRUCT(xmlns VA │           │
+│          │         │          │              │ RCHAR), Reason BIGINT), ServiceShutdown STRUCT("#attributes" STRUCT(xmlns VARCHAR))))']                                                                                                       │           │
+├──────────┼─────────┼──────────┼──────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┤
+│ security │ main    │ security │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid VARCHAR)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIG │ false     │
+│          │         │          │              │ INT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execut │           │
+│          │         │          │              │ ion STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" JSON), EventData STRUCT(SubjectUserSid VARCHAR, SubjectUserName VARCHAR, S │           │
+│          │         │          │              │ ubjectDomainName VARCHAR, SubjectLogonId VARCHAR, PrivilegeList VARCHAR, TargetUserSid VARCHAR, TargetUserName VARCHAR, TargetDomainName VARCHAR, TargetLogonId VARCHAR, LogonType BIGINT, Lo │           │
+│          │         │          │              │ gonProcessName VARCHAR, AuthenticationPackageName VARCHAR, WorkstationName VARCHAR, LogonGuid UUID, TransmittedServices VARCHAR, LmPackageName VARCHAR, KeyLength BIGINT, ProcessId VARCHAR,  │           │
+│          │         │          │              │ ProcessName VARCHAR, IpAddress VARCHAR, IpPort VARCHAR, ImpersonationLevel VARCHAR, RestrictedAdminMode VARCHAR, TargetOutboundUserName VARCHAR, TargetOutboundDomainName VARCHAR, VirtualAcc │           │
+│          │         │          │              │ ount VARCHAR, TargetLinkedLogonId VARCHAR, ElevatedToken VARCHAR, Status VARCHAR, FailureReason VARCHAR, SubStatus VARCHAR, TargetSid VARCHAR, CallerProcessId VARCHAR, CallerProcessName VAR │           │
+│          │         │          │              │ CHAR, ProviderName VARCHAR, AlgorithmName VARCHAR, KeyName VARCHAR, KeyType VARCHAR, Operation VARCHAR, ReturnCode VARCHAR, TargetLogonGuid UUID, TargetServerName VARCHAR, TargetInfo VARCHA │           │
+│          │         │          │              │ R, ProfileChanged VARCHAR, RuleId VARCHAR, RuleName VARCHAR, AuditSourceName VARCHAR, EventSourceId VARCHAR, SessionId BIGINT, PreviousTime TIMESTAMP, NewTime TIMESTAMP, LoadOptions VARCHAR │           │
+│          │         │          │              │ , AdvancedOptions VARCHAR, ConfigAccessPolicy VARCHAR, RemoteEventLogging VARCHAR, KernelDebug VARCHAR, VsmLaunchType VARCHAR, TestSigning VARCHAR, FlightSigning VARCHAR, DisableIntegrityCh │           │
+│          │         │          │              │ ecks VARCHAR, HypervisorLoadOptions VARCHAR, HypervisorLaunchType VARCHAR, HypervisorDebug VARCHAR, NewProcessId VARCHAR, NewProcessName VARCHAR, TokenElevationType VARCHAR, CommandLine VAR │           │
+│          │         │          │              │ CHAR, ParentProcessName VARCHAR, MandatoryLabel VARCHAR, SecurityPackageName VARCHAR, PuaCount BIGINT, PuaPolicyId VARCHAR, NotificationPackageName VARCHAR, ShareName VARCHAR, ShareLocalPat │           │
+│          │         │          │              │ h VARCHAR, GroupPolicyApplied VARCHAR, Profile VARCHAR, OperationMode VARCHAR, RemoteAdminEnabled VARCHAR, MulticastFlowsEnabled VARCHAR, LogDroppedPacketsEnabled VARCHAR, LogSuccessfulConn │           │
+│          │         │          │              │ ectionsEnabled VARCHAR, ProfileUsed VARCHAR, ActiveProfile VARCHAR, ServiceName VARCHAR, ServiceFileName VARCHAR, ServiceType VARCHAR, ServiceStartType BIGINT, ServiceAccount VARCHAR, Maste │           │
+│          │         │          │              │ rKeyId UUID, RecoveryServer VARCHAR, RecoveryKeyId UUID, ObjectType VARCHAR, AccessMask VARCHAR, AccessList VARCHAR), UserData STRUCT(AuditEventsDropped STRUCT("#attributes" STRUCT(xmlns VA │           │
+│          │         │          │              │ RCHAR), Reason BIGINT), ServiceShutdown STRUCT("#attributes" STRUCT(xmlns VARCHAR))))']                                                                                                       │           │
+└──────────┴─────────┴──────────┴──────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┘
+```
+
 ## a
 ```sql
-memory D SELECT
-             Event.System.EventID AS event_id,
-             COUNT(*) AS count
-         FROM read_json_auto('C:/Users/SANSDFIR/security.json')
-         GROUP BY event_id
-         ORDER BY count DESC;
+memory D
+SELECT
+Event.System.EventID AS event_id,
+COUNT(*) AS count
+FROM read_json_auto('C:/Users/SANSDFIR/security.json')
+GROUP BY event_id
+ORDER BY count DESC;
 ┌──────────┬────────┐
 │ event_id │ count  │
 │  int64   │ int64  │
@@ -150,4 +228,24 @@ memory D SELECT
 │     4732 │      1 │
 └──────────┴────────┘
        40 rows
+```
+
+## 4624
+```sql
+security D SELECT Event.System.EventID AS EventID, Event.EventData.LogonType AS LogonType, COUNT(*)
+           FROM read_json_auto('C:/Users/SANSDFIR/security.json')
+           WHERE Event.System.EventID = 4624
+           GROUP BY EventID, LogonType
+           ORDER BY LogonType;
+┌─────────┬───────────┬──────────────┐
+│ EventID │ LogonType │ count_star() │
+│  int64  │   int64   │    int64     │
+├─────────┼───────────┼──────────────┤
+│    4624 │         0 │           12 │
+│    4624 │         2 │           49 │
+│    4624 │         3 │        30830 │
+│    4624 │         5 │        38150 │
+│    4624 │         7 │           40 │
+│    4624 │        11 │           40 │
+└─────────┴───────────┴──────────────┘
 ```

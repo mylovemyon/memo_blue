@@ -232,20 +232,46 @@ ORDER BY count DESC;
 
 ## 4624
 ```sql
-security D SELECT Event.System.EventID AS EventID, Event.EventData.LogonType AS LogonType, COUNT(*)
+security D SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
            FROM read_json_auto('C:/Users/SANSDFIR/security.json')
            WHERE Event.System.EventID = 4624
-           GROUP BY EventID, LogonType
-           ORDER BY LogonType;
-┌─────────┬───────────┬──────────────┐
-│ EventID │ LogonType │ count_star() │
-│  int64  │   int64   │    int64     │
-├─────────┼───────────┼──────────────┤
-│    4624 │         0 │           12 │
-│    4624 │         2 │           49 │
-│    4624 │         3 │        30830 │
-│    4624 │         5 │        38150 │
-│    4624 │         7 │           40 │
-│    4624 │        11 │           40 │
+           GROUP BY ALL
+           ORDER BY ALL;
+┌─────────┬───────────┬───────────────────┬─────────────────┬──────────────────┬─────────────────┬─────────────────┬──────────────────────────────────┬─────────────┬──────────────┐
+│ EventID │ LogonType │ SubjectDomainName │ SubjectUserName │ TargetDomainName │ TargetUserName  │ WorkstationName │           ProcessName            │  IpAddress  │ count_star() │
+│  int64  │   int64   │      varchar      │     varchar     │     varchar      │     varchar     │     varchar     │             varchar              │   varchar   │    int64     │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼─────────────────┼─────────────────┼──────────────────────────────────┼─────────────┼──────────────┤
+│    4624 │         0 │ -                 │ -               │ NT AUTHORITY     │ SYSTEM          │ -               │                                  │ -           │           12 │
+│    4624 │         2 │ shieldbase        │ BASE-WKSTN-01$  │ Font Driver Host │ UMFD-0          │ -               │ C:\Windows\System32\wininit.exe  │ -           │           12 │
+│    4624 │         2 │ shieldbase        │ BASE-WKSTN-01$  │ Font Driver Host │ UMFD-1          │ -               │ C:\Windows\System32\winlogon.exe │ -           │           12 │
+│    4624 │         2 │ shieldbase        │ BASE-WKSTN-01$  │ Window Manager   │ DWM-1           │ -               │ C:\Windows\System32\winlogon.exe │ -           │           24 │
+│    4624 │         2 │ shieldbase        │ BASE-WKSTN-01$  │ shieldbase       │ mhill           │ BASE-WKSTN-01   │ C:\Windows\System32\svchost.exe  │ 127.0.0.1   │            1 │
+│    4624 │         3 │ -                 │ -               │ NT AUTHORITY     │ ANONYMOUS LOGON │ -               │ -                                │ -           │           12 │
+│    4624 │         3 │ -                 │ -               │ NT AUTHORITY     │ ANONYMOUS LOGON │ BASE-WKSTN-03   │ -                                │ 172.16.7.13 │        14250 │
+│    4624 │         3 │ -                 │ -               │ NT AUTHORITY     │ ANONYMOUS LOGON │ BASE-WKSTN-04   │ -                                │ 172.16.7.14 │         2641 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ BASE-HUNT-02$   │ -               │ -                                │ 172.16.5.27 │            1 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ BASE-HUNT-03$   │ -               │ -                                │ 172.16.5.28 │            7 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ BASE-WKSTN-01$  │ -               │ -                                │ -           │         2500 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ BASE-WKSTN-01$  │ -               │ -                                │ 127.0.0.1   │        10853 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ cbarton-a       │ -               │ -                                │ -           │          100 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ cbarton-a       │ -               │ -                                │ 172.16.5.25 │            4 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ cbarton-a       │ -               │ -                                │ 172.16.5.27 │            3 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ cbarton-a       │ -               │ -                                │ 172.16.5.28 │            2 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ rsydow-a        │ -               │ -                                │ -           │          320 │
+│    4624 │         3 │ -                 │ -               │ SHIELDBASE.LAN   │ rsydow-a        │ -               │ -                                │ 172.16.4.4  │           10 │
+│    4624 │         3 │ -                 │ -               │ SPADERTECH.COM   │ pman.adm        │ -               │ -                                │ 172.16.6.17 │            1 │
+│    4624 │         3 │ -                 │ -               │ shieldbase       │ BASE-HUNT$      │ BASE-HUNT       │ -                                │ 172.16.5.25 │           14 │
+│    4624 │         3 │ -                 │ -               │ shieldbase       │ cbarton-a       │ BASE-HUNT       │ -                                │ 172.16.5.25 │          109 │
+│    4624 │         3 │ -                 │ -               │ shieldbase       │ cbarton-a       │ BASE-HUNT-03    │ -                                │ 172.16.5.28 │            2 │
+│    4624 │         3 │ -                 │ -               │ spadertech       │ pman.adm        │ BASE-RD-07      │ -                                │ 172.16.6.17 │            1 │
+│    4624 │         5 │ shieldbase        │ BASE-WKSTN-01$  │ NT AUTHORITY     │ LOCAL SERVICE   │ -               │ C:\Windows\System32\services.exe │ -           │           12 │
+│    4624 │         5 │ shieldbase        │ BASE-WKSTN-01$  │ NT AUTHORITY     │ NETWORK SERVICE │ -               │ C:\Windows\System32\services.exe │ -           │           12 │
+│    4624 │         5 │ shieldbase        │ BASE-WKSTN-01$  │ NT AUTHORITY     │ SYSTEM          │ -               │ C:\Windows\System32\services.exe │ -           │        38126 │
+│    4624 │         7 │ shieldbase        │ BASE-WKSTN-01$  │ shieldbase       │ mhill           │ BASE-WKSTN-01   │ C:\Windows\System32\lsass.exe    │ -           │           40 │
+│    4624 │        11 │ shieldbase        │ BASE-WKSTN-01$  │ shieldbase       │ mhill           │ BASE-WKSTN-01   │ C:\Windows\System32\svchost.exe  │ 127.0.0.1   │           40 │
+└─────────┴───────────┴───────────────────┴─────────────────┴──────────────────┴─────────────────┴─────────────────┴──────────────────────────────────┴─────────────┴──────────────┘
+  28 rows                                                                                                                                                               10 columns
 └─────────┴───────────┴──────────────┘
 ```
+
+## 4625

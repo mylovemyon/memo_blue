@@ -1,10 +1,6 @@
 https://github.com/omerbenamram/evtx
 
-```powershell
-PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f security.json E:\Windows\System32\winevt\Logs\Security.evtx
-PS C:\Users\SANSDFIR>
-```
-
+# command
 ## --help
 ```
 Utility to parse EVTX files
@@ -88,4 +84,70 @@ Options:
 
   -V, --version
           Print version
+```
+
+
+## -0 
+```powershell
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f security.json E:\Windows\System32\winevt\Logs\Security.evtx
+PS C:\Users\SANSDFIR>
+```
+
+
+
+# sql
+## a
+```sql
+memory D SELECT
+             Event.System.EventID AS event_id,
+             COUNT(*) AS count
+         FROM read_json_auto('C:/Users/SANSDFIR/security.json')
+         GROUP BY event_id
+         ORDER BY count DESC;
+┌──────────┬────────┐
+│ event_id │ count  │
+│  int64   │ int64  │
+├──────────┼────────┤
+│     5061 │ 150931 │
+│     4624 │  69121 │
+│     4672 │  52079 │
+│     4799 │  32503 │
+│     4634 │  30884 │
+│     5140 │  17009 │
+│     4945 │   4410 │
+│     4625 │   3707 │
+│     4648 │   2617 │
+│     4948 │    978 │
+│     4946 │    977 │
+│     4798 │    968 │
+│     4611 │    188 │
+│     4956 │    135 │
+│     4688 │    120 │
+│     4622 │    120 │
+│     4697 │    109 │
+│     4905 │     96 │
+│     4904 │     96 │
+│     4616 │     92 │
+│     5142 │     74 │
+│     4947 │     67 │
+│     5144 │     38 │
+│     4800 │     34 │
+│     4801 │     32 │
+│     4614 │     12 │
+│     5478 │     12 │
+│     4797 │     12 │
+│     4608 │     12 │
+│     4610 │     12 │
+│     4826 │     12 │
+│     4902 │     12 │
+│     4944 │     12 │
+│     1100 │      9 │
+│     4647 │      9 │
+│     4954 │      5 │
+│     4692 │      4 │
+│     4693 │      3 │
+│     1101 │      3 │
+│     4732 │      1 │
+└──────────┴────────┘
+       40 rows
 ```

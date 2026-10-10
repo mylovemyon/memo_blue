@@ -128,6 +128,43 @@ ORDER BY ALL;
 
 
 
+## 4608
+```sql
+security D
+SELECT Event.System.Computer,Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4608
+GROUP BY ALL
+ORDER BY ALL;
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │         SystemTime         │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-02 18:24:26.685938 │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 14:51:16.557653 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:19:06.817008 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:38:28.383932 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+security
+D SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4608' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌─────────┬──────────────┐
+│ fullkey │ count_star() │
+│ varchar │    int64     │
+└─────────┴──────────────┘
+          0 rows
+```
+
+
+
+
 ## 4616
 ```sql
 security D
@@ -357,6 +394,44 @@ ORDER BY je.fullkey;
 └─────────────────────────────────────────────┴──────────────┘
   21 rows                                          2 columns
   ```
+
+
+
+## 4647
+```sql
+security D
+SELECT Event.System.Computer, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4647
+GROUP BY ALL
+ORDER BY Event.EventData.TargetUserSid;
+┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬────────────────┬──────────────┐
+│      Computer       │                 TargetUserSid                  │ TargetDomainName │ TargetUserName │ count_star() │
+│       varchar       │                    varchar                     │     varchar      │    varchar     │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼──────────────────┼────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │           16 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc         │            2 │
+└─────────────────────┴────────────────────────────────────────────────┴──────────────────┴────────────────┴──────────────┘
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4647' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.TargetDomainName │           43 │
+│ $.Event.EventData.TargetLogonId    │           43 │
+│ $.Event.EventData.TargetUserName   │           43 │
+│ $.Event.EventData.TargetUserSid    │           43 │
+└────────────────────────────────────┴──────────────┘
+```
 
 
 

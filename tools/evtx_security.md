@@ -414,7 +414,75 @@ ORDER BY  Event.EventData.LogonType, Event.EventData.TargetUserName, Event.Event
 ## 4648
 ### 1
 ```sql
-
+security D
+SELECT Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetServerName, Event.EventData.TargetInfo, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2022-10-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2026-01-01 00:00:00'
+AND Event.System.EventID = 4648
+GROUP BY ALL
+ORDER BY Event.EventData.TargetUserName, Event.EventData.IpAddress;
+┌───────────────────┬─────────────────┬──────────────────┬────────────────┬────────────────────────┬──────────────────────────────┬───────────────────────────────────┬───────────────────────────┬──────────────┐
+│ SubjectDomainName │ SubjectUserName │ TargetDomainName │ TargetUserName │    TargetServerName    │          TargetInfo          │            ProcessName            │         IpAddress         │ count_star() │
+│      varchar      │     varchar     │     varchar      │    varchar     │        varchar         │           varchar            │              varchar              │          varchar          │    int64     │
+├───────────────────┼─────────────────┼──────────────────┼────────────────┼────────────────────────┼──────────────────────────────┼───────────────────────────────────┼───────────────────────────┼──────────────┤
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-1          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           14 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-10         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            2 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-11         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            4 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-12         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            1 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-13         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            1 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-14         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           10 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-15         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            5 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-2          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           12 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-3          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           21 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-4          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            4 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-5          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            5 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-6          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            7 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-7          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            6 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-8          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            8 │
+│ shieldbase        │ RD01$           │ Window Manager   │ DWM-9          │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            4 │
+│ shieldbase        │ RD01$           │ SHIELDBASE.COM   │ RD01$          │ rd01$                  │ rd01$                        │ C:\Windows\System32\taskhostw.exe │ -                         │          332 │
+│ shieldbase        │ RD01$           │ RD01             │ SRLAdmin       │ localhost              │ localhost                    │ C:\Windows\System32\consent.exe   │ ::1                       │            1 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-0         │ localhost              │ localhost                    │ C:\Windows\System32\wininit.exe   │ -                         │           14 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-1         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           14 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-10        │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            2 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-11        │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            4 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-12        │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            1 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-13        │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            1 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-14        │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           10 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-15        │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            5 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-2         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           12 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-3         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │           21 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-4         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            4 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-5         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            5 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-6         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            7 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-7         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            6 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-8         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            8 │
+│ shieldbase        │ RD01$           │ Font Driver Host │ UMFD-9         │ localhost              │ localhost                    │ C:\Windows\System32\winlogon.exe  │ -                         │            4 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 0.0.0.0                   │            1 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.14              │            3 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.20              │            6 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.23              │            2 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.3               │           11 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.4               │           19 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.6               │            6 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.7               │            1 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.30.8               │           19 │
+│ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ localhost              │ localhost                    │ C:\Windows\System32\consent.exe   │ ::1                       │            1 │
+│ shieldbase        │ wacsvc          │ SHIELDBASE.COM   │ wacsvc         │ dev01.shieldbase.com   │ TERMSRV/dev01.shieldbase.com │ C:\Windows\System32\lsass.exe     │ -                         │            2 │
+│ shieldbase        │ tdungan         │ shieldbase       │ wacsvc         │ file01.shieldbase.com  │ file01.shieldbase.com        │                                   │ 172.16.4.5                │            1 │
+│ shieldbase        │ RD01$           │ shieldbase       │ wacsvc         │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.4.9                │            1 │
+│ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ dev01.shieldbase.com   │ cifs/dev01.shieldbase.com    │                                   │ 172.16.4.9                │            4 │
+│ shieldbase        │ tdungan         │ shieldbase       │ wacsvc         │ rd02.shieldbase.com    │ rd02.shieldbase.com          │                                   │ 172.16.6.12               │            2 │
+│ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ rd04.shieldbase.com    │ cifs/rd04.shieldbase.com     │                                   │ 172.16.6.14               │            1 │
+│ shieldbase        │ RD01$           │ shieldbase       │ wacsvc         │ localhost              │ localhost                    │ C:\Windows\System32\svchost.exe   │ 172.16.6.18               │            6 │
+│ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ rd10.shieldbase.com    │ cifs/rd10.shieldbase.com     │                                   │ 172.16.6.20               │            1 │
+│ shieldbase        │ tdungan         │ shieldbase       │ wacsvc         │ wkstn01.shieldbase.com │ wkstn01.shieldbase.com       │ C:\Windows\System32\wbem\WMIC.exe │ 172.16.7.11               │            1 │
+│ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ cifs/wkstn01.shieldbase.com  │                                   │ 172.16.7.11               │            4 │
+│ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ host/wkstn01.shieldbase.com  │ C:\Windows\System32\wbem\WMIC.exe │ 172.16.7.11               │            1 │
+│ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ RPCSS/wkstn01.shieldbase.com │ C:\Windows\System32\svchost.exe   │ 172.16.7.11               │            1 │
+│ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ rd01                   │ cifs/rd01                    │                                   │ fe80::7e6b:763c:b405:22b4 │            1 │
+└───────────────────┴─────────────────┴──────────────────┴────────────────┴────────────────────────┴──────────────────────────────┴───────────────────────────────────┴───────────────────────────┴──────────────┘
+  56 rows                                                                                                                                                                                              9 columns
 ```
 ### fullkey
 ```sql

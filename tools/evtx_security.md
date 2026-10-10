@@ -781,6 +781,44 @@ ORDER BY je.fullkey;
 
 
 
+## 4725
+```sql
+security D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
+           FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+           WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+           AND Event.System.EventID = 4725
+           GROUP BY ALL
+           ORDER BY ALL;
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────┬──────────────────┬────────────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                  TargetSid                   │ TargetDomainName │ TargetUserName │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │                   varchar                    │     varchar      │    varchar     │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────────────────────────────────────┼──────────────────┼────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-500 │ RD01             │ Administrator  │            1 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────────────┴──────────────────┴────────────────┴──────────────┘
+```
+fullkey
+```sql
+security D SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4725' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.SubjectDomainName │            4 │
+│ $.Event.EventData.SubjectLogonId    │            4 │
+│ $.Event.EventData.SubjectUserName   │            4 │
+│ $.Event.EventData.SubjectUserSid    │            4 │
+│ $.Event.EventData.TargetDomainName  │            4 │
+│ $.Event.EventData.TargetSid         │            4 │
+│ $.Event.EventData.TargetUserName    │            4 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4738
 ```sql
 security D

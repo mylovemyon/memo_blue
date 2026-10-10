@@ -995,6 +995,49 @@ ORDER BY je.fullkey;
 
 
 
+## 4778
+```sql
+security D
+SELECT Event.System.Computer, Event.EventData.AccountDomain, Event.EventData.AccountName, Event.EventData.ClientName, Event.EventData.ClientAddress, Event.EventData.SessionName, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4778
+GROUP BY ALL
+ORDER BY ALL;
+┌─────────────────────┬───────────────┬─────────────┬────────────┬───────────────┬─────────────┬──────────────┐
+│      Computer       │ AccountDomain │ AccountName │ ClientName │ ClientAddress │ SessionName │ count_star() │
+│       varchar       │    varchar    │   varchar   │  varchar   │    varchar    │   varchar   │    int64     │
+├─────────────────────┼───────────────┼─────────────┼────────────┼───────────────┼─────────────┼──────────────┤
+│ rd01.shieldbase.com │ shieldbase    │ tdungan     │ DUNGANATOR │ 172.16.30.14  │ RDP-Tcp#0   │            2 │
+│ rd01.shieldbase.com │ shieldbase    │ tdungan     │ DUNGANATOR │ 172.16.30.23  │ RDP-Tcp#0   │            1 │
+│ rd01.shieldbase.com │ shieldbase    │ tdungan     │ DUNGANATOR │ 172.16.30.3   │ RDP-Tcp#0   │            1 │
+│ rd01.shieldbase.com │ shieldbase    │ tdungan     │ DUNGANATOR │ 172.16.30.8   │ RDP-Tcp#0   │            1 │
+│ rd01.shieldbase.com │ shieldbase    │ wacsvc      │ phoenix    │ 172.16.6.18   │ RDP-Tcp#1   │            7 │
+└─────────────────────┴───────────────┴─────────────┴────────────┴───────────────┴─────────────┴──────────────┘
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4778' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌─────────────────────────────────┬──────────────┐
+│             fullkey             │ count_star() │
+│             varchar             │    int64     │
+├─────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AccountDomain │           35 │
+│ $.Event.EventData.AccountName   │           35 │
+│ $.Event.EventData.ClientAddress │           35 │
+│ $.Event.EventData.ClientName    │           35 │
+│ $.Event.EventData.LogonID       │           35 │
+│ $.Event.EventData.SessionName   │           35 │
+└─────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4799
 ```sql
 security D

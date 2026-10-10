@@ -144,7 +144,6 @@ ORDER BY ALL;
 
 
 ## 4624
-### 1
 ```sql
 security D
 security D
@@ -227,7 +226,7 @@ ORDER BY  Event.EventData.LogonType, Event.EventData.SubjectUserSid , Event.Even
 └───────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴────────────────────────────────────────────────┴──────────────────┴─────────────────┴──────────────────────────┴────────────────────────┴─────────────────┴───────────────────────────┴──────────────────────────────────────────────────────────────┴───────────────────────────┴──────────────────┴──────────────┘
   66 rows                                                                                                                                                                                                                                                                                                                                                                                                    15 columns
 ```
-### fullkey
+fullkey
 ```sql
 security D 
 SELECT je.fullkey, COUNT(*)
@@ -323,7 +322,6 @@ ORDER BY  Event.EventData.LogonType, Event.EventData.SubjectUserSid , Event.Even
 
 
 ## 4648
-### 1
 ```sql
 security D
 SELECT Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetServerName, Event.EventData.TargetInfo, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
@@ -451,7 +449,7 @@ ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName, Event.E
 └─────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────────┴────────────────┴────────────────────────┴──────────────────────────────┴───────────────────────────────────┴───────────────────────────┴──────────────┘
   51 rows                                                                                                                                                                                                                                       10 columns
 ```
-### fullkey
+fullkey
 ```sql
 security D
 SELECT je.fullkey, COUNT(*)
@@ -489,7 +487,6 @@ ORDER BY je.fullkey;
 
 
 ## 4672
-# 1
 ```sql
 security D
 SELECT Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.PrivilegeList, COUNT(*)
@@ -587,13 +584,14 @@ ORDER BY Event.EventData.SubjectUserSid, Event.EventData.PrivilegeList;
 └────────────────────────────────────────────────┴───────────────────┴─────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
   38 rows                                                                                                                                                                                                                                        5 columns
 ```
-### fullkey
+fullkey
 ```sql
-security D SELECT je.fullkey, COUNT(*)
-           FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-           WHERE e.json->>'$.Event.System.EventID' = '4672' AND je.fullkey NOT LIKE '$.Event.System%'
-           GROUP BY je.fullkey
-           ORDER BY je.fullkey;
+security D 
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4672' AND je.fullkey NOT LIKE '$.Event.System%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -613,7 +611,6 @@ security D SELECT je.fullkey, COUNT(*)
 ```
 
 ## 4688
-### 1
 ```sql
 security D
 SELECT Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TokenElevationType, Event.EventData.MandatoryLabel, Event.EventData.ParentProcessName, Event.EventData.NewProcessName, Event.EventData.CommandLine, COUNT(*)
@@ -636,4 +633,39 @@ ORDER BY Event.EventData.ParentProcessName, Event.EventData.NewProcessName;
 │ S-1-5-18       │ -                 │ -               │ S-1-0-0       │ -                │ -              │ %%1936             │ S-1-16-16384   │ C:\Windows\System32\wininit.exe │ C:\Windows\System32\lsass.exe    │             │            4 │
 │ S-1-5-18       │ -                 │ -               │ S-1-0-0       │ -                │ -              │ %%1936             │ S-1-16-16384   │ C:\Windows\System32\wininit.exe │ C:\Windows\System32\services.exe │             │            4 │
 └────────────────┴───────────────────┴─────────────────┴───────────────┴──────────────────┴────────────────┴────────────────────┴────────────────┴─────────────────────────────────┴──────────────────────────────────┴─────────────┴──────────────┘
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4688' AND je.fullkey NOT LIKE '$.Event.System%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌──────────────────────────────────────┬──────────────┐
+│               fullkey                │ count_star() │
+│               varchar                │    int64     │
+├──────────────────────────────────────┼──────────────┤
+│ $                                    │          287 │
+│ $.Event                              │          287 │
+│ $.Event.#attributes                  │          287 │
+│ $.Event.#attributes.xmlns            │          287 │
+│ $.Event.EventData                    │          287 │
+│ $.Event.EventData.CommandLine        │          287 │
+│ $.Event.EventData.MandatoryLabel     │          287 │
+│ $.Event.EventData.NewProcessId       │          287 │
+│ $.Event.EventData.NewProcessName     │          287 │
+│ $.Event.EventData.ParentProcessName  │          287 │
+│ $.Event.EventData.ProcessId          │          287 │
+│ $.Event.EventData.SubjectDomainName  │          287 │
+│ $.Event.EventData.SubjectLogonId     │          287 │
+│ $.Event.EventData.SubjectUserName    │          287 │
+│ $.Event.EventData.SubjectUserSid     │          287 │
+│ $.Event.EventData.TargetDomainName   │          287 │
+│ $.Event.EventData.TargetLogonId      │          287 │
+│ $.Event.EventData.TargetUserName     │          287 │
+│ $.Event.EventData.TargetUserSid      │          287 │
+│ $.Event.EventData.TokenElevationType │          287 │
+└──────────────────────────────────────┴──────────────┘
+  20 rows                                   2 columns
 ```

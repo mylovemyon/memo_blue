@@ -1,4 +1,84 @@
-```
+```powershell
 PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f powershell_operational.json "E:\C\Windows\System32\winevt\logs\Microsoft-Windows-PowerShell%4Operational.evtx"
 PS C:\Users\SANSDFIR>
 ```
+
+## cli
+```powershell
+PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\powershell_operational.json
+DuckDB v1.5.6 (Variegata)
+Enter ".help" for usage hints.
+powershell_operational D
+```
+
+## .databases
+```sql
+powershell_operational D 
+.databases
+┌─────────────────────────────────┐
+│            databases            │
+│                                 │
+│ powershell_operational (memory) │
+└─────────────────────────────────┘
+```
+
+## .tables
+```sql
+powershell_operational D
+.tables
+ ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── powershell_operational ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── main ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                                                                                                                                                                                                                                                                                                     file                                                                                                                                                                                                                                                                                                                                                                                     │
+│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              │
+│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid uuid)), eventid bigint, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated struct("#attributes" struct(systemtime timestamp)), eventrecordid bigint, correlation struct("#attributes" struct(activityid uuid)), execution struct("#attributes" struct(processid bigint, threadid bigint)), channel varchar, computer varchar, "security" struct("#attributes" struct(userid varchar))), eventdata struct(messagenumber bigint, messagetotal bigint, scriptblocktext varchar, scriptblockid uuid, path varchar, param1 varchar, param2 varchar, contextinfo varchar, userdata varchar, payload varchar)) │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                                                                                                                                                                                                                                                                                            powershell_operational                                                                                                                                                                                                                                                                                                                                                                            │
+│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              │
+│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid uuid)), eventid bigint, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated struct("#attributes" struct(systemtime timestamp)), eventrecordid bigint, correlation struct("#attributes" struct(activityid uuid)), execution struct("#attributes" struct(processid bigint, threadid bigint)), channel varchar, computer varchar, "security" struct("#attributes" struct(userid varchar))), eventdata struct(messagenumber bigint, messagetotal bigint, scriptblocktext varchar, scriptblockid uuid, path varchar, param1 varchar, param2 varchar, contextinfo varchar, userdata varchar, payload varchar)) │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## DESCRIBE
+```sql
+powershell_operational D
+DESCRIBE;
+┌────────────────────────┬─────────┬────────────────────────┬──────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────┐
+│        database        │ schema  │          name          │ column_names │                                                                                                                                                                                                                                                                                                                                                                                column_types                                                                                                                                                                                                                                                                                                                                                                                │ temporary │
+│        varchar         │ varchar │        varchar         │  varchar[]   │                                                                                                                                                                                                                                                                                                                                                                                 varchar[]                                                                                                                                                                                                                                                                                                                                                                                  │  boolean  │
+├────────────────────────┼─────────┼────────────────────────┼──────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┤
+│ powershell_operational │ main    │ file                   │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid UUID)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIGINT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execution STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" STRUCT("#attributes" STRUCT(UserID VARCHAR))), EventData STRUCT(MessageNumber BIGINT, MessageTotal BIGINT, ScriptBlockText VARCHAR, ScriptBlockId UUID, Path VARCHAR, param1 VARCHAR, param2 VARCHAR, ContextInfo VARCHAR, UserData VARCHAR, Payload VARCHAR))'] │ false     │
+│ powershell_operational │ main    │ powershell_operational │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid UUID)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIGINT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execution STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" STRUCT("#attributes" STRUCT(UserID VARCHAR))), EventData STRUCT(MessageNumber BIGINT, MessageTotal BIGINT, ScriptBlockText VARCHAR, ScriptBlockId UUID, Path VARCHAR, param1 VARCHAR, param2 VARCHAR, ContextInfo VARCHAR, UserData VARCHAR, Payload VARCHAR))'] │ false     │
+└────────────────────────┴─────────┴────────────────────────┴──────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┘
+```
+
+
+
+## EventID
+```sql
+powershell_operational D
+SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+GROUP BY ALL
+ORDER BY ALL;
+┌─────────────────────┬─────────┬──────────────┐
+│      Computer       │ EventID │ count_star() │
+│       varchar       │  int64  │    int64     │
+├─────────────────────┼─────────┼──────────────┤
+│ rd01.shieldbase.com │    4103 │         1212 │
+│ rd01.shieldbase.com │    4104 │         1124 │
+│ rd01.shieldbase.com │    8193 │          112 │
+│ rd01.shieldbase.com │    8194 │          112 │
+│ rd01.shieldbase.com │    8195 │          112 │
+│ rd01.shieldbase.com │    8196 │         1587 │
+│ rd01.shieldbase.com │    8197 │          416 │
+│ rd01.shieldbase.com │   12039 │         1587 │
+│ rd01.shieldbase.com │   32784 │           16 │
+│ rd01.shieldbase.com │   40961 │          157 │
+│ rd01.shieldbase.com │   40962 │          157 │
+│ rd01.shieldbase.com │   53504 │          192 │
+└─────────────────────┴─────────┴──────────────┘
+  12 rows                            3 columns
++++

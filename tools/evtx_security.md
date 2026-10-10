@@ -98,9 +98,10 @@ PS C:\Users\SANSDFIR>
 # duckdb
 ## cli
 ```powershell
-PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 1000" .\security.json
+PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\security.json
 DuckDB v1.5.6 (Variegata)
 Enter ".help" for usage hints.
+security D
 ```
 
 ## .databases
@@ -139,37 +140,13 @@ security D DESCRIBE;
 ├──────────┼─────────┼──────────┼──────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┤
 │ security │ main    │ file     │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid VARCHAR)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIG │ false     │
 │          │         │          │              │ INT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execut │           │
-│          │         │          │              │ ion STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" JSON), EventData STRUCT(SubjectUserSid VARCHAR, SubjectUserName VARCHAR, S │           │
-│          │         │          │              │ ubjectDomainName VARCHAR, SubjectLogonId VARCHAR, PrivilegeList VARCHAR, TargetUserSid VARCHAR, TargetUserName VARCHAR, TargetDomainName VARCHAR, TargetLogonId VARCHAR, LogonType BIGINT, Lo │           │
-│          │         │          │              │ gonProcessName VARCHAR, AuthenticationPackageName VARCHAR, WorkstationName VARCHAR, LogonGuid UUID, TransmittedServices VARCHAR, LmPackageName VARCHAR, KeyLength BIGINT, ProcessId VARCHAR,  │           │
-│          │         │          │              │ ProcessName VARCHAR, IpAddress VARCHAR, IpPort VARCHAR, ImpersonationLevel VARCHAR, RestrictedAdminMode VARCHAR, TargetOutboundUserName VARCHAR, TargetOutboundDomainName VARCHAR, VirtualAcc │           │
-│          │         │          │              │ ount VARCHAR, TargetLinkedLogonId VARCHAR, ElevatedToken VARCHAR, Status VARCHAR, FailureReason VARCHAR, SubStatus VARCHAR, TargetSid VARCHAR, CallerProcessId VARCHAR, CallerProcessName VAR │           │
-│          │         │          │              │ CHAR, ProviderName VARCHAR, AlgorithmName VARCHAR, KeyName VARCHAR, KeyType VARCHAR, Operation VARCHAR, ReturnCode VARCHAR, TargetLogonGuid UUID, TargetServerName VARCHAR, TargetInfo VARCHA │           │
-│          │         │          │              │ R, ProfileChanged VARCHAR, RuleId VARCHAR, RuleName VARCHAR, AuditSourceName VARCHAR, EventSourceId VARCHAR, SessionId BIGINT, PreviousTime TIMESTAMP, NewTime TIMESTAMP, LoadOptions VARCHAR │           │
-│          │         │          │              │ , AdvancedOptions VARCHAR, ConfigAccessPolicy VARCHAR, RemoteEventLogging VARCHAR, KernelDebug VARCHAR, VsmLaunchType VARCHAR, TestSigning VARCHAR, FlightSigning VARCHAR, DisableIntegrityCh │           │
-│          │         │          │              │ ecks VARCHAR, HypervisorLoadOptions VARCHAR, HypervisorLaunchType VARCHAR, HypervisorDebug VARCHAR, NewProcessId VARCHAR, NewProcessName VARCHAR, TokenElevationType VARCHAR, CommandLine VAR │           │
-│          │         │          │              │ CHAR, ParentProcessName VARCHAR, MandatoryLabel VARCHAR, SecurityPackageName VARCHAR, PuaCount BIGINT, PuaPolicyId VARCHAR, NotificationPackageName VARCHAR, ShareName VARCHAR, ShareLocalPat │           │
-│          │         │          │              │ h VARCHAR, GroupPolicyApplied VARCHAR, Profile VARCHAR, OperationMode VARCHAR, RemoteAdminEnabled VARCHAR, MulticastFlowsEnabled VARCHAR, LogDroppedPacketsEnabled VARCHAR, LogSuccessfulConn │           │
-│          │         │          │              │ ectionsEnabled VARCHAR, ProfileUsed VARCHAR, ActiveProfile VARCHAR, ServiceName VARCHAR, ServiceFileName VARCHAR, ServiceType VARCHAR, ServiceStartType BIGINT, ServiceAccount VARCHAR, Maste │           │
-│          │         │          │              │ rKeyId UUID, RecoveryServer VARCHAR, RecoveryKeyId UUID, ObjectType VARCHAR, AccessMask VARCHAR, AccessList VARCHAR), UserData STRUCT(AuditEventsDropped STRUCT("#attributes" STRUCT(xmlns VA │           │
-│          │         │          │              │ RCHAR), Reason BIGINT), ServiceShutdown STRUCT("#attributes" STRUCT(xmlns VARCHAR))))']                                                                                                       │           │
+│          │         │          │              │ ion STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" JSON), EventData MAP(VARCHAR, JSON), UserData STRUCT(ServiceShutdown STRUC │           │
+│          │         │          │              │ T("#attributes" STRUCT(xmlns VARCHAR))))']                                                                                                                                                    │           │
 ├──────────┼─────────┼──────────┼──────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┤
 │ security │ main    │ security │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid VARCHAR)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIG │ false     │
 │          │         │          │              │ INT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execut │           │
-│          │         │          │              │ ion STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" JSON), EventData STRUCT(SubjectUserSid VARCHAR, SubjectUserName VARCHAR, S │           │
-│          │         │          │              │ ubjectDomainName VARCHAR, SubjectLogonId VARCHAR, PrivilegeList VARCHAR, TargetUserSid VARCHAR, TargetUserName VARCHAR, TargetDomainName VARCHAR, TargetLogonId VARCHAR, LogonType BIGINT, Lo │           │
-│          │         │          │              │ gonProcessName VARCHAR, AuthenticationPackageName VARCHAR, WorkstationName VARCHAR, LogonGuid UUID, TransmittedServices VARCHAR, LmPackageName VARCHAR, KeyLength BIGINT, ProcessId VARCHAR,  │           │
-│          │         │          │              │ ProcessName VARCHAR, IpAddress VARCHAR, IpPort VARCHAR, ImpersonationLevel VARCHAR, RestrictedAdminMode VARCHAR, TargetOutboundUserName VARCHAR, TargetOutboundDomainName VARCHAR, VirtualAcc │           │
-│          │         │          │              │ ount VARCHAR, TargetLinkedLogonId VARCHAR, ElevatedToken VARCHAR, Status VARCHAR, FailureReason VARCHAR, SubStatus VARCHAR, TargetSid VARCHAR, CallerProcessId VARCHAR, CallerProcessName VAR │           │
-│          │         │          │              │ CHAR, ProviderName VARCHAR, AlgorithmName VARCHAR, KeyName VARCHAR, KeyType VARCHAR, Operation VARCHAR, ReturnCode VARCHAR, TargetLogonGuid UUID, TargetServerName VARCHAR, TargetInfo VARCHA │           │
-│          │         │          │              │ R, ProfileChanged VARCHAR, RuleId VARCHAR, RuleName VARCHAR, AuditSourceName VARCHAR, EventSourceId VARCHAR, SessionId BIGINT, PreviousTime TIMESTAMP, NewTime TIMESTAMP, LoadOptions VARCHAR │           │
-│          │         │          │              │ , AdvancedOptions VARCHAR, ConfigAccessPolicy VARCHAR, RemoteEventLogging VARCHAR, KernelDebug VARCHAR, VsmLaunchType VARCHAR, TestSigning VARCHAR, FlightSigning VARCHAR, DisableIntegrityCh │           │
-│          │         │          │              │ ecks VARCHAR, HypervisorLoadOptions VARCHAR, HypervisorLaunchType VARCHAR, HypervisorDebug VARCHAR, NewProcessId VARCHAR, NewProcessName VARCHAR, TokenElevationType VARCHAR, CommandLine VAR │           │
-│          │         │          │              │ CHAR, ParentProcessName VARCHAR, MandatoryLabel VARCHAR, SecurityPackageName VARCHAR, PuaCount BIGINT, PuaPolicyId VARCHAR, NotificationPackageName VARCHAR, ShareName VARCHAR, ShareLocalPat │           │
-│          │         │          │              │ h VARCHAR, GroupPolicyApplied VARCHAR, Profile VARCHAR, OperationMode VARCHAR, RemoteAdminEnabled VARCHAR, MulticastFlowsEnabled VARCHAR, LogDroppedPacketsEnabled VARCHAR, LogSuccessfulConn │           │
-│          │         │          │              │ ectionsEnabled VARCHAR, ProfileUsed VARCHAR, ActiveProfile VARCHAR, ServiceName VARCHAR, ServiceFileName VARCHAR, ServiceType VARCHAR, ServiceStartType BIGINT, ServiceAccount VARCHAR, Maste │           │
-│          │         │          │              │ rKeyId UUID, RecoveryServer VARCHAR, RecoveryKeyId UUID, ObjectType VARCHAR, AccessMask VARCHAR, AccessList VARCHAR), UserData STRUCT(AuditEventsDropped STRUCT("#attributes" STRUCT(xmlns VA │           │
-│          │         │          │              │ RCHAR), Reason BIGINT), ServiceShutdown STRUCT("#attributes" STRUCT(xmlns VARCHAR))))']                                                                                                       │           │
+│          │         │          │              │ ion STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" JSON), EventData MAP(VARCHAR, JSON), UserData STRUCT(ServiceShutdown STRUC │           │
+│          │         │          │              │ T("#attributes" STRUCT(xmlns VARCHAR))))']                                                                                                                                                    │           │
 └──────────┴─────────┴──────────┴──────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┘
 ```
 
@@ -230,13 +207,86 @@ ORDER BY count DESC;
        40 rows
 ```
 
+
 ## 4624
 ```sql
-security D SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
-           FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
-           WHERE Event.System.EventID = 4624
-           GROUP BY ALL
-           ORDER BY ALL;
+security D SELECT je.fullkey, COUNT(*)
+           FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+           WHERE e.json->>'$.Event.System.EventID' = '4624'
+           GROUP BY je.fullkey
+           ORDER BY je.fullkey;
+┌───────────────────────────────────────────────────┬──────────────┐
+│                      fullkey                      │ count_star() │
+│                      varchar                      │    int64     │
+├───────────────────────────────────────────────────┼──────────────┤
+│ $                                                 │        17544 │
+│ $.Event                                           │        17544 │
+│ $.Event.#attributes                               │        17544 │
+│ $.Event.#attributes.xmlns                         │        17544 │
+│ $.Event.EventData                                 │        17544 │
+│ $.Event.EventData.AuthenticationPackageName       │        17544 │
+│ $.Event.EventData.ElevatedToken                   │        17544 │
+│ $.Event.EventData.ImpersonationLevel              │        17544 │
+│ $.Event.EventData.IpAddress                       │        17544 │
+│ $.Event.EventData.IpPort                          │        17544 │
+│ $.Event.EventData.KeyLength                       │        17544 │
+│ $.Event.EventData.LmPackageName                   │        17544 │
+│ $.Event.EventData.LogonGuid                       │        17544 │
+│ $.Event.EventData.LogonProcessName                │        17544 │
+│ $.Event.EventData.LogonType                       │        17544 │
+│ $.Event.EventData.ProcessId                       │        17544 │
+│ $.Event.EventData.ProcessName                     │        17544 │
+│ $.Event.EventData.RestrictedAdminMode             │        17544 │
+│ $.Event.EventData.SubjectDomainName               │        17544 │
+│ $.Event.EventData.SubjectLogonId                  │        17544 │
+│ $.Event.EventData.SubjectUserName                 │        17544 │
+│ $.Event.EventData.SubjectUserSid                  │        17544 │
+│ $.Event.EventData.TargetDomainName                │        17544 │
+│ $.Event.EventData.TargetLinkedLogonId             │        17544 │
+│ $.Event.EventData.TargetLogonId                   │        17544 │
+│ $.Event.EventData.TargetOutboundDomainName        │        17544 │
+│ $.Event.EventData.TargetOutboundUserName          │        17544 │
+│ $.Event.EventData.TargetUserName                  │        17544 │
+│ $.Event.EventData.TargetUserSid                   │        17544 │
+│ $.Event.EventData.TransmittedServices             │        17544 │
+│ $.Event.EventData.VirtualAccount                  │        17544 │
+│ $.Event.EventData.WorkstationName                 │        17544 │
+│ $.Event.System                                    │        17544 │
+│ $.Event.System.Channel                            │        17544 │
+│ $.Event.System.Computer                           │        17544 │
+│ $.Event.System.Correlation                        │        17544 │
+│ $.Event.System.Correlation.#attributes            │        17521 │
+│ $.Event.System.Correlation.#attributes.ActivityID │        17521 │
+│ $.Event.System.EventID                            │        17544 │
+│ $.Event.System.EventRecordID                      │        17544 │
+│ $.Event.System.Execution                          │        17544 │
+│ $.Event.System.Execution.#attributes              │        17544 │
+│ $.Event.System.Execution.#attributes.ProcessID    │        17544 │
+│ $.Event.System.Execution.#attributes.ThreadID     │        17544 │
+│ $.Event.System.Keywords                           │        17544 │
+│ $.Event.System.Level                              │        17544 │
+│ $.Event.System.Opcode                             │        17544 │
+│ $.Event.System.Provider                           │        17544 │
+│ $.Event.System.Provider.#attributes               │        17544 │
+│ $.Event.System.Provider.#attributes.Guid          │        17544 │
+│ $.Event.System.Provider.#attributes.Name          │        17544 │
+│ $.Event.System.Security                           │        17544 │
+│ $.Event.System.Task                               │        17544 │
+│ $.Event.System.TimeCreated                        │        17544 │
+│ $.Event.System.TimeCreated.#attributes            │        17544 │
+│ $.Event.System.TimeCreated.#attributes.SystemTime │        17544 │
+│ $.Event.System.Version                            │        17544 │
+└───────────────────────────────────────────────────┴──────────────┘
+  57 rows                                                2 columns
+```
+
+```sql
+security D 
+SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+WHERE Event.System.EventID = 4624
+GROUP BY ALL
+ORDER BY ALL;
 ┌─────────┬───────────┬───────────────────┬─────────────────┬──────────────────┬─────────────────┬─────────────────┬──────────────────────────────────────────────────────────────┬───────────────────────────┬──────────────┐
 │ EventID │ LogonType │ SubjectDomainName │ SubjectUserName │ TargetDomainName │ TargetUserName  │ WorkstationName │                         ProcessName                          │         IpAddress         │ count_star() │
 │  int64  │   int64   │      varchar      │     varchar     │     varchar      │     varchar     │     varchar     │                           varchar                            │          varchar          │    int64     │
@@ -350,11 +400,12 @@ security D SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventDa
 
 ## 4625
 ```sql
-security D SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
-           FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
-           WHERE Event.System.EventID = 4625
-           GROUP BY ALL
-           ORDER BY ALL;
+security D 
+SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+WHERE Event.System.EventID = 4625
+GROUP BY ALL
+ORDER BY ALL;
 ┌─────────┬───────────┬───────────────────┬─────────────────┬──────────────────┬────────────────┬─────────────────┬─────────────────────────────────────────────────────────────────────────────────────────┬──────────────┬──────────────┐
 │ EventID │ LogonType │ SubjectDomainName │ SubjectUserName │ TargetDomainName │ TargetUserName │ WorkstationName │                                       ProcessName                                       │  IpAddress   │ count_star() │
 │  int64  │   int64   │      varchar      │     varchar     │     varchar      │    varchar     │     varchar     │                                         varchar                                         │   varchar    │    int64     │

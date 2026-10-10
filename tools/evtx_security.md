@@ -1148,3 +1148,59 @@ ORDER BY je.fullkey;
 ```
 
 
+
+## 5140
+```sql
+security D
+SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, Event.EventData.ObjectType, Event.EventData.IpAddress, Event.EventData.AccessMask, Event.EventData.AccessList, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 5140
+GROUP BY ALL
+ORDER BY Event.EventData.SubjectUserSid;
+┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬────────────────┬────────────┬───────────────────────────┬────────────┬────────────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  ShareName   │ ShareLocalPath │ ObjectType │         IpAddress         │ AccessMask │     AccessList     │ count_star() │
+│       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │    varchar     │  varchar   │          varchar          │  varchar   │      varchar       │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼──────────────┼────────────────┼────────────┼───────────────────────────┼────────────┼────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase        │ cbarton-a       │ \\*\IPC$     │                │ File       │ 172.16.5.25               │ 0x1        │ %%4416\r\n\t\t\t\t │            7 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase        │ cbarton-a       │ \\*\TempFRes │ \??\C:\        │ File       │ 172.16.5.25               │ 0x1        │ %%4416\r\n\t\t\t\t │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ \\*\IPC$     │                │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            3 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ \\*\C$       │ \??\C:\        │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            3 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ \\*\IPC$     │                │ File       │ ::1                       │ 0x1        │ %%4416\r\n\t\t\t\t │            9 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ \\*\C$       │ \??\C:\        │ File       │ ::1                       │ 0x1        │ %%4416\r\n\t\t\t\t │           12 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ \\*\IPC$     │                │ File       │ fe80::7e6b:763c:b405:22b4 │ 0x1        │ %%4416\r\n\t\t\t\t │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1159 │ shieldbase        │ HUNT01$         │ \\*\TempFRes │ \??\C:\        │ File       │ 172.16.5.25               │ 0x1        │ %%4416\r\n\t\t\t\t │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1213 │ shieldbase        │ slevine         │ \\*\IPC$     │                │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1216 │ shieldbase        │ DEV01$          │ \\*\C$       │ \??\C:\        │ File       │ 172.16.4.9                │ 0x1        │ %%4416\r\n\t\t\t\t │            4 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1216 │ shieldbase        │ DEV01$          │ \\*\IPC$     │                │ File       │ 172.16.4.9                │ 0x1        │ %%4416\r\n\t\t\t\t │            4 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ \\*\IPC$     │                │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ \\*\IPC$     │                │ File       │ fe80::7e6b:763c:b405:22b4 │ 0x1        │ %%4416\r\n\t\t\t\t │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────┴────────────────┴────────────┴───────────────────────────┴────────────┴────────────────────┴──────────────┘
+  13 rows                                                                                                                                                                                                                   11 columns
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '5140' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AccessList        │           71 │
+│ $.Event.EventData.AccessMask        │           71 │
+│ $.Event.EventData.IpAddress         │           71 │
+│ $.Event.EventData.IpPort            │           71 │
+│ $.Event.EventData.ObjectType        │           71 │
+│ $.Event.EventData.ShareLocalPath    │           71 │
+│ $.Event.EventData.ShareName         │           71 │
+│ $.Event.EventData.SubjectDomainName │           71 │
+│ $.Event.EventData.SubjectLogonId    │           71 │
+│ $.Event.EventData.SubjectUserName   │           71 │
+│ $.Event.EventData.SubjectUserSid    │           71 │
+└─────────────────────────────────────┴──────────────┘
+  11 rows                                  2 columns
+```

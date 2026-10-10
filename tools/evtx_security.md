@@ -725,3 +725,40 @@ ORDER BY je.fullkey;
 └───────────────────────────────────────┴──────────────┘
   27 rows                                    2 columns
 ```
+
+
+
+## 4776
+```sql
+security D
+SELECT Event.System.Computer, Event.EventData.Workstation, Event.EventData.TargetUserName, Event.EventData.Status, Event.EventData.PackageName, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4776
+GROUP BY ALL
+ORDER BY ALL;
+┌─────────────────────┬─────────────┬────────────────┬────────────┬───────────────────────────────────────┬──────────────┐
+│      Computer       │ Workstation │ TargetUserName │   Status   │              PackageName              │ count_star() │
+│       varchar       │   varchar   │    varchar     │  varchar   │                varchar                │    int64     │
+├─────────────────────┼─────────────┼────────────────┼────────────┼───────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ RD01        │ sprx           │ 0xc0000064 │ MICROSOFT_AUTHENTICATION_PACKAGE_V1_0 │           14 │
+└─────────────────────┴─────────────┴────────────────┴────────────┴───────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4776' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌──────────────────────────────────┬──────────────┐
+│             fullkey              │ count_star() │
+│             varchar              │    int64     │
+├──────────────────────────────────┼──────────────┤
+│ $.Event.EventData.PackageName    │           16 │
+│ $.Event.EventData.Status         │           16 │
+│ $.Event.EventData.TargetUserName │           16 │
+│ $.Event.EventData.Workstation    │           16 │
+└──────────────────────────────────┴──────────────┘
+```

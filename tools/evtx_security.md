@@ -458,57 +458,155 @@ ORDER BY Event.EventData.TargetUserName, Event.EventData.IpAddress;
 security D
 SELECT je.fullkey, COUNT(*)
 FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4648'
+WHERE e.json->>'$.Event.System.EventID' = '4648' AND je.fullkey NOT LIKE '$.Event.System%'
 GROUP BY je.fullkey
 ORDER BY je.fullkey;
-┌───────────────────────────────────────────────────┬──────────────┐
-│                      fullkey                      │ count_star() │
-│                      varchar                      │    int64     │
-├───────────────────────────────────────────────────┼──────────────┤
-│ $                                                 │         1315 │
-│ $.Event                                           │         1315 │
-│ $.Event.#attributes                               │         1315 │
-│ $.Event.#attributes.xmlns                         │         1315 │
-│ $.Event.EventData                                 │         1315 │
-│ $.Event.EventData.IpAddress                       │         1315 │
-│ $.Event.EventData.IpPort                          │         1315 │
-│ $.Event.EventData.LogonGuid                       │         1315 │
-│ $.Event.EventData.ProcessId                       │         1315 │
-│ $.Event.EventData.ProcessName                     │         1315 │
-│ $.Event.EventData.SubjectDomainName               │         1315 │
-│ $.Event.EventData.SubjectLogonId                  │         1315 │
-│ $.Event.EventData.SubjectUserName                 │         1315 │
-│ $.Event.EventData.SubjectUserSid                  │         1315 │
-│ $.Event.EventData.TargetDomainName                │         1315 │
-│ $.Event.EventData.TargetInfo                      │         1315 │
-│ $.Event.EventData.TargetLogonGuid                 │         1315 │
-│ $.Event.EventData.TargetServerName                │         1315 │
-│ $.Event.EventData.TargetUserName                  │         1315 │
-│ $.Event.System                                    │         1315 │
-│ $.Event.System.Channel                            │         1315 │
-│ $.Event.System.Computer                           │         1315 │
-│ $.Event.System.Correlation                        │         1315 │
-│ $.Event.System.Correlation.#attributes            │         1315 │
-│ $.Event.System.Correlation.#attributes.ActivityID │         1315 │
-│ $.Event.System.EventID                            │         1315 │
-│ $.Event.System.EventRecordID                      │         1315 │
-│ $.Event.System.Execution                          │         1315 │
-│ $.Event.System.Execution.#attributes              │         1315 │
-│ $.Event.System.Execution.#attributes.ProcessID    │         1315 │
-│ $.Event.System.Execution.#attributes.ThreadID     │         1315 │
-│ $.Event.System.Keywords                           │         1315 │
-│ $.Event.System.Level                              │         1315 │
-│ $.Event.System.Opcode                             │         1315 │
-│ $.Event.System.Provider                           │         1315 │
-│ $.Event.System.Provider.#attributes               │         1315 │
-│ $.Event.System.Provider.#attributes.Guid          │         1315 │
-│ $.Event.System.Provider.#attributes.Name          │         1315 │
-│ $.Event.System.Security                           │         1315 │
-│ $.Event.System.Task                               │         1315 │
-│ $.Event.System.TimeCreated                        │         1315 │
-│ $.Event.System.TimeCreated.#attributes            │         1315 │
-│ $.Event.System.TimeCreated.#attributes.SystemTime │         1315 │
-│ $.Event.System.Version                            │         1315 │
-└───────────────────────────────────────────────────┴──────────────┘
-  44 rows                                                2 columns
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $                                   │         1315 │
+│ $.Event                             │         1315 │
+│ $.Event.#attributes                 │         1315 │
+│ $.Event.#attributes.xmlns           │         1315 │
+│ $.Event.EventData                   │         1315 │
+│ $.Event.EventData.IpAddress         │         1315 │
+│ $.Event.EventData.IpPort            │         1315 │
+│ $.Event.EventData.LogonGuid         │         1315 │
+│ $.Event.EventData.ProcessId         │         1315 │
+│ $.Event.EventData.ProcessName       │         1315 │
+│ $.Event.EventData.SubjectDomainName │         1315 │
+│ $.Event.EventData.SubjectLogonId    │         1315 │
+│ $.Event.EventData.SubjectUserName   │         1315 │
+│ $.Event.EventData.SubjectUserSid    │         1315 │
+│ $.Event.EventData.TargetDomainName  │         1315 │
+│ $.Event.EventData.TargetInfo        │         1315 │
+│ $.Event.EventData.TargetLogonGuid   │         1315 │
+│ $.Event.EventData.TargetServerName  │         1315 │
+│ $.Event.EventData.TargetUserName    │         1315 │
+└─────────────────────────────────────┴──────────────┘
+  19 rows                                  2 columns
+```
+
+## 4672
+# 1
+```sql
+security D
+SELECT Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.PrivilegeList, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4672
+GROUP BY ALL
+ORDER BY Event.EventData.SubjectUserName, Event.EventData.PrivilegeList;
+┌───────────────────┬─────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│ SubjectDomainName │ SubjectUserName │                                                                                            PrivilegeList                                                                                            │ count_star() │
+│      varchar      │     varchar     │                                                                                               varchar                                                                                               │    int64     │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-1           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-1           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-10          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-10          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-11          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-11          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-12          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-12          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-13          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-13          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-14          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │           10 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-14          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │           10 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-15          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            5 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-15          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            5 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-2           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-2           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-3           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            2 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-3           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            2 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-4           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            2 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-4           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            2 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-5           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            2 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-5           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            2 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-6           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-6           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-7           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-7           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-8           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-8           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-9           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege                                                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ Window Manager    │ DWM-9           │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            1 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ NT AUTHORITY      │ LOCAL SERVICE   │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ NT AUTHORITY      │ NETWORK SERVICE │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeImpersonatePrivilege                                                                                                             │            4 │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ shieldbase        │ RD01$           │ SeSecurityPrivilege\r\n\t\t\tSeBackupPrivilege\r\n\t\t\tSeRestorePrivilege\r\n\t\t\tSeTakeOwnershipPrivilege\r\n\t\t\tSeDebugPrivilege\r\n\t\t\tSeSystemEnvironmentPrivilege\r\n\t\t\tSeLoadDriverP │          817 │
+│                   │                 │ rivilege\r\n\t\t\tSeImpersonatePrivilege\r\n\t\t\tSeDelegateSessionUserImpersonatePrivilege                                                                                                         │              │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ NT AUTHORITY      │ SYSTEM          │ SeAssignPrimaryTokenPrivilege\r\n\t\t\tSeTcbPrivilege\r\n\t\t\tSeSecurityPrivilege\r\n\t\t\tSeTakeOwnershipPrivilege\r\n\t\t\tSeLoadDriverPrivilege\r\n\t\t\tSeBackupPrivilege\r\n\t\t\tSeRestorePr │         4217 │
+│                   │                 │ ivilege\r\n\t\t\tSeDebugPrivilege\r\n\t\t\tSeAuditPrivilege\r\n\t\t\tSeSystemEnvironmentPrivilege\r\n\t\t\tSeImpersonatePrivilege\r\n\t\t\tSeDelegateSessionUserImpersonatePrivilege                │              │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ shieldbase        │ cbarton-a       │ SeSecurityPrivilege\r\n\t\t\tSeBackupPrivilege\r\n\t\t\tSeRestorePrivilege\r\n\t\t\tSeTakeOwnershipPrivilege\r\n\t\t\tSeDebugPrivilege\r\n\t\t\tSeSystemEnvironmentPrivilege\r\n\t\t\tSeLoadDriverP │           26 │
+│                   │                 │ rivilege\r\n\t\t\tSeImpersonatePrivilege\r\n\t\t\tSeDelegateSessionUserImpersonatePrivilege                                                                                                         │              │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ shieldbase        │ rsydow-a        │ SeSecurityPrivilege\r\n\t\t\tSeBackupPrivilege\r\n\t\t\tSeRestorePrivilege\r\n\t\t\tSeTakeOwnershipPrivilege\r\n\t\t\tSeDebugPrivilege\r\n\t\t\tSeSystemEnvironmentPrivilege\r\n\t\t\tSeLoadDriverP │          162 │
+│                   │                 │ rivilege\r\n\t\t\tSeImpersonatePrivilege\r\n\t\t\tSeDelegateSessionUserImpersonatePrivilege                                                                                                         │              │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ shieldbase        │ wacsvc          │ SeSecurityPrivilege\r\n\t\t\tSeBackupPrivilege\r\n\t\t\tSeRestorePrivilege\r\n\t\t\tSeTakeOwnershipPrivilege\r\n\t\t\tSeDebugPrivilege\r\n\t\t\tSeSystemEnvironmentPrivilege\r\n\t\t\tSeLoadDriverP │            2 │
+│                   │                 │ rivilege\r\n\t\t\tSeImpersonatePrivilege\r\n\t\t\tSeDelegateSessionUserImpersonatePrivilege                                                                                                         │              │
+├───────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ shieldbase        │ wacsvc          │ SeSecurityPrivilege\r\n\t\t\tSeTakeOwnershipPrivilege\r\n\t\t\tSeLoadDriverPrivilege\r\n\t\t\tSeBackupPrivilege\r\n\t\t\tSeRestorePrivilege\r\n\t\t\tSeDebugPrivilege\r\n\t\t\tSeSystemEnvironmentP │            7 │
+│                   │                 │ rivilege\r\n\t\t\tSeImpersonatePrivilege\r\n\t\t\tSeDelegateSessionUserImpersonatePrivilege                                                                                                         │              │
+└───────────────────┴─────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+  38 rows                                                                                                                                                                                                                                        4 columns
+```
+### fullkey
+```sql
+security D SELECT je.fullkey, COUNT(*)
+           FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+           WHERE e.json->>'$.Event.System.EventID' = '4672' AND je.fullkey NOT LIKE '$.Event.System%'
+           GROUP BY je.fullkey
+           ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $                                   │        17113 │
+│ $.Event                             │        17113 │
+│ $.Event.#attributes                 │        17113 │
+│ $.Event.#attributes.xmlns           │        17113 │
+│ $.Event.EventData                   │        17113 │
+│ $.Event.EventData.PrivilegeList     │        17113 │
+│ $.Event.EventData.SubjectDomainName │        17113 │
+│ $.Event.EventData.SubjectLogonId    │        17113 │
+│ $.Event.EventData.SubjectUserName   │        17113 │
+│ $.Event.EventData.SubjectUserSid    │        17113 │
+└─────────────────────────────────────┴──────────────┘
+  10 rows                                  2 columns
 ```

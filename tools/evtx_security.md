@@ -589,3 +589,77 @@ ORDER BY je.fullkey;
 └──────────────────────────────────────┴──────────────┘
   15 rows                                   2 columns
 ```
+
+
+
+## 4697
+```sql
+security D
+SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ServiceName, Event.EventData.ServiceFileName, Event.EventData.ServiceAccount, Event.EventData.ServiceType, Event.EventData.ServiceStartType, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4697
+AND Event.EventData.ServiceFileName NOT ILIKE 'C:\Windows\system32\svchost.exe%'
+GROUP BY ALL
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ServiceFileName;
+┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬─────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────────┬─────────────┬──────────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │                 ServiceName                 │                                                       ServiceFileName                                                       │ ServiceAccount │ ServiceType │ ServiceStartType │ count_star() │
+│       varchar       │                    varchar                     │      varchar      │     varchar     │                   varchar                   │                                                           varchar                                                           │    varchar     │   varchar   │      int64       │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼─────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────┼─────────────┼──────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ Ec2Config                                   │ "C:\Program Files\Amazon\Ec2ConfigService\Ec2Config.exe"                                                                    │ LocalSystem    │ 0x10        │                2 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ Velociraptor                                │ "C:\Program Files\Velociraptor\Velociraptor.exe"  --config "C:\Program Files\Velociraptor\/client.config.yaml" service run  │ LocalSystem    │ 0x10        │                2 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ MpKsle2439143                               │ C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1FEC7FC9-D47D-4480-85E5-AE4DD6CCA988}\MpKslDrv.sys            │ LocalSystem    │ 0x1         │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ MpKsld6867d33                               │ C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{A0638AC4-7F42-4619-900A-6971E7AD116E}\MpKslDrv.sys            │ LocalSystem    │ 0x1         │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_378e21a  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_7d5e3    │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_140a51a7 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_1755cd8a │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_21d5806c │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_26aa58fe │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_e7fae    │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_2b14505  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_7147ed   │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_6c2a166  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_1e9ef1f6 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_1f85cdd6 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_1555bf7a │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_27671121 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_1fd1a92  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_29395f8  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_1e0f1442 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_799cd    │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ CredentialEnrollmentManagerUserSvc_e7b07f1  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ LocalSystem    │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ MpKsl80b1fd2a                               │ C:\Windows\system32\MpEngineStore\MpKslDrv.sys                                                                              │ LocalSystem    │ 0x1         │                3 │            3 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ MpKsl3f390b95                               │ C:\Windows\system32\MpEngineStore\MpKslDrv.sys                                                                              │ LocalSystem    │ 0x1         │                3 │            2 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ mnemosyne                                   │ C:\windows/Mnemosyne.sys                                                                                                    │ LocalSystem    │ 0x1         │                3 │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase        │ cbarton-a       │ F-Response Subject Service                  │ "C:\windows\subject_srv.exe" -s "172.16.5.25:5682" -l 3262 -v "F-Response Subject Service" -k "155522845"                   │ LocalSystem    │ 0x10        │                2 │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴─────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────────┴─────────────┴──────────────────┴──────────────┘
+  27 rows                                                                                                                                                                                                                                                                                                                                      10 columns
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4697' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌─────────────────────────────────────────┬──────────────┐
+│                 fullkey                 │ count_star() │
+│                 varchar                 │    int64     │
+├─────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.ClientProcessId       │          955 │
+│ $.Event.EventData.ClientProcessStartKey │          955 │
+│ $.Event.EventData.ParentProcessId       │          955 │
+│ $.Event.EventData.ServiceAccount        │          955 │
+│ $.Event.EventData.ServiceFileName       │          955 │
+│ $.Event.EventData.ServiceName           │          955 │
+│ $.Event.EventData.ServiceStartType      │          955 │
+│ $.Event.EventData.ServiceType           │          955 │
+│ $.Event.EventData.SubjectDomainName     │          955 │
+│ $.Event.EventData.SubjectLogonId        │          955 │
+│ $.Event.EventData.SubjectUserName       │          955 │
+│ $.Event.EventData.SubjectUserSid        │          955 │
+└─────────────────────────────────────────┴──────────────┘
+  12 rows                                      2 columns
+```

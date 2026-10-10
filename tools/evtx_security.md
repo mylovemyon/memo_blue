@@ -397,6 +397,83 @@ ORDER BY je.fullkey;
 
 
 
+## 4634
+```sql
+security D
+SELECT Event.System.Computer, Event.EventData.LogonType, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4634
+GROUP BY ALL
+ORDER BY Event.EventData.LogonType, Event.EventData.TargetUserSid;
+┌─────────────────────┬───────────┬────────────────────────────────────────────────┬──────────────────┬────────────────┬──────────────┐
+│      Computer       │ LogonType │                 TargetUserSid                  │ TargetDomainName │ TargetUserName │ count_star() │
+│       varchar       │   int64   │                    varchar                     │     varchar      │    varchar     │    int64     │
+├─────────────────────┼───────────┼────────────────────────────────────────────────┼──────────────────┼────────────────┼──────────────┤
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-10                                  │ Window Manager   │ DWM-10         │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-11                                  │ Window Manager   │ DWM-11         │            6 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-12                                  │ Window Manager   │ DWM-12         │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-13                                  │ Window Manager   │ DWM-13         │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-14                                  │ Window Manager   │ DWM-14         │           20 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-15                                  │ Window Manager   │ DWM-15         │           10 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-2                                   │ Window Manager   │ DWM-2          │            4 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-3                                   │ Window Manager   │ DWM-3          │            4 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-4                                   │ Window Manager   │ DWM-4          │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-5                                   │ Window Manager   │ DWM-5          │            4 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-6                                   │ Window Manager   │ DWM-6          │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-7                                   │ Window Manager   │ DWM-7          │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-8                                   │ Window Manager   │ DWM-8          │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-90-0-9                                   │ Window Manager   │ DWM-9          │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-10                                  │ Font Driver Host │ UMFD-10        │            1 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-11                                  │ Font Driver Host │ UMFD-11        │            4 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-12                                  │ Font Driver Host │ UMFD-12        │            1 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-13                                  │ Font Driver Host │ UMFD-13        │            1 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-14                                  │ Font Driver Host │ UMFD-14        │           10 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-15                                  │ Font Driver Host │ UMFD-15        │            5 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-2                                   │ Font Driver Host │ UMFD-2         │            3 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-3                                   │ Font Driver Host │ UMFD-3         │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-4                                   │ Font Driver Host │ UMFD-4         │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-5                                   │ Font Driver Host │ UMFD-5         │            2 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-6                                   │ Font Driver Host │ UMFD-6         │            1 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-7                                   │ Font Driver Host │ UMFD-7         │            1 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-8                                   │ Font Driver Host │ UMFD-8         │            1 │
+│ rd01.shieldbase.com │         2 │ S-1-5-96-0-9                                   │ Font Driver Host │ UMFD-9         │            1 │
+│ rd01.shieldbase.com │         3 │ S-1-5-18                                       │ shieldbase       │ RD01$          │          817 │
+│ rd01.shieldbase.com │         3 │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase       │ cbarton-a      │           26 │
+│ rd01.shieldbase.com │         3 │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase       │ rsydow-a       │          159 │
+│ rd01.shieldbase.com │         3 │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │           46 │
+│ rd01.shieldbase.com │         3 │ S-1-5-21-2838623409-1327563992-2591358621-1159 │ shieldbase       │ HUNT01$        │            2 │
+│ rd01.shieldbase.com │         3 │ S-1-5-21-2838623409-1327563992-2591358621-1216 │ shieldbase       │ DEV01$         │            4 │
+│ rd01.shieldbase.com │         3 │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc         │            1 │
+│ rd01.shieldbase.com │         9 │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │            9 │
+│ rd01.shieldbase.com │        10 │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │            5 │
+│ rd01.shieldbase.com │        10 │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc         │           10 │
+│ rd01.shieldbase.com │        11 │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │            1 │
+└─────────────────────┴───────────┴────────────────────────────────────────────────┴──────────────────┴────────────────┴──────────────┘
+  39 rows                                                                                                                   6 columns
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4634' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.LogonType        │         5024 │
+│ $.Event.EventData.TargetDomainName │         5024 │
+│ $.Event.EventData.TargetLogonId    │         5024 │
+│ $.Event.EventData.TargetUserName   │         5024 │
+│ $.Event.EventData.TargetUserSid    │         5024 │
+└────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4647
 ```sql
 security D

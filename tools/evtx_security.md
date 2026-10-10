@@ -63,86 +63,67 @@ DESCRIBE;
 ## EventId
 ```sql
 security D
-SELECT Event.System.EventID, COUNT(*)
-FROM read_json_auto('C:/Users/SANSDFIR/security.json')
-GROUP BY Event.System.EventID
+SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+GROUP BY ALL
 ORDER BY ALL;
-┌─────────┬──────────────┐
-│ EventID │ count_star() │
-│  int64  │    int64     │
-├─────────┼──────────────┤
-│    1100 │           24 │
-│    4608 │           23 │
-│    4610 │           13 │
-│    4611 │          346 │
-│    4614 │           26 │
-│    4616 │           24 │
-│    4622 │          130 │
-│    4624 │        17544 │
-│    4625 │           25 │
-│    4634 │         5024 │
-│    4647 │           43 │
-│    4648 │         1315 │
-│    4672 │        17113 │
-│    4688 │          287 │
-│    4692 │            5 │
-│    4694 │            8 │
-│    4695 │          126 │
-│    4696 │           26 │
-│    4697 │          955 │
-│    4717 │           10 │
-│    4718 │            9 │
-│    4719 │           32 │
-│    4720 │            3 │
-│    4722 │            3 │
-│    4724 │           18 │
-│    4725 │            4 │
-│    4726 │            1 │
-│    4728 │            3 │
-│    4729 │            1 │
-│    4731 │           11 │
-│    4732 │           12 │
-│    4733 │            3 │
-│    4735 │           49 │
-│    4737 │            2 │
-│    4738 │           35 │
-│    4739 │            4 │
-│    4776 │           16 │
-│    4778 │           35 │
-│    4779 │           37 │
-│    4781 │           20 │
-│    4793 │            1 │
-│    4797 │          105 │
-│    4798 │          409 │
-│    4799 │         6625 │
-│    4800 │           36 │
-│    4825 │            7 │
-│    4826 │           26 │
-│    4902 │           23 │
-│    4904 │           16 │
-│    4905 │           16 │
-│    4907 │        30602 │
-│    4944 │           13 │
-│    4945 │         2728 │
-│    4946 │         1014 │
-│    4947 │           74 │
-│    4948 │          690 │
-│    4954 │           24 │
-│    4956 │           13 │
-│    5024 │           10 │
-│    5033 │           10 │
-│    5058 │           47 │
-│    5059 │           26 │
-│    5061 │          157 │
-│    5140 │           71 │
-│    5142 │           42 │
-│    5144 │            3 │
-│    5379 │        81294 │
-│    5381 │           23 │
-│    5382 │          460 │
-│    5478 │           13 │
-└─────────┴──────────────┘
-  70 rows      2 columns
+┌─────────────────────┬─────────┬──────────────┐
+│      Computer       │ EventID │ count_star() │
+│       varchar       │  int64  │    int64     │
+├─────────────────────┼─────────┼──────────────┤
+│ rd01.shieldbase.com │    1100 │            4 │
+│ rd01.shieldbase.com │    4608 │            4 │
+│ rd01.shieldbase.com │    4610 │            4 │
+│ rd01.shieldbase.com │    4611 │          146 │
+│ rd01.shieldbase.com │    4614 │            8 │
+│ rd01.shieldbase.com │    4616 │            6 │
+│ rd01.shieldbase.com │    4622 │           40 │
+│ rd01.shieldbase.com │    4624 │         5470 │
+│ rd01.shieldbase.com │    4625 │           20 │
+│ rd01.shieldbase.com │    4634 │         1179 │
+│ rd01.shieldbase.com │    4647 │           18 │
+│ rd01.shieldbase.com │    4648 │          214 │
+│ rd01.shieldbase.com │    4672 │         5319 │
+│ rd01.shieldbase.com │    4688 │           44 │
+│ rd01.shieldbase.com │    4692 │            2 │
+│ rd01.shieldbase.com │    4694 │            3 │
+│ rd01.shieldbase.com │    4695 │           45 │
+│ rd01.shieldbase.com │    4696 │            4 │
+│ rd01.shieldbase.com │    4697 │          430 │
+│ rd01.shieldbase.com │    4724 │            1 │
+│ rd01.shieldbase.com │    4725 │            1 │
+│ rd01.shieldbase.com │    4738 │            2 │
+│ rd01.shieldbase.com │    4776 │           14 │
+│ rd01.shieldbase.com │    4778 │           12 │
+│ rd01.shieldbase.com │    4779 │           13 │
+│ rd01.shieldbase.com │    4793 │            1 │
+│ rd01.shieldbase.com │    4797 │           70 │
+│ rd01.shieldbase.com │    4798 │          141 │
+│ rd01.shieldbase.com │    4799 │         1025 │
+│ rd01.shieldbase.com │    4800 │           13 │
+│ rd01.shieldbase.com │    4826 │            4 │
+│ rd01.shieldbase.com │    4902 │            4 │
+│ rd01.shieldbase.com │    4904 │            4 │
+│ rd01.shieldbase.com │    4905 │            4 │
+│ rd01.shieldbase.com │    4907 │            1 │
+│ rd01.shieldbase.com │    4944 │            4 │
+│ rd01.shieldbase.com │    4945 │          943 │
+│ rd01.shieldbase.com │    4946 │          530 │
+│ rd01.shieldbase.com │    4947 │           29 │
+│ rd01.shieldbase.com │    4948 │          177 │
+│ rd01.shieldbase.com │    4954 │            6 │
+│ rd01.shieldbase.com │    4956 │            4 │
+│ rd01.shieldbase.com │    5061 │           50 │
+│ rd01.shieldbase.com │    5140 │           51 │
+│ rd01.shieldbase.com │    5142 │           15 │
+│ rd01.shieldbase.com │    5144 │            3 │
+│ rd01.shieldbase.com │    5379 │        59138 │
+│ rd01.shieldbase.com │    5381 │            1 │
+│ rd01.shieldbase.com │    5382 │          108 │
+│ rd01.shieldbase.com │    5478 │            4 │
+└─────────────────────┴─────────┴──────────────┘
+  50 rows                            3 columns
 ```
 
 

@@ -762,3 +762,72 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.Workstation    │           16 │
 └──────────────────────────────────┴──────────────┘
 ```
+
+
+
+## 4799
+```sql
+security D
+SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.TargetDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 4799
+GROUP BY ALL
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬─────────────────┬──────────────┬──────────────────┬─────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ TargetDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │     TargetUserName      │                                                    CallerProcessName                                                     │ count_star() │
+│       varchar       │                    varchar                     │     varchar      │     varchar     │   varchar    │     varchar      │         varchar         │                                                         varchar                                                          │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼──────────────────┼─────────────────┼──────────────┼──────────────────┼─────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\VSSVC.exe                                                                                            │          226 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\SrTasks.exe                                                                                          │          150 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\svchost.exe                                                                                          │           57 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\CompatTelRunner.exe                                                                                  │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\services.exe                                                                                         │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\consent.exe                                                                                          │            4 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\SearchIndexer.exe                                                                                    │            6 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                   │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{8CA2A3C8-C01F-485B-8EDB-4C85DAAF8640}\EDGEMITMP_206C7.tmp\setup.exe │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                   │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{BC9BFFFC-52C5-4D1D-8C5F-3D0DC621C3F4}\EDGEMITMP_AB5AB.tmp\setup.exe │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                   │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{22B5026D-75BC-47A1-86CE-339A587518F8}\EDGEMITMP_22B8E.tmp\setup.exe │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                   │ C:\Windows\System32\CompatTelRunner.exe                                                                                  │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-546 │ Builtin          │ Guests                  │ C:\Windows\System32\CompatTelRunner.exe                                                                                  │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-551 │ Builtin          │ Backup Operators        │ C:\Windows\System32\VSSVC.exe                                                                                            │          226 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-551 │ Builtin          │ Backup Operators        │ C:\Windows\System32\SrTasks.exe                                                                                          │          150 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-551 │ Builtin          │ Backup Operators        │ C:\Windows\System32\svchost.exe                                                                                          │            9 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-551 │ Builtin          │ Backup Operators        │ C:\Windows\System32\SearchIndexer.exe                                                                                    │            6 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-573 │ Builtin          │ Event Log Readers       │ C:\Windows\System32\services.exe                                                                                         │           35 │
+│ rd01.shieldbase.com │ S-1-5-20                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\svchost.exe                                                                                          │            4 │
+│ rd01.shieldbase.com │ S-1-5-20                                       │ Builtin          │ RD01$           │ S-1-5-32-551 │ Builtin          │ Backup Operators        │ C:\Windows\System32\svchost.exe                                                                                          │            4 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ Builtin          │ rsydow-a        │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\net1.exe                                                                                             │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ Builtin          │ rsydow-a        │ S-1-5-32-544 │ Builtin          │ Administrators          │ -                                                                                                                        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ Builtin          │ rsydow-a        │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users    │ -                                                                                                                        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ Builtin          │ rsydow-a        │ S-1-5-32-562 │ Builtin          │ Distributed COM Users   │ -                                                                                                                        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ Builtin          │ rsydow-a        │ S-1-5-32-580 │ Builtin          │ Remote Management Users │ -                                                                                                                        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ Builtin          │ wacsvc          │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\svchost.exe                                                                                          │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ Builtin          │ wacsvc          │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\dllhost.exe                                                                                          │           67 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ Builtin          │ wacsvc          │ S-1-5-32-551 │ Builtin          │ Backup Operators        │ C:\Windows\System32\dllhost.exe                                                                                          │           67 │
+└─────────────────────┴────────────────────────────────────────────────┴──────────────────┴─────────────────┴──────────────┴──────────────────┴─────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+  27 rows                                                                                                                                                                                                                                                                                               9 columns
+```
+fullkey
+```sql
+security D
+SELECT je.fullkey, COUNT(*)
+FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
+WHERE e.json->>'$.Event.System.EventID' = '4799' AND je.fullkey LIKE '$.Event.EventData.%'
+GROUP BY je.fullkey
+ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.CallerProcessId   │         6625 │
+│ $.Event.EventData.CallerProcessName │         6625 │
+│ $.Event.EventData.SubjectDomainName │         6625 │
+│ $.Event.EventData.SubjectLogonId    │         6625 │
+│ $.Event.EventData.SubjectUserName   │         6625 │
+│ $.Event.EventData.SubjectUserSid    │         6625 │
+│ $.Event.EventData.TargetDomainName  │         6625 │
+│ $.Event.EventData.TargetSid         │         6625 │
+│ $.Event.EventData.TargetUserName    │         6625 │
+└─────────────────────────────────────┴──────────────┘
+```

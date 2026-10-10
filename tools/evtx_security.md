@@ -59,59 +59,87 @@ security D DESCRIBE;
 
 ## EventId
 ```sql
-memory D
-SELECT
-Event.System.EventID AS event_id,
-COUNT(*) AS count
+security D
+SELECT Event.System.EventID,COUNT(*)
 FROM read_json_auto('C:/Users/SANSDFIR/security.json')
-GROUP BY event_id
-ORDER BY count DESC;
-┌──────────┬────────┐
-│ event_id │ count  │
-│  int64   │ int64  │
-├──────────┼────────┤
-│     5061 │ 150931 │
-│     4624 │  69121 │
-│     4672 │  52079 │
-│     4799 │  32503 │
-│     4634 │  30884 │
-│     5140 │  17009 │
-│     4945 │   4410 │
-│     4625 │   3707 │
-│     4648 │   2617 │
-│     4948 │    978 │
-│     4946 │    977 │
-│     4798 │    968 │
-│     4611 │    188 │
-│     4956 │    135 │
-│     4688 │    120 │
-│     4622 │    120 │
-│     4697 │    109 │
-│     4905 │     96 │
-│     4904 │     96 │
-│     4616 │     92 │
-│     5142 │     74 │
-│     4947 │     67 │
-│     5144 │     38 │
-│     4800 │     34 │
-│     4801 │     32 │
-│     4614 │     12 │
-│     5478 │     12 │
-│     4797 │     12 │
-│     4608 │     12 │
-│     4610 │     12 │
-│     4826 │     12 │
-│     4902 │     12 │
-│     4944 │     12 │
-│     1100 │      9 │
-│     4647 │      9 │
-│     4954 │      5 │
-│     4692 │      4 │
-│     4693 │      3 │
-│     1101 │      3 │
-│     4732 │      1 │
-└──────────┴────────┘
-       40 rows
+GROUP BY Event.System.EventID
+ORDER BY ALL;
+┌─────────┬──────────────┐
+│ EventID │ count_star() │
+│  int64  │    int64     │
+├─────────┼──────────────┤
+│    1100 │           24 │
+│    4608 │           23 │
+│    4610 │           13 │
+│    4611 │          346 │
+│    4614 │           26 │
+│    4616 │           24 │
+│    4622 │          130 │
+│    4624 │        17544 │
+│    4625 │           25 │
+│    4634 │         5024 │
+│    4647 │           43 │
+│    4648 │         1315 │
+│    4672 │        17113 │
+│    4688 │          287 │
+│    4692 │            5 │
+│    4694 │            8 │
+│    4695 │          126 │
+│    4696 │           26 │
+│    4697 │          955 │
+│    4717 │           10 │
+│    4718 │            9 │
+│    4719 │           32 │
+│    4720 │            3 │
+│    4722 │            3 │
+│    4724 │           18 │
+│    4725 │            4 │
+│    4726 │            1 │
+│    4728 │            3 │
+│    4729 │            1 │
+│    4731 │           11 │
+│    4732 │           12 │
+│    4733 │            3 │
+│    4735 │           49 │
+│    4737 │            2 │
+│    4738 │           35 │
+│    4739 │            4 │
+│    4776 │           16 │
+│    4778 │           35 │
+│    4779 │           37 │
+│    4781 │           20 │
+│    4793 │            1 │
+│    4797 │          105 │
+│    4798 │          409 │
+│    4799 │         6625 │
+│    4800 │           36 │
+│    4825 │            7 │
+│    4826 │           26 │
+│    4902 │           23 │
+│    4904 │           16 │
+│    4905 │           16 │
+│    4907 │        30602 │
+│    4944 │           13 │
+│    4945 │         2728 │
+│    4946 │         1014 │
+│    4947 │           74 │
+│    4948 │          690 │
+│    4954 │           24 │
+│    4956 │           13 │
+│    5024 │           10 │
+│    5033 │           10 │
+│    5058 │           47 │
+│    5059 │           26 │
+│    5061 │          157 │
+│    5140 │           71 │
+│    5142 │           42 │
+│    5144 │            3 │
+│    5379 │        81294 │
+│    5381 │           23 │
+│    5382 │          460 │
+│    5478 │           13 │
+└─────────┴──────────────┘
+  70 rows      2 columns
 ```
 
 
@@ -412,22 +440,29 @@ ORDER BY je.fullkey;
 
 ## 4625
 ```sql
-security D 
-SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
+security D
+SELECT Event.System.EventID, Event.EventData.LogonType, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetOutboundDomainName, Event.EventData.TargetOutboundUserName, Event.EventData.WorkstationName, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
 FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
 WHERE Event.System.EventID = 4625
 GROUP BY ALL
 ORDER BY ALL;
-┌─────────┬───────────┬───────────────────┬─────────────────┬──────────────────┬────────────────┬─────────────────┬─────────────────────────────────────────────────────────────────────────────────────────┬──────────────┬──────────────┐
-│ EventID │ LogonType │ SubjectDomainName │ SubjectUserName │ TargetDomainName │ TargetUserName │ WorkstationName │                                       ProcessName                                       │  IpAddress   │ count_star() │
-│  int64  │   int64   │      varchar      │     varchar     │     varchar      │    varchar     │     varchar     │                                         varchar                                         │   varchar    │    int64     │
-├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────┼──────────────┼──────────────┤
-│    4625 │         2 │ TPL-PACKER        │ Administrator   │ TPL-PACKER       │ Administrator  │ TPL-PACKER      │ C:\Program Files (x86)\Microsoft\EdgeWebView\Application\90.0.818.66\msedgewebview2.exe │ -            │            2 │
-│    4625 │         2 │ shieldbase        │ RD01$           │ RD01             │ srladmin       │ RD01            │ C:\Windows\System32\consent.exe                                                         │ ::1          │            1 │
-│    4625 │         3 │ -                 │ -               │ shieldbase       │ tdungan        │ DUNGANATOR      │ -                                                                                       │ 172.16.30.20 │            4 │
-│    4625 │         3 │ shieldbase        │ RD01$           │                  │ sprx           │ RD01            │ C:\Windows\System32\svchost.exe                                                         │ -            │           14 │
-│    4625 │         3 │ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ RD01            │ C:\Windows\System32\svchost.exe                                                         │ -            │            1 │
-│    4625 │        10 │ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ RD01            │ C:\Windows\System32\svchost.exe                                                         │ 172.16.30.20 │            1 │
-│    4625 │        11 │ shieldbase        │ RD01$           │ RD01             │ srladmin       │ RD01            │ C:\Windows\System32\consent.exe                                                         │ ::1          │            2 │
-└─────────┴───────────┴───────────────────┴─────────────────┴──────────────────┴────────────────┴─────────────────┴─────────────────────────────────────────────────────────────────────────────────────────┴──────────────┴──────────────┘
+┌─────────┬───────────┬───────────────────┬─────────────────┬──────────────────┬────────────────┬──────────────────────────┬────────────────────────┬─────────────────┬──────────────────────────────────────────────────────┬──────────────┬──────────────┐
+│ EventID │ LogonType │ SubjectDomainName │ SubjectUserName │ TargetDomainName │ TargetUserName │ TargetOutboundDomainName │ TargetOutboundUserName │ WorkstationName │                     ProcessName                      │  IpAddress   │ count_star() │
+│  int64  │   int64   │      varchar      │     varchar     │     varchar      │    varchar     │         varchar          │        varchar         │     varchar     │                       varchar                        │   varchar    │    int64     │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼──────────────────────────┼────────────────────────┼─────────────────┼──────────────────────────────────────────────────────┼──────────────┼──────────────┤
+│    4625 │         2 │ TPL-PACKER        │ Administrator   │ TPL-PACKER       │ Administrator  │ NULL                     │ NULL                   │ TPL-PACKER      │ C:\Program Files (x86)\Microsoft\EdgeWebView\Applica │ -            │            2 │
+│         │           │                   │                 │                  │                │                          │                        │                 │ tion\90.0.818.66\msedgewebview2.exe                  │              │              │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼──────────────────────────┼────────────────────────┼─────────────────┼──────────────────────────────────────────────────────┼──────────────┼──────────────┤
+│    4625 │         2 │ shieldbase        │ RD01$           │ RD01             │ srladmin       │ NULL                     │ NULL                   │ RD01            │ C:\Windows\System32\consent.exe                      │ ::1          │            1 │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼──────────────────────────┼────────────────────────┼─────────────────┼──────────────────────────────────────────────────────┼──────────────┼──────────────┤
+│    4625 │         3 │ -                 │ -               │ shieldbase       │ tdungan        │ NULL                     │ NULL                   │ DUNGANATOR      │ -                                                    │ 172.16.30.20 │            4 │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼──────────────────────────┼────────────────────────┼─────────────────┼──────────────────────────────────────────────────────┼──────────────┼──────────────┤
+│    4625 │         3 │ shieldbase        │ RD01$           │                  │ sprx           │ NULL                     │ NULL                   │ RD01            │ C:\Windows\System32\svchost.exe                      │ -            │           14 │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼──────────────────────────┼────────────────────────┼─────────────────┼──────────────────────────────────────────────────────┼──────────────┼──────────────┤
+│    4625 │         3 │ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ NULL                     │ NULL                   │ RD01            │ C:\Windows\System32\svchost.exe                      │ -            │            1 │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼──────────────────────────┼────────────────────────┼─────────────────┼──────────────────────────────────────────────────────┼──────────────┼──────────────┤
+│    4625 │        10 │ shieldbase        │ RD01$           │ shieldbase       │ tdungan        │ NULL                     │ NULL                   │ RD01            │ C:\Windows\System32\svchost.exe                      │ 172.16.30.20 │            1 │
+├─────────┼───────────┼───────────────────┼─────────────────┼──────────────────┼────────────────┼──────────────────────────┼────────────────────────┼─────────────────┼──────────────────────────────────────────────────────┼──────────────┼──────────────┤
+│    4625 │        11 │ shieldbase        │ RD01$           │ RD01             │ srladmin       │ NULL                     │ NULL                   │ RD01            │ C:\Windows\System32\consent.exe                      │ ::1          │            2 │
+└─────────┴───────────┴───────────────────┴─────────────────┴──────────────────┴────────────────┴──────────────────────────┴────────────────────────┴─────────────────┴──────────────────────────────────────────────────────┴──────────────┴──────────────┘
 ```

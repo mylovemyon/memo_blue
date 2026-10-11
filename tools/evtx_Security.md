@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f security.json E:\Windows\System32\winevt\Logs\Security.evtx
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f security.json C:\Windows\System32\winevt\Logs\Security.evtx
 PS C:\Users\SANSDFIR>
 ```
 

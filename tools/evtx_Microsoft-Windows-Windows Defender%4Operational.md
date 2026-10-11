@@ -419,3 +419,43 @@ ORDER BY je.fullkey;
 └─────────────────────────────────────────────────┴──────────────┘
   42 rows                                              2 columns
 ```
+
+
+
+## 5001
+```sql
+Windows_Defender%4Operational D
+SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Old Value", Event.EventData."New Value", COUNT(*)
+FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+AND Event.System.EventID = 5007
+GROUP BY ALL
+ORDER BY ALL;
+┌─────────────────────┬──────────────────────────────┬─────────────────┬──────────────────────────────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │         Product Name         │ Product Version │                                      Old Value                                       │                                                New Value                                                │ count_star() │
+│       varchar       │           varchar            │     varchar     │                                       varchar                                        │                                                 varchar                                                 │    int64     │
+├─────────────────────┼──────────────────────────────┼─────────────────┼──────────────────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Default\IsServiceRunning = 0x0                                                       │ HKLM\SOFTWARE\Microsoft\Windows Defender\IsServiceRunning = 0x1                                         │            3 │
+│ rd01.shieldbase.com │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Default\ProductAppDataPath = C:\ProgramData\Microsoft\Windows Defender               │ HKLM\SOFTWARE\Microsoft\Windows Defender\ProductAppDataPath = C:\ProgramData\Microsoft\Windows Defender │            3 │
+│ rd01.shieldbase.com │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Default\ServiceStartStates = 0x0                                                     │ HKLM\SOFTWARE\Microsoft\Windows Defender\ServiceStartStates = 0x1                                       │            3 │
+│ rd01.shieldbase.com │ Microsoft Defender Antivirus │ 4.18.2211.5     │ HKLM\SOFTWARE\Microsoft\Windows Defender\ServiceStartStates = 0x1                    │ Default\ServiceStartStates = 0x0                                                                        │            3 │
+│ rd01.shieldbase.com │ Microsoft Defender Antivirus │ 4.18.2211.5     │ HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\DisableRoutinelyTakingAction = 0x1 │ Default\DisableRoutinelyTakingAction = 0x0                                                              │            3 │
+└─────────────────────┴──────────────────────────────┴─────────────────┴──────────────────────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+Windows_Defender%4Operational D SELECT je.fullkey, COUNT(*)
+                                FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational.json') AS e, json_tree(e.json) AS je
+                                WHERE e.json->>'$.Event.System.EventID' = '5007' AND je.fullkey LIKE '$.Event.EventData.%'
+                                GROUP BY je.fullkey
+                                ORDER BY je.fullkey;
+┌───────────────────────────────────┬──────────────┐
+│              fullkey              │ count_star() │
+│              varchar              │    int64     │
+├───────────────────────────────────┼──────────────┤
+│ $.Event.EventData.New Value       │           15 │
+│ $.Event.EventData.Old Value       │           15 │
+│ $.Event.EventData.Product Name    │           15 │
+│ $.Event.EventData.Product Version │           15 │
+└───────────────────────────────────┴──────────────┘
+```

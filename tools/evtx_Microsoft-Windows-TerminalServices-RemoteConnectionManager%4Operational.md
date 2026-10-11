@@ -1,6 +1,14 @@
 ```powershell
-PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-RemoteConnectionManager%4Operational.json E:\C\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx
+PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-RemoteConnectionManager%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx
 PS C:\Users\SANSDFIR>
+```
+
+## cli
+```powershell
+PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\TerminalServices-RemoteConnectionManager%4Operational.json
+DuckDB v1.5.6 (Variegata)
+Enter ".help" for usage hints.
+TerminalServices-RemoteConnectionManager... D
 ```
 
 ## .databaess

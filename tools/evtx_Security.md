@@ -826,7 +826,7 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4724
 GROUP BY ALL
-ORDER BY ALL;
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │ TargetUserName │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │    varchar     │    int64     │
@@ -866,7 +866,7 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4725
 GROUP BY ALL
-ORDER BY ALL;
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────┬──────────────────┬────────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                  TargetSid                   │ TargetDomainName │ TargetUserName │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │                   varchar                    │     varchar      │    varchar     │    int64     │
@@ -905,7 +905,7 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4738
 GROUP BY ALL
-ORDER BY ALL;
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────┬─────────────┬─────────────┬────────────────────┬────────────────┬─────────────────────┬────────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │ TargetUserName │ OldUacValue │ NewUacValue │ UserAccountControl │ SamAccountName │   PasswordLastSet   │ PrimaryGroupId │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │    varchar     │   varchar   │   varchar   │      varchar       │    varchar     │       varchar       │    varchar     │    int64     │
@@ -967,7 +967,7 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4776
 GROUP BY ALL
-ORDER BY ALL;
+ORDER BY Event.EventData.TargetUserName;
 ┌─────────────────────┬─────────────┬────────────────┬────────────┬───────────────────────────────────────┬──────────────┐
 │      Computer       │ Workstation │ TargetUserName │   Status   │              PackageName              │ count_star() │
 │       varchar       │   varchar   │    varchar     │  varchar   │                varchar                │    int64     │
@@ -1004,7 +1004,7 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4778
 GROUP BY ALL
-ORDER BY ALL;
+ORDER BY Event.EventData.AccountName, Event.EventData.ClientAddress;
 ┌─────────────────────┬───────────────┬─────────────┬────────────┬───────────────┬─────────────┬──────────────┐
 │      Computer       │ AccountDomain │ AccountName │ ClientName │ ClientAddress │ SessionName │ count_star() │
 │       varchar       │    varchar    │   varchar   │  varchar   │    varchar    │   varchar   │    int64     │
@@ -1047,7 +1047,7 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4779
 GROUP BY ALL
-ORDER BY ALL;
+ORDER BY Event.EventData.AccountName, Event.EventData.ClientAddress;
 ┌─────────────────────┬───────────────┬─────────────┬────────────┬───────────────┬─────────────┬──────────────┐
 │      Computer       │ AccountDomain │ AccountName │ ClientName │ ClientAddress │ SessionName │ count_star() │
 │       varchar       │    varchar    │   varchar   │  varchar   │    varchar    │   varchar   │    int64     │
@@ -1158,17 +1158,17 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 5140
 GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid;
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName, Event.EventData.IpAddress;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬────────────────┬────────────┬───────────────────────────┬────────────┬────────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  ShareName   │ ShareLocalPath │ ObjectType │         IpAddress         │ AccessMask │     AccessList     │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │    varchar     │  varchar   │          varchar          │  varchar   │      varchar       │    int64     │
 ├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼──────────────┼────────────────┼────────────┼───────────────────────────┼────────────┼────────────────────┼──────────────┤
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase        │ cbarton-a       │ \\*\IPC$     │                │ File       │ 172.16.5.25               │ 0x1        │ %%4416\r\n\t\t\t\t │            7 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase        │ cbarton-a       │ \\*\TempFRes │ \??\C:\        │ File       │ 172.16.5.25               │ 0x1        │ %%4416\r\n\t\t\t\t │            2 │
-│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ \\*\IPC$     │                │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            3 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ \\*\C$       │ \??\C:\        │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            3 │
-│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ \\*\IPC$     │                │ File       │ ::1                       │ 0x1        │ %%4416\r\n\t\t\t\t │            9 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ \\*\IPC$     │                │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            3 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ \\*\C$       │ \??\C:\        │ File       │ ::1                       │ 0x1        │ %%4416\r\n\t\t\t\t │           12 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ \\*\IPC$     │                │ File       │ ::1                       │ 0x1        │ %%4416\r\n\t\t\t\t │            9 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ \\*\IPC$     │                │ File       │ fe80::7e6b:763c:b405:22b4 │ 0x1        │ %%4416\r\n\t\t\t\t │            2 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1159 │ shieldbase        │ HUNT01$         │ \\*\TempFRes │ \??\C:\        │ File       │ 172.16.5.25               │ 0x1        │ %%4416\r\n\t\t\t\t │            2 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1213 │ shieldbase        │ slevine         │ \\*\IPC$     │                │ File       │ 172.16.6.18               │ 0x1        │ %%4416\r\n\t\t\t\t │            1 │
@@ -1216,14 +1216,14 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 5142
 GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid;
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  ShareName   │ ShareLocalPath │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │    varchar     │    int64     │
 ├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼──────────────┼────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ \\*\ADMIN$   │ C:\Windows     │            4 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ \\*\C$       │ C:\            │            4 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ \\*\IPC$     │                │            4 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ \\*\ADMIN$   │ C:\Windows     │            4 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase        │ cbarton-a       │ \\*\TempFRes │ C:\            │            3 │
 └─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────┴────────────────┴──────────────┘
 ```
@@ -1258,7 +1258,7 @@ FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inferenc
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 5144
 GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid;
+ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  ShareName   │ ShareLocalPath │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │    varchar     │    int64     │

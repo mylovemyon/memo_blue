@@ -59,7 +59,7 @@ DESCRIBE;
 ```sql
 powershell_operational D
 SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 GROUP BY ALL
 ORDER BY ALL;
@@ -113,7 +113,7 @@ ORDER BY je.fullkey;
 ```sql
 powershell_operational D
 SELECT Event.System.Computer, Event.EventData.Path,  Event.EventData.MessageNumber, Event.EventData.MessageTotal, Event.EventData.ScriptBlockText, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4104
 GROUP BY ALL

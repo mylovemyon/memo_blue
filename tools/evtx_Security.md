@@ -64,7 +64,7 @@ DESCRIBE;
 ```sql
 security D
 SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 GROUP BY ALL
 ORDER BY ALL;
@@ -132,7 +132,7 @@ ORDER BY ALL;
 ```sql
 security D
 SELECT Event.System.Computer,Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4608
 GROUP BY ALL
@@ -169,7 +169,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ProcessName, Event.EventData.PreviousTime, Event.EventData.NewTime, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4616
 GROUP BY ALL
@@ -215,7 +215,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.LogonType, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetOutboundDomainName, Event.EventData.TargetOutboundUserName, Event.EventData.WorkstationName, Event.EventData.IpAddress, Event.EventData.ProcessName, Event.EventData.AuthenticationPackageName, Event.EventData.LogonProcessName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4624
 GROUP BY ALL
@@ -342,7 +342,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.LogonType, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.IpAddress, Event.EventData.ProcessName, Event.EventData.AuthenticationPackageName, Event.EventData.LogonProcessName, Event.EventData.Status, Event.EventData.SubStatus, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4625
 GROUP BY ALL
@@ -401,7 +401,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.LogonType, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4634
 GROUP BY ALL
@@ -478,7 +478,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4647
 GROUP BY ALL
@@ -516,7 +516,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetServerName, Event.EventData.TargetInfo, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4648
 GROUP BY ALL
@@ -615,7 +615,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.PrivilegeList, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4672
 GROUP BY ALL
@@ -691,7 +691,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TokenElevationType, Event.EventData.MandatoryLabel, Event.EventData.ParentProcessName, Event.EventData.NewProcessName, Event.EventData.CommandLine, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4688
 GROUP BY ALL
@@ -748,7 +748,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ServiceAccount, Event.EventData.ServiceName, Event.EventData.ServiceFileName, Event.EventData.ServiceType, Event.EventData.ServiceStartType, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4697
 AND Event.EventData.ServiceFileName NOT ILIKE 'C:\Windows\system32\svchost.exe%'
@@ -822,7 +822,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4724
 GROUP BY ALL
@@ -862,7 +862,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4725
 GROUP BY ALL
@@ -901,7 +901,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer,Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl, Event.EventData.SamAccountName, Event.EventData.PasswordLastSet, Event.EventData.PrimaryGroupId, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4738
 GROUP BY ALL
@@ -963,7 +963,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.Workstation, Event.EventData.TargetUserName, Event.EventData.Status, Event.EventData.PackageName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4776
 GROUP BY ALL
@@ -1000,7 +1000,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.AccountDomain, Event.EventData.AccountName, Event.EventData.ClientName, Event.EventData.ClientAddress, Event.EventData.SessionName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4778
 GROUP BY ALL
@@ -1043,7 +1043,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.AccountDomain, Event.EventData.AccountName, Event.EventData.ClientName, Event.EventData.ClientAddress, Event.EventData.SessionName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4779
 GROUP BY ALL
@@ -1085,7 +1085,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.TargetDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 4799
 GROUP BY ALL
@@ -1154,7 +1154,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, Event.EventData.ObjectType, Event.EventData.IpAddress, Event.EventData.AccessMask, Event.EventData.AccessList, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 5140
 GROUP BY ALL
@@ -1212,7 +1212,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 5142
 GROUP BY ALL
@@ -1254,7 +1254,7 @@ ORDER BY je.fullkey;
 ```sql
 security D
 SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1)
+FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
 AND Event.System.EventID = 5144
 GROUP BY ALL

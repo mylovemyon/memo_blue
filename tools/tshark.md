@@ -179,30 +179,31 @@ Service Stats                  0                                                
 ### -z endpoints
 #### -z endpoints,eth
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,eth,"ip.src == 10.3.16.5"
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,eth,"ip.addr == 10.3.16.5"
 ================================================================================
 Ethernet Endpoints
-Filter:ip.src == 10.3.16.5
+Filter:ip.addr == 10.3.16.5
                        | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
+IETF-VRRP-VRID_1d          483106   263 MB              0      0 bytes         483106      263 MB
+VMware_a5:0b:40            334148   94 MB          217079      82 MB           117069      12 MB
 Intel_2e:0d:e0             297764   28 MB          297764      28 MB                0      0 bytes
-VMware_a5:0b:40            117069   12 MB               0      0 bytes         117069      12 MB
-VMware_a5:00:10             77065   5803 kB             0      0 bytes          77065      5803 kB
-VMware_a5:07:40             64686   6345 kB             0      0 bytes          64686      6345 kB
-VMware_a5:12:69             38944   4127 kB             0      0 bytes          38944      4127 kB
+VMware_a5:00:10            207754   127 MB         130689      121 MB           77065      5803 kB
+VMware_a5:07:40            134325   31 MB           69639      25 MB            64686      6345 kB
+VMware_a5:12:69            104643   37 MB           65699      33 MB            38944      4127 kB
 ================================================================================
 ```
 #### -z endpoints,ip
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,ip,"ip.src == 10.3.16.5"
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,ip,"ip.addr == 10.3.16.5"
 ================================================================================
 IPv4 Endpoints
-Filter:ip.src == 10.3.16.5
+Filter:ip.addr == 10.3.16.5
                        | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
-10.3.16.5                  297764   28 MB          297764      28 MB                0      0 bytes
-10.3.58.6                  117069   12 MB               0      0 bytes         117069      12 MB
-10.3.58.7                   77065   5803 kB             0      0 bytes          77065      5803 kB
-10.3.58.4                   64686   6345 kB             0      0 bytes          64686      6345 kB
-10.3.58.5                   38944   4127 kB             0      0 bytes          38944      4127 kB
+10.3.16.5                  780870   292 MB         297764      28 MB           483106      263 MB
+10.3.58.6                  334148   94 MB          217079      82 MB           117069      12 MB
+10.3.58.7                  207754   127 MB         130689      121 MB           77065      5803 kB
+10.3.58.4                  134325   31 MB           69639      25 MB            64686      6345 kB
+10.3.58.5                  104643   37 MB           65699      33 MB            38944      4127 kB
 ================================================================================
 ```
 #### -z endpoints,tcp
@@ -343,3 +344,15 @@ PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z hosts
 23.66.232.51    a1470.g.akamai.net
 ```
 
+### -z http,stat
+```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z http,stat,"ip.addr == 98.124.198.1"
+
+===================================================================
+HTTP Statistics with filter ip.addr == 98.124.198.1
+* HTTP Response Status Codes                Packets
+  302 Found                                       2
+* HTTP Request Methods                      Packets
+  GET                                             5
+===================================================================
+```

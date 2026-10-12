@@ -110,3 +110,172 @@ IPv4 Statistics/Destinations and Ports  297764                                  
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
+### -z dhcp,stat
+```powershell
+PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dhcp,stat
+
+=====================================================================================================
+DHCP (BOOTP) Statistics:
+Filter for statistics:
+DHCP Message Type |Packets |
+DHCP Statistics
+Discover                  |0 |
+Offer                     |0 |
+Request                   |0 |
+Decline                   |0 |
+ACK                       |0 |
+NAK                       |0 |
+Release                   |0 |
+Inform                    |0 |
+Force Renew               |0 |
+Lease query               |0 |
+Lease Unassigned          |0 |
+Lease Unknown             |0 |
+Lease Active              |0 |
+Bulk Lease Query          |0 |
+Lease Query Done          |0 |
+Active LeaseQuery         |0 |
+Lease Query Status        |0 |
+TLS                       |0 |
+=====================================================================================================
+```
+
+### -z dns,tree
+```powershell
+PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dns,tree
+
+==============================================================================================================================================
+DNS:
+Packet Type                    Count         Average       Min Val       Max Val       Rate (ms)     Percent       Burst Rate    Burst Start
+----------------------------------------------------------------------------------------------------------------------------------------------
+Total Packets                  45613                                                   0.0001        100%          1.0000        38770.717
+Response                       45613                                                   0.0001        100%          1.0000        38770.717
+ Query                         22849                                                   0.0001        50.09%        0.5200        38770.711
+ Response                      22764                                                   0.0001        49.91%        0.5300        38770.717
+Query Type                     45613                                                   0.0001        100%          1.0000        38770.717
+ A                             42119                                                   0.0001        92.34%        1.0000        38770.717
+ SRV                           3222                                                    0.0000        7.06%         0.0800        136552.470
+ SOA                           168                                                     0.0000        0.37%         0.0800        11363.326
+ PTR                           48                                                      0.0000        0.11%         0.0400        156737.282
+ NS                            24                                                      0.0000        0.05%         0.0400        11363.387
+ AAAA                          20                                                      0.0000        0.04%         0.0600        248715.242
+ TXT                           8                                                       0.0000        0.02%         0.0200        57184.011
+ TKEY                          4                                                       0.0000        0.01%         0.0200        317600.104
+Answer Type                    88767                                                   0.0003        100%          3.8700        38770.717
+ A                             52780                                                   0.0002        59.46%        2.7600        20743.670
+ CNAME                         19806                                                   0.0001        22.31%        0.8800        33364.748
+ OPT                           12505                                                   0.0000        14.09%        0.2600        38770.717
+ NS                            2114                                                    0.0000        2.38%         0.9100        196890.759
+ SOA                           849                                                     0.0000        0.96%         0.1400        233629.496
+ SRV                           590                                                     0.0000        0.66%         0.0700        327988.349
+ RRSIG                         40                                                      0.0000        0.05%         0.0700        234483.542
+ AAAA                          37                                                      0.0000        0.04%         0.0200        13455.662
+ NSEC3                         36                                                      0.0000        0.04%         0.0600        234483.542
+ TSIG                          4                                                       0.0000        0.00%         0.0100        317600.106
+ DS                            4                                                       0.0000        0.00%         0.0100        13455.662
+ TKEY                          2                                                       0.0000        0.00%         0.0100        317600.106
+Query Name                     0                                                       0.0000        100%          -             -
+Class                          45613                                                   0.0001        100%          1.0000        38770.717
+ IN                            45605                                                   0.0001        99.98%        1.0000        38770.717
+ CH                            8                                                       0.0000        0.02%         0.0200        57184.011
+rcode                          45613                                                   0.0001        100%          1.0000        38770.717
+ No error                      44275                                                   0.0001        97.07%        1.0000        38770.717
+ No such name                  1331                                                    0.0000        2.92%         0.1200        233629.496
+ Format error                  4                                                       0.0000        0.01%         0.0100        13455.853
+ Refused                       2                                                       0.0000        0.00%         0.0100        317599.975
+ Server failure                1                                                       0.0000        0.00%         0.0100        44065.734
+opcodes                        45613                                                   0.0001        100%          1.0000        38770.717
+ Standard query                45569                                                   0.0001        99.90%        1.0000        38770.717
+ Dynamic update                44                                                      0.0000        0.10%         0.0300        317729.964
+Payload size                   45613         81.09         24            3267          0.0001        100%          1.0000        38770.717
+Query Stats                    0                                                       0.0000        100%          -             -
+ Qname Len                     22849         20.95         4             85            0.0001                      0.5200        38770.711
+ Label Stats                   0                                                       0.0000                      -             -
+  3rd Level                    12185                                                   0.0000                      0.3500        45985.967
+  4th Level or more            10188                                                   0.0000                      0.3500        50362.797
+  2nd Level                    476                                                     0.0000                      0.0400        8063.414
+  1st Level                    0                                                       0.0000                      -             -
+Response Stats                 0                                                       0.0000        100%          -             -
+ no. of questions              45528         1.00          1             1             0.0001                      1.0600        38770.717
+ no. of authorities            45528         0.14          0             17            0.0001                      1.0600        38770.717
+ no. of answers                45528         3.13          0             21            0.0001                      1.0600        38770.717
+ no. of additionals            45528         0.63          0             16            0.0001                      1.0600        38770.717
+Service Stats                  0                                                       0.0000        100%          -             -
+ request-response time (msec)  22755         21.70         0.117000      43646.085938  0.0001                      0.5300        38770.717
+ no. of retransmissions        9                                                       0.0000                      0.0600        327988.349
+ no. of unsolicited responses  0                                                       0.0000                      -             -
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+### -z endpoints
+#### -z endpoints,eth
+```powershell
+PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,eth
+================================================================================
+Ethernet Endpoints
+Filter:<No Filter>
+                       | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
+IETF-VRRP-VRID_1d         1263796   447 MB              0      0 bytes        1263796      447 MB
+Intel_2e:0d:e0            1183054   321 MB        1183049      321 MB               5      358 bytes
+VMware_a5:00:10           1158635   624 MB         594412      290 MB          564223      333 MB
+VMware_a5:07:40           1015851   221 MB         483453      134 MB          532398      87 MB
+VMware_a5:0b:40            980274   379 MB         527006      222 MB          453268      157 MB
+VMware_a5:12:69            687796   286 MB         362852      172 MB          324944      113 MB
+Broadcast                   11951   1768 kB             0      0 bytes          11951      1768 kB
+IPv4mcast_7f:02:02             94   8178 bytes          0      0 bytes             94      8178 bytes
+IPv4mcast_7f:ff:fa             82   16 kB               0      0 bytes             82      16 kB
+Intel_2d:8a:a8                 15   1158 bytes          2      148 bytes           13      1010 bytes
+================================================================================
+```
+#### -z endpoints,ip
+```powershell
+PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,ip,"ip.src == 10.3.16.5"
+================================================================================
+IPv4 Endpoints
+Filter:ip.src == 10.3.16.5
+                       | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
+10.3.16.5                  297764   28 MB          297764      28 MB                0      0 bytes
+10.3.58.6                  117069   12 MB               0      0 bytes         117069      12 MB
+10.3.58.7                   77065   5803 kB             0      0 bytes          77065      5803 kB
+10.3.58.4                   64686   6345 kB             0      0 bytes          64686      6345 kB
+10.3.58.5                   38944   4127 kB             0      0 bytes          38944      4127 kB
+================================================================================
+```
+#### -z endpoints,tcp
+```powershell
+PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,tcp,"ip.src == 10.3.16.5 && ip.dst ==10.3.58.5"
+================================================================================
+TCP Endpoints
+Filter:ip.src == 10.3.16.5 && ip.dst ==10.3.58.5
+                       |  Port  | | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
+10.3.58.5                  3389        38944   4127 kB             0      0 bytes          38944      4127 kB
+10.3.16.5                  8526        16265   2469 kB         16265      2469 kB              0      0 bytes
+10.3.16.5                 14590        13884   993 kB          13884      993 kB               0      0 bytes
+10.3.16.5                 47037         4235   295 kB           4235      295 kB               0      0 bytes
+10.3.16.5                 15889         2209   190 kB           2209      190 kB               0      0 bytes
+10.3.16.5                 49081         1319   92 kB            1319      92 kB                0      0 bytes
+10.3.16.5                 47330          984   73 kB             984      73 kB                0      0 bytes
+10.3.16.5                 47036            8   1953 bytes          8      1953 bytes           0      0 bytes
+10.3.16.5                 49079            8   1921 bytes          8      1921 bytes           0      0 bytes
+10.3.16.5                  8525            8   1953 bytes          8      1953 bytes           0      0 bytes
+10.3.16.5                 14589            8   1953 bytes          8      1953 bytes           0      0 bytes
+10.3.16.5                 15888            8   1953 bytes          8      1953 bytes           0      0 bytes
+10.3.16.5                 47329            8   1953 bytes          8      1953 bytes           0      0 bytes
+================================================================================
+```
+#### -z endpoints,udp
+```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,udp,"ip.src == 10.3.58.4 && ip.dst == 68.71.210.254"
+================================================================================
+UDP Endpoints
+Filter:ip.src == 10.3.58.4 && ip.dst == 68.71.210.254
+                       |  Port  | | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
+68.71.210.254                53            4   358 bytes           0      0 bytes              4      358 bytes
+10.3.58.4                 57908            1   95 bytes            1      95 bytes             0      0 bytes
+10.3.58.4                 58596            1   95 bytes            1      95 bytes             0      0 bytes
+10.3.58.4                 57943            1   84 bytes            1      84 bytes             0      0 bytes
+10.3.58.4                 56354            1   84 bytes            1      84 bytes             0      0 bytes
+================================================================================
+```

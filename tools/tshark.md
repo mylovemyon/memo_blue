@@ -302,7 +302,71 @@ Errors (15282)
           26  Malformed               HTTP  Malformed Packet (Exception occurred)
 ```
 
-### 
+### -z follow
+#### -z follow,tcp
 ```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z follow,tcp,utf-9,10.3.58.7:2603,98.124.198.1:80
+tshark: Invalid display mode.
+tshark: Can't get IPv4 address
+tshark: Invalid range.
+tshark: Invalid parameter.
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z follow,tcp,utf-8,10.3.58.7:2603,98.124.198.1:80
 
+===================================================================
+Follow: tcp,utf-8
+Filter: ((ip.src eq 10.3.58.7 and tcp.srcport eq 2603) and (ip.dst eq 98.124.198.1 and tcp.dstport eq 80)) or ((ip.src eq 98.124.198.1 and tcp.srcport eq 80) and (ip.dst eq 10.3.58.7 and tcp.dstport eq 2603))
+Node 0: 10.3.58.7:2603
+Node 1: 98.124.198.1:80
+283
+GET / HTTP/1.1
+Host: flightstatus.com
+User-Agent: Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko/20100101 Firefox/11.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+        103
+HTTP/1.1 302 Found
+Connection: close
+Pragma: no-cache
+cache-control: no-cache
+Location: /VfbpQ/
+
+
+===================================================================
+```
+#### -z follow,http
+```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -Y "ip.addr == 10.3.58.7 && ip.addr == 98.124.198.1 && tcp.port == 80" -w http.pcap -F pcap
+PS C:\Users\Public>
+```
+```powershell
+PS C:\Users\Public> tshark.exe -r .\http.pcap -q -z follow,http,utf-8,1
+
+===================================================================
+Follow: http,utf-8
+Filter: tcp.stream eq 1
+Node 0: 10.3.58.7:2604
+Node 1: 98.124.198.1:80
+289
+GET /VfbpQ/ HTTP/1.1
+Host: flightstatus.com
+User-Agent: Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko/20100101 Firefox/11.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+        97
+HTTP/1.1 302 Found
+Connection: close
+Pragma: no-cache
+cache-control: no-cache
+Location: /
+
+
+===================================================================
 ```

@@ -208,38 +208,38 @@ Filter:ip.addr == 10.3.16.5
 ```
 #### -z endpoints,tcp
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,tcp,"ip.src == 10.3.16.5 && ip.dst ==10.3.58.5"
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,tcp,"ip.addr == 10.3.16.5 && ip.addr ==10.3.58.5"
 ================================================================================
 TCP Endpoints
-Filter:ip.src == 10.3.16.5 && ip.dst ==10.3.58.5
+Filter:ip.addr == 10.3.16.5 && ip.addr ==10.3.58.5
                        |  Port  | | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
-10.3.58.5                  3389        38944   4127 kB             0      0 bytes          38944      4127 kB
-10.3.16.5                  8526        16265   2469 kB         16265      2469 kB              0      0 bytes
-10.3.16.5                 14590        13884   993 kB          13884      993 kB               0      0 bytes
-10.3.16.5                 47037         4235   295 kB           4235      295 kB               0      0 bytes
-10.3.16.5                 15889         2209   190 kB           2209      190 kB               0      0 bytes
-10.3.16.5                 49081         1319   92 kB            1319      92 kB                0      0 bytes
-10.3.16.5                 47330          984   73 kB             984      73 kB                0      0 bytes
-10.3.16.5                 47036            8   1953 bytes          8      1953 bytes           0      0 bytes
-10.3.16.5                 49079            8   1921 bytes          8      1921 bytes           0      0 bytes
-10.3.16.5                  8525            8   1953 bytes          8      1953 bytes           0      0 bytes
-10.3.16.5                 14589            8   1953 bytes          8      1953 bytes           0      0 bytes
-10.3.16.5                 15888            8   1953 bytes          8      1953 bytes           0      0 bytes
-10.3.16.5                 47329            8   1953 bytes          8      1953 bytes           0      0 bytes
+10.3.58.5                  3389       104643   37 MB           65699      33 MB            38944      4127 kB
+10.3.16.5                 14590        40150   9594 kB         13884      993 kB           26266      8600 kB
+10.3.16.5                  8526        39583   16 MB           16265      2469 kB          23318      13 MB
+10.3.16.5                 47037        12201   5317 kB          4235      295 kB            7966      5021 kB
+10.3.16.5                 15889         6172   3064 kB          2209      190 kB            3963      2873 kB
+10.3.16.5                 49081         3634   2186 kB          1319      92 kB             2315      2094 kB
+10.3.16.5                 47330         2795   1517 kB           984      73 kB             1811      1443 kB
+10.3.16.5                 47036           18   4163 bytes          8      1953 bytes          10      2210 bytes
+10.3.16.5                 49079           18   4099 bytes          8      1921 bytes          10      2178 bytes
+10.3.16.5                  8525           18   4163 bytes          8      1953 bytes          10      2210 bytes
+10.3.16.5                 14589           18   4163 bytes          8      1953 bytes          10      2210 bytes
+10.3.16.5                 15888           18   4163 bytes          8      1953 bytes          10      2210 bytes
+10.3.16.5                 47329           18   4163 bytes          8      1953 bytes          10      2210 bytes
 ================================================================================
 ```
 #### -z endpoints,udp
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,udp,"ip.src == 10.3.58.4 && ip.dst == 68.71.210.254"
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,udp,"ip.addr == 10.3.58.4 && ip.addr == 68.71.210.254"
 ================================================================================
 UDP Endpoints
-Filter:ip.src == 10.3.58.4 && ip.dst == 68.71.210.254
+Filter:ip.addr == 10.3.58.4 && ip.addr == 68.71.210.254
                        |  Port  | | Packets | |  Bytes  | | Tx Packets | | Tx Bytes | | Rx Packets | | Rx Bytes |
-68.71.210.254                53            4   358 bytes           0      0 bytes              4      358 bytes
-10.3.58.4                 57908            1   95 bytes            1      95 bytes             0      0 bytes
-10.3.58.4                 58596            1   95 bytes            1      95 bytes             0      0 bytes
+68.71.210.254                53            7   689 bytes           3      331 bytes            4      358 bytes
+10.3.58.4                 57908            2   206 bytes           1      95 bytes             1      111 bytes
+10.3.58.4                 58596            2   215 bytes           1      95 bytes             1      120 bytes
+10.3.58.4                 56354            2   184 bytes           1      84 bytes             1      100 bytes
 10.3.58.4                 57943            1   84 bytes            1      84 bytes             0      0 bytes
-10.3.58.4                 56354            1   84 bytes            1      84 bytes             0      0 bytes
 ================================================================================
 ```
 

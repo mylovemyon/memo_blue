@@ -344,7 +344,8 @@ PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z hosts
 23.66.232.51    a1470.g.akamai.net
 ```
 
-### -z http,stat
+### -z http
+#### -z http,stat
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z http,stat,"ip.addr == 98.124.198.1"
 
@@ -355,4 +356,45 @@ HTTP Statistics with filter ip.addr == 98.124.198.1
 * HTTP Request Methods                      Packets
   GET                                             5
 ===================================================================
+```
+
+#### -z http,tree
+```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z http,tree,"ip.addr == 98.124.198.1"
+
+=======================================================================================================================================
+HTTP / Packet Counter:
+Packet Type             Count         Average       Min Val       Max Val       Rate (ms)     Percent       Burst Rate    Burst Start
+---------------------------------------------------------------------------------------------------------------------------------------
+Total HTTP Packets      7                                                       0.0110        100%          0.0500        68867.095
+ HTTP Request Packets   5                                                       0.0079        71.43%        0.0300        68867.095
+  GET                   5                                                       0.0079        100.00%       0.0300        68867.095
+ HTTP Response Packets  2                                                       0.0032        28.57%        0.0200        68867.100
+  3xx: Redirection      2                                                       0.0032        100.00%       0.0200        68867.100
+   302 Found            2                                                       0.0032        100.00%       0.0200        68867.100
+  ???: broken           0                                                       0.0000        0.00%         -             -
+  5xx: Server Error     0                                                       0.0000        0.00%         -             -
+  4xx: Client Error     0                                                       0.0000        0.00%         -             -
+  2xx: Success          0                                                       0.0000        0.00%         -             -
+  1xx: Informational    0                                                       0.0000        0.00%         -             -
+ Other HTTP Packets     0                                                       0.0000        0.00%         -             -
+
+---------------------------------------------------------------------------------------------------------------------------------------
+```
+
+### -z http_req,tree
+```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z http_req,tree,"ip.addr == 98.124.198.1"
+
+===========================================================================================================================================
+HTTP / Requests:
+Request Type                Count         Average       Min Val       Max Val       Rate (ms)     Percent       Burst Rate    Burst Start
+-------------------------------------------------------------------------------------------------------------------------------------------
+HTTP Requests by HTTP Host  5                                                       0.0079        100%          0.0300        68867.095
+ flightstatus.com           5                                                       0.0079        100.00%       0.0300        68867.095
+  /favicon.ico              2                                                       0.0032        40.00%        0.0200        68867.707
+  /                         2                                                       0.0032        40.00%        0.0200        68867.095
+  /VfbpQ/                   1                                                       0.0016        20.00%        0.0100        68867.128
+
+-------------------------------------------------------------------------------------------------------------------------------------------
 ```

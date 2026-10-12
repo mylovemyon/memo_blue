@@ -1,0 +1,29 @@
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smb.pcap -Y "smb.cmd" -T fields -e smb.path | Group-Object -NoElement | Select-Object Name,Count | Sort-Object Name
+
+Name                                      Count
+----                                      -----
+                                           5274
+\\\\10.3.58.4\\ADMIN$                       308
+\\\\10.3.58.4\\C$                          2128
+\\\\10.3.58.4\\IPC$                         796
+\\\\10.3.58.5\\ADMIN$                       787
+\\\\10.3.58.5\\C$                             6
+\\\\10.3.58.5\\IPC$                         907
+\\\\10.3.58.5\\IPC$,ADMIN$                    3
+\\\\10.3.58.6\\ADMIN$                       204
+\\\\10.3.58.6\\C$                          3629
+\\\\10.3.58.6\\IPC$                        5140
+\\\\10.3.58.7\\C$                           408
+\\\\10.3.58.7\\IPC$                        9622
+\\\\CONTROLLER.SHIELDBASE.LOCAL\\IPC$      4644
+\\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL    3940
+\\\\CONTROLLER\\HOME                         96
+\\\\CONTROLLER\\IPC$                       1242
+\\\\CONTROLLER\\NETLOGON                     14
+\\\\CONTROLLER\\PUBLIC                       40
+\\\\WKS-WINXP32BIT.SHIELDBASE.LOCAL\\IPC$    28
+\\\\WKS-WINXP32BIT\\IPC$                    622
+ADMIN$                                      143
+IPC$                                         74
+```

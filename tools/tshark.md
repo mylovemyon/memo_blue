@@ -2,7 +2,7 @@
 ### -z conv
 #### -z conv,eth
 ```powershell
-PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z conv,eth
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z conv,eth
 ================================================================================
 Ethernet Conversations
 Filter:<No Filter>
@@ -86,7 +86,7 @@ Filter:ip.src == 10.3.58.4 && ip.dst == 68.71.210.254
 
 ### -z dests,tree
 ```powershell
-PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dests,tree,"ip.src == 10.3.16.5"
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dests,tree,"ip.src == 10.3.16.5"
 
 =======================================================================================================================================================
 IPv4 Statistics / Destinations and Ports:
@@ -113,7 +113,7 @@ IPv4 Statistics/Destinations and Ports  297764                                  
 
 ### -z dhcp,stat
 ```powershell
-PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dhcp,stat
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dhcp,stat
 
 =====================================================================================================
 DHCP (BOOTP) Statistics:
@@ -143,7 +143,7 @@ TLS                       |0 |
 
 ### -z dns,tree
 ```powershell
-PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dns,tree
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z dns,tree
 
 ==============================================================================================================================================
 DNS:
@@ -212,7 +212,7 @@ Service Stats                  0                                                
 ### -z endpoints
 #### -z endpoints,eth
 ```powershell
-PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,eth
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,eth
 ================================================================================
 Ethernet Endpoints
 Filter:<No Filter>
@@ -231,7 +231,7 @@ Intel_2d:8a:a8                 15   1158 bytes          2      148 bytes        
 ```
 #### -z endpoints,ip
 ```powershell
-PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,ip,"ip.src == 10.3.16.5"
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,ip,"ip.src == 10.3.16.5"
 ================================================================================
 IPv4 Endpoints
 Filter:ip.src == 10.3.16.5
@@ -245,7 +245,7 @@ Filter:ip.src == 10.3.16.5
 ```
 #### -z endpoints,tcp
 ```powershell
-PS C:\Users\Public> tshark -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,tcp,"ip.src == 10.3.16.5 && ip.dst ==10.3.58.5"
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z endpoints,tcp,"ip.src == 10.3.16.5 && ip.dst ==10.3.58.5"
 ================================================================================
 TCP Endpoints
 Filter:ip.src == 10.3.16.5 && ip.dst ==10.3.58.5
@@ -278,4 +278,31 @@ Filter:ip.src == 10.3.58.4 && ip.dst == 68.71.210.254
 10.3.58.4                 57943            1   84 bytes            1      84 bytes             0      0 bytes
 10.3.58.4                 56354            1   84 bytes            1      84 bytes             0      0 bytes
 ================================================================================
+```
+
+### -z expert
+```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z expert,error
+
+Errors (15282)
+=============
+   Frequency      Group           Protocol  Summary
+       11626  Malformed                TLS  Malformed Packet (Exception occurred)
+          27   Protocol                TLS  TLSCiphertext length MUST NOT exceed 2^14 + 2048
+        3494  Malformed               SMB2  Negotiate Protocol response Reserved2 is nonzero
+          13   Protocol                TLS  Zero-length Handshake fragments are not allowed
+           3  Malformed                AMF  Malformed Packet (Exception occurred)
+           1  Malformed  JFIF (JPEG) image  Malformed Packet (Exception occurred)
+           1  Malformed             SVCCTL  Malformed Packet (Exception occurred)
+          14  Malformed               RTCP  Malformed Packet (Exception occurred)
+           2   Protocol               RTCP  Application name is not a string
+          43  Malformed             LSARPC  Malformed Packet (Exception occurred)
+           2  Malformed               SAMR  Malformed Packet (Exception occurred)
+          30  Malformed       SMB_NETLOGON  Malformed Packet (Exception occurred)
+          26  Malformed               HTTP  Malformed Packet (Exception occurred)
+```
+
+### 
+```powershell
+
 ```

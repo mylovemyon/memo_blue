@@ -624,38 +624,56 @@ IPv4 Statistics/IP Protocol Types  780870                                       
 
 ### -z smb,srt
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z smb,srt
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z smb,srt,"ip.addr == 10.3.58.9"
 
 ===================================================================
 SMB SRT Statistics:
-Filter: smb.cmd
+Filter: smb.cmd and (ip.addr == 10.3.58.9)
 Index  Commands               Calls    Min SRT    Max SRT    Avg SRT    Sum SRT
-    4  Close                     668   0.000033   0.402062   0.005013   3.348849
-   16  Check Directory            38   0.000226   0.011788   0.000760   0.028874
-   36  Locking AndX              320   0.000062   0.019470   0.000353   0.113012
-   37  Trans                    7772   0.000002  19.949047   0.005657  43.966255
-   43  Echo                     7537   0.000003  74.684625   0.021271 160.321228
-   45  Open AndX                   2   0.006285   0.139578   0.072932   0.145863
-   46  Read AndX                4697   0.000010 173066.152417  91.065279 427733.614514
-   47  Write AndX               1795   0.000001   0.288663   0.001065   1.911270
-  113  Tree Disconnect          1880   0.000004   0.761855   0.002841   5.340998
-  114  Negotiate Protocol       1537   0.000281   8.087602   0.007108  10.924586
-  115  Session Setup AndX       2988   0.000007   1.570558   0.002551   7.621395
-  116  Logoff AndX              1773   0.000016   0.965345   0.005606   9.939381
-  117  Tree Connect AndX        1915   0.000004   0.851600   0.001093   2.092699
-  162  NT Create AndX            776   0.000074   1.087165   0.025721  19.959726
+    4  Close                      79   0.000125   0.000617   0.000245   0.019356
+   16  Check Directory             1   0.000281   0.000281   0.000281   0.000281
+   36  Locking AndX              118   0.000076   0.000961   0.000220   0.025982
+   37  Trans                     564   0.000073   1.647662   0.006525   3.680062
+   46  Read AndX                  79   0.000051   0.076019   0.001571   0.124147
+   47  Write AndX                 14   0.000150   0.000254   0.000216   0.003022
+  113  Tree Disconnect           389   0.000004   0.395670   0.003052   1.187079
+  114  Negotiate Protocol        337   0.000407   0.093605   0.001305   0.439903
+  115  Session Setup AndX        526   0.000224   0.085464   0.001484   0.780574
+  116  Logoff AndX               377   0.000016   0.605234   0.007266   2.739214
+  117  Tree Connect AndX         392   0.000004   0.053236   0.000557   0.218322
+  162  NT Create AndX             81   0.000248   0.035052   0.001093   0.088495
 
-Filter: smb.trans2.cmd
+Filter: smb.trans2.cmd and (ip.addr == 10.3.58.9)
 Index  Transaction2 Commands  Calls    Min SRT    Max SRT    Avg SRT    Sum SRT
-    1  FIND_FIRST2                54   0.000247   0.636138   0.037583   2.029507
-    2  FIND_NEXT2                 95   0.000432   0.655357   0.233388  22.171894
-    3  QUERY_FS_INFO             161   0.000041   0.002512   0.000257   0.041452
-    5  QUERY_PATH_INFO           619   0.000032   0.335951   0.001400   0.866725
-    7  QUERY_FILE_INFO           632   0.000034   0.028604   0.000546   0.345065
-    8  SET_FILE_INFO              76   0.000099   0.027065   0.001203   0.091465
-   16  GET_DFS_REFERRAL         1169   0.000193   1.401015   0.013172  15.398315
+    1  FIND_FIRST2                 2   0.000409   0.000534   0.000472   0.000943
+    3  QUERY_FS_INFO               8   0.000072   0.000202   0.000146   0.001164
+    5  QUERY_PATH_INFO           130   0.000128   0.069515   0.000940   0.122187
+    7  QUERY_FILE_INFO           138   0.000064   0.018486   0.000398   0.054956
+   16  GET_DFS_REFERRAL          444   0.000193   1.030072   0.011064   4.912280
 
-Filter: smb.nt.function
+Filter: smb.nt.function and (ip.addr == 10.3.58.9)
 Index  NT Transaction Sub-Commands Calls    Min SRT    Max SRT    Avg SRT    Sum SRT
+==================================================================
+```
+
+### -z smb2,srt
+```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -q -z smb2,srt,"ip.addr == 10.3.58.9"
+
+===================================================================
+SMB2 SRT Statistics:
+Filter: smb2.cmd and (ip.addr == 10.3.58.9)
+Index  Commands               Calls    Min SRT    Max SRT    Avg SRT    Sum SRT
+    0  Negotiate Protocol        698   0.000227   1.191566   0.009965   6.955617
+    1  Session Setup             835   0.000238   1.261444   0.010207   8.523046
+    2  Session Logoff            692   0.000002   1.075216   0.004619   3.196190
+    3  Tree Connect              824   0.000039   1.135083   0.004054   3.340856
+    4  Tree Disconnect           815   0.000012   1.023308   0.016072  13.098825
+    5  Create                    540   0.000089   0.977481   0.007426   4.010095
+    6  Close                     259   0.000132   0.997030   0.015574   4.033644
+    8  Read                     1107   0.000004   0.292557   0.001311   1.451464
+    9  Write                     910   0.000003   0.032306   0.000397   0.361707
+   11  Ioctl                     518   0.000004   0.905663   0.014080   7.293398
+   16  GetInfo                   241   0.000088   0.017233   0.000536   0.129098
 ==================================================================
 ```

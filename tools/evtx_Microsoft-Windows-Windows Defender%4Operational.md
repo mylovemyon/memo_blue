@@ -79,7 +79,7 @@ ORDER BY ALL;
 
 
 
-## 1000
+## 1000 (An antimalware scan started)
 ```sql
 Windows_Defender%4Operational D
 SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
@@ -144,7 +144,7 @@ ORDER BY je.fullkey;
 
 
 
-## 1001
+## 1001 (An antimalware scan finished)
 ```sql
 Windows_Defender%4Operational D
 SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", Event.EventData."Scan Time Hours", Event.EventData."Scan Time Minutes", Event.EventData."Scan Time Seconds", COUNT(*)
@@ -210,7 +210,7 @@ ORDER BY je.fullkey;
 
 
 
-## 1002
+## 1002 (Warning - An antimalware scan was stopped before it finished)
 ```sql
 Windows_Defender%4Operational D
 SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
@@ -254,7 +254,7 @@ ORDER BY je.fullkey;
 
 
 
-## 1116
+## 1116 (Detection - The antimalware platform detected malware or other potentially unwanted software)
 ```sql
 Windows_Defender%4Operational D
 SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, COUNT(*)
@@ -340,7 +340,7 @@ ORDER BY je.fullkey;
 
 
 
-## 1117
+## 1117 (Detection - The antimalware platform performed an action to protect your system from malware or other potentially unwanted software)
 ```sql
 Windows_Defender%4Operational D
 SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, Event.EventData."Remediation User", Event.EventData."Action Name", COUNT(*)
@@ -422,7 +422,7 @@ ORDER BY je.fullkey;
 
 
 
-## 5001
+## 5001 (Real-time Protection was disabled)
 ```sql
 Windows_Defender%4Operational D
 SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Old Value", Event.EventData."New Value", COUNT(*)

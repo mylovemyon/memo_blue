@@ -844,15 +844,14 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
-## 4688
+## 4688 (A new process has been created)
 ```sql
-security D
-SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TokenElevationType, Event.EventData.MandatoryLabel, Event.EventData.ParentProcessName, Event.EventData.NewProcessName, Event.EventData.CommandLine, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 4688
-GROUP BY ALL
-ORDER BY Event.EventData.ParentProcessName, Event.EventData.NewProcessName;
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TokenElevationType, Event.EventData.MandatoryLabel, Event.EventData.ParentProcessName, Event.EventData.NewProcessName, Event.EventData.CommandLine, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4688
+                GROUP BY ALL
+                ORDER BY Event.EventData.ParentProcessName, Event.EventData.NewProcessName;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────┬──────────────────┬────────────────┬────────────────────┬────────────────┬─────────────────────────────────┬──────────────────────────────────┬─────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │ TargetUserSid │ TargetDomainName │ TargetUserName │ TokenElevationType │ MandatoryLabel │        ParentProcessName        │          NewProcessName          │ CommandLine │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │    varchar    │     varchar      │    varchar     │      varchar       │    varchar     │             varchar             │             varchar              │   varchar   │    int64     │
@@ -870,12 +869,11 @@ ORDER BY Event.EventData.ParentProcessName, Event.EventData.NewProcessName;
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4688' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4688' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌──────────────────────────────────────┬──────────────┐
 │               fullkey                │ count_star() │
 │               varchar                │    int64     │
@@ -897,6 +895,16 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.TokenElevationType │          287 │
 └──────────────────────────────────────┴──────────────┘
   15 rows                                   2 columns
+```
+MandatoryLabel
+```
+S-1-16-0: SECURITY_MANDATORY_UNTRUSTED_RID
+S-1-16-4096: SECURITY_MANDATORY_LOW_RID
+S-1-16-8192: SECURITY_MANDATORY_MEDIUM_RID
+S-1-16-8448: SECURITY_MANDATORY_MEDIUM_PLUS_RID
+S-1-16-12288: SECURITY_MANDATORY_HIGH_RID
+S-1-16-16384: SECURITY_MANDATORY_SYSTEM_RID
+S-1-16-20480: SECURITY_MANDATORY_PROTECTED_PROCESS_RID
 ```
 
 

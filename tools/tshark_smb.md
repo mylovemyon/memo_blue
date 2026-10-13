@@ -1,4 +1,25 @@
 ```powershell
+PS C:\Users\Public> tshark.exe -r .\stark_labs_traffic_no_iSCSI.pcap -Y "smb.cmd == 0x2b" -T fields -e smb.path -e smb.flags.response -e smb.nt_status | Group-Object -NoElement | Select-Object Name,count | Sort-Object Name
+
+Name                                      Count
+----                                      -----
+\\\\10.3.58.5\\ADMIN$   False   0x00000000     2466
+\\\\10.3.58.5\\ADMIN$   True    0x00000000      2465
+\\\\10.3.58.5\\C$       False   0x00000000         2875
+\\\\10.3.58.5\\C$       True    0x00000000          2875
+\\\\10.3.58.5\\IPC$     False   0x00000000         23
+\\\\10.3.58.5\\IPC$     True    0x00000000          22
+\\\\10.3.58.6\\ADMIN$   False   0x00000000       16
+\\\\10.3.58.6\\ADMIN$   True    0x00000000        16
+\\\\10.3.58.6\\C$       False   0x00000000            1
+\\\\10.3.58.6\\C$       True    0x00000000             1
+\\\\10.3.58.6\\IPC$     False   0x00000000       2158
+\\\\10.3.58.6\\IPC$     True    0x00000000        2157
+\\\\WKS-WIN764BITB\\IPC$        False   0x00000000     1
+\\\\WKS-WIN764BITB\\IPC$        True    0x00000000      1
+```
+
+```powershell
 PS C:\Users\Public> tshark.exe -r .\smb.pcap -Y "smb.cmd" -T fields -e smb.path | Group-Object -NoElement | Select-Object Name,Count | Sort-Object Name
 
 Name                                      Count

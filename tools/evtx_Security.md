@@ -1107,6 +1107,51 @@ ServiceStartType
 
 
 
+## 4717 (System audit policy was changed)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.AccessGranted, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4717
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetSid;
+┌─────────────────┬────────────────┬───────────────────┬─────────────────┬────────────────────────────────────────────────────────────────┬───────────────────────────────┬──────────────┐
+│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                           TargetSid                            │         AccessGranted         │ count_star() │
+│     varchar     │    varchar     │      varchar      │     varchar     │                            varchar                             │            varchar            │    int64     │
+├─────────────────┼────────────────┼───────────────────┼─────────────────┼────────────────────────────────────────────────────────────────┼───────────────────────────────┼──────────────┤
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-21-2908624845-2463485410-257172065-501                   │ SeDenyInteractiveLogonRight   │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-21-2908624845-2463485410-257172065-501                   │ SeDenyNetworkLogonRight       │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-21-2908624845-2463485410-257172065-501                   │ SeInteractiveLogonRight       │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-544                                                   │ SeRemoteInteractiveLogonRight │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-551                                                   │ SeNetworkLogonRight           │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-551                                                   │ SeBatchLogonRight             │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-555                                                   │ SeRemoteInteractiveLogonRight │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-559                                                   │ SeBatchLogonRight             │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-80-0                                                     │ SeServiceLogonRight           │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 │ SeServiceLogonRight           │            1 │
+└─────────────────┴────────────────┴───────────────────┴─────────────────┴────────────────────────────────────────────────────────────────┴───────────────────────────────┴──────────────┘
+  10 rows                                                                                                                                                                      7 columns
+```
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4717' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AccessGranted     │           10 │
+│ $.Event.EventData.SubjectDomainName │           10 │
+│ $.Event.EventData.SubjectLogonId    │           10 │
+│ $.Event.EventData.SubjectUserName   │           10 │
+│ $.Event.EventData.SubjectUserSid    │           10 │
+│ $.Event.EventData.TargetSid         │           10 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4724
 ```sql
 security D

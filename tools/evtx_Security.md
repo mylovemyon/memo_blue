@@ -1107,7 +1107,7 @@ ServiceStartType
 
 
 
-## 4717 (System audit policy was changed)
+## 4717 (System security access was granted to an account)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.AccessGranted, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
@@ -1131,6 +1131,7 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 └─────────────────┴────────────────┴───────────────────┴─────────────────┴────────────────────────────────────────────────────────────────┴───────────────────────────────┴──────────────┘
   10 rows                                                                                                                                                                      7 columns
 ```
+fullkey
 ```sql
 security-rd01 D SELECT je.fullkey, COUNT(*)
                 FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
@@ -1147,6 +1148,50 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.SubjectUserName   │           10 │
 │ $.Event.EventData.SubjectUserSid    │           10 │
 │ $.Event.EventData.TargetSid         │           10 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 4718 (System security access was removed from an account)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.AccessRemoved, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4718
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetSid;
+┌─────────────────┬────────────────┬───────────────────┬─────────────────┬────────────────────────────────────────────────────────────────┬───────────────────────────────┬──────────────┐
+│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                           TargetSid                            │         AccessRemoved         │ count_star() │
+│     varchar     │    varchar     │      varchar      │     varchar     │                            varchar                             │            varchar            │    int64     │
+├─────────────────┼────────────────┼───────────────────┼─────────────────┼────────────────────────────────────────────────────────────────┼───────────────────────────────┼──────────────┤
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-1-0                                                        │ SeRemoteInteractiveLogonRight │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-1-0                                                        │ SeInteractiveLogonRight       │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-546                                                   │ SeInteractiveLogonRight       │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-581                                                   │ SeNetworkLogonRight           │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-581                                                   │ SeInteractiveLogonRight       │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-583                                                   │ SeNetworkLogonRight           │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-583                                                   │ SeInteractiveLogonRight       │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833 │ SeServiceLogonRight           │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-90-0                                                     │ SeInteractiveLogonRight       │            1 │
+└─────────────────┴────────────────┴───────────────────┴─────────────────┴────────────────────────────────────────────────────────────────┴───────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4718' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AccessRemoved     │            9 │
+│ $.Event.EventData.SubjectDomainName │            9 │
+│ $.Event.EventData.SubjectLogonId    │            9 │
+│ $.Event.EventData.SubjectUserName   │            9 │
+│ $.Event.EventData.SubjectUserSid    │            9 │
+│ $.Event.EventData.TargetSid         │            9 │
 └─────────────────────────────────────┴──────────────┘
 ```
 

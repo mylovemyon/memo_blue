@@ -523,7 +523,7 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.LogonType, Event.E
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
                 AND Event.System.EventID = 4625
                 GROUP BY ALL
-                ORDER BY  Event.EventData.LogonType, Event.EventData.SubjectUserSid , Event.EventData.TargetUserSid, Event.EventData.IpAddress;
+                ORDER BY Event.EventData.LogonType, Event.EventData.SubjectUserSid , Event.EventData.TargetUserSid, Event.EventData.IpAddress;
 ┌─────────────────────┬───────────┬────────────────┬───────────────────┬─────────────────┬───────────────┬──────────────────┬────────────────┬─────────────────┬──────────────┬─────────────────────────────────┬───────────────────────────────────────┬──────────────────┬────────────┬────────────┬──────────────┐
 │      Computer       │ LogonType │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │ TargetUserSid │ TargetDomainName │ TargetUserName │ WorkstationName │  IpAddress   │           ProcessName           │       AuthenticationPackageName       │ LogonProcessName │   Status   │ SubStatus  │ count_star() │
 │       varchar       │   int64   │    varchar     │      varchar      │     varchar     │    varchar    │     varchar      │    varchar     │     varchar     │   varchar    │             varchar             │                varchar                │     varchar      │  varchar   │  varchar   │    int64     │
@@ -570,6 +570,53 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 └─────────────────────────────────────────────┴──────────────┘
   21 rows                                          2 columns
   ```
+status
+```
+0xC000005E: there are currently no logon servers available to service the logon request
+0xC0000064: user name does not exist
+0xC000006A: user name is correct but the password is wrong
+0xC000006D: the cause is either a bad username or authentication information
+0xC000006E: referenced user name and authentication information are valid, but some user account restriction has prevented successful authentication (such as time-of-day restrictions)
+0xC000006F: user logon outside authorized hours
+0xC0000070: user logon from unauthorized workstation
+0xC0000071: user logon with expired password
+0xC0000072: user logon to account disabled by administrator
+0xC00000DC: indicates the Sam Server was in the wrong state to perform the desired operation
+0xC0000133: clocks between DC and other computer too far out of sync
+0xC000015B: the user has not been granted the requested logon type (also called the logon right) at this machine
+0xC000018C: the logon request failed because the trust relationship between the primary domain and the trusted domain failed
+0xC0000192: an attempt was made to logon, but the Netlogon service was not started.
+0xC0000193: user logon with expired account
+0xC0000224: user is required to change password at next logon
+0xC0000225: evidently a bug in Windows and not a risk
+0xC0000234: user is currently locked out
+0xC00002EE: an error occurred during logon
+0xC0000413: logon failure , the machine you are logging on to is protected by an authentication firewall, the specified account is not allowed to authenticate to the machine
+0x0: Status OK
+```
+SubStatus
+```
+0xC000005E: there are currently no logon servers available to service the logon request
+0xC0000064: user name does not exist
+0xC000006A: user name is correct but the password is wrong
+0xC000006D: the cause is either a bad username or authentication information
+0xC000006E: referenced user name and authentication information are valid, but some user account restriction has prevented successful authentication (such as time-of-day restrictions)
+0xC000006F: user logon outside authorized hours
+0xC0000070: user logon from unauthorized workstation
+0xC0000071: user logon with expired password
+0xC0000072: user logon to account disabled by administrator
+0xC00000DC: indicates the Sam Server was in the wrong state to perform the desired operation
+0xC0000133: clocks between DC and other computer too far out of sync
+0xC000015B: the user has not been granted the requested logon type (also called the logon right) at this machine
+0xC000018C: the logon request failed because the trust relationship between the primary domain and the trusted domain failed
+0xC0000192: an attempt was made to logon, but the Netlogon service was not started.
+0xC0000193: user logon with expired account
+0xC0000224: user is required to change password at next logon
+0xC0000225: evidently a bug in Windows and not a risk
+0xC0000234: user is currently locked out
+0xC00002EE: an error occurred during logon
+0xC0000413: logon failure , the machine you are logging on to is protected by an authentication firewall, the specified account is not allowed to authenticate to the machine
+```
 
 
 

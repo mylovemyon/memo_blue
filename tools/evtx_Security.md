@@ -1113,7 +1113,7 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.EventID = 4717
                 GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetSid;
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────┬────────────────┬───────────────────┬─────────────────┬────────────────────────────────────────────────────────────────┬───────────────────────────────┬──────────────┐
 │    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                           TargetSid                            │         AccessGranted         │ count_star() │
 │     varchar     │    varchar     │      varchar      │     varchar     │                            varchar                             │            varchar            │    int64     │
@@ -1159,7 +1159,7 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.EventID = 4718
                 GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetSid;
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────┬────────────────┬───────────────────┬─────────────────┬────────────────────────────────────────────────────────────────┬───────────────────────────────┬──────────────┐
 │    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                           TargetSid                            │         AccessRemoved         │ count_star() │
 │     varchar     │    varchar     │      varchar      │     varchar     │                            varchar                             │            varchar            │    int64     │
@@ -1194,6 +1194,158 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.TargetSid         │            9 │
 └─────────────────────────────────────┴──────────────┘
 ```
+
+
+
+## 4719 (System audit policy was changed)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.SubcategoryGuid,Event.EventData.AuditPolicyChanges, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4719
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid ,Event.EventData.SubcategoryGuid;
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────┬────────────────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │           SubcategoryGuid            │ AuditPolicyChanges │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │                 uuid                 │      varchar       │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────────────────────────────┼────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9210-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9210-69ae-11d9-bed3-505054503030 │ %%8448             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9211-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9212-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9212-69ae-11d9-bed3-505054503030 │ %%8448, %%8450     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9213-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9214-69ae-11d9-bed3-505054503030 │ %%8448, %%8450     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9215-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9215-69ae-11d9-bed3-505054503030 │ %%8448, %%8450     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9216-69ae-11d9-bed3-505054503030 │ %%8448             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9216-69ae-11d9-bed3-505054503030 │ %%8449             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9217-69ae-11d9-bed3-505054503030 │ %%8448             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9217-69ae-11d9-bed3-505054503030 │ %%8449             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce921b-69ae-11d9-bed3-505054503030 │ %%8448             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce921b-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce921c-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9224-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce922d-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce922f-69ae-11d9-bed3-505054503030 │ %%8448             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce922f-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9230-69ae-11d9-bed3-505054503030 │ %%8448             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9230-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9232-69ae-11d9-bed3-505054503030 │ %%8449             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9235-69ae-11d9-bed3-505054503030 │ %%8451             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9236-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9237-69ae-11d9-bed3-505054503030 │ %%8451             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce923a-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce923f-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9240-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9241-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9242-69ae-11d9-bed3-505054503030 │ %%8449, %%8451     │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ 0cce9243-69ae-11d9-bed3-505054503030 │ %%8448, %%8450     │            1 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────┴────────────────────┴──────────────┘
+  32 rows                                                                                                                                     7 columns
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4719' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌──────────────────────────────────────┬──────────────┐
+│               fullkey                │ count_star() │
+│               varchar                │    int64     │
+├──────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AuditPolicyChanges │           32 │
+│ $.Event.EventData.CategoryId         │           32 │
+│ $.Event.EventData.SubcategoryGuid    │           32 │
+│ $.Event.EventData.SubcategoryId      │           32 │
+│ $.Event.EventData.SubjectDomainName  │           32 │
+│ $.Event.EventData.SubjectLogonId     │           32 │
+│ $.Event.EventData.SubjectUserName    │           32 │
+│ $.Event.EventData.SubjectUserSid     │           32 │
+└──────────────────────────────────────┴──────────────┘
+```
+subcategory
+```powershell
+PS C:\Users\SANSDFIR> auditpol /list /subcategory:* /v
+Category/Subcategory                    GUID
+System                                  {69979848-797A-11D9-BED3-505054503030}
+  Security State Change                     {0CCE9210-69AE-11D9-BED3-505054503030}
+  Security System Extension                 {0CCE9211-69AE-11D9-BED3-505054503030}
+  System Integrity                          {0CCE9212-69AE-11D9-BED3-505054503030}
+  IPsec Driver                              {0CCE9213-69AE-11D9-BED3-505054503030}
+  Other System Events                       {0CCE9214-69AE-11D9-BED3-505054503030}
+Logon/Logoff                            {69979849-797A-11D9-BED3-505054503030}
+  Logon                                     {0CCE9215-69AE-11D9-BED3-505054503030}
+  Logoff                                    {0CCE9216-69AE-11D9-BED3-505054503030}
+  Account Lockout                           {0CCE9217-69AE-11D9-BED3-505054503030}
+  IPsec Main Mode                           {0CCE9218-69AE-11D9-BED3-505054503030}
+  IPsec Quick Mode                          {0CCE9219-69AE-11D9-BED3-505054503030}
+  IPsec Extended Mode                       {0CCE921A-69AE-11D9-BED3-505054503030}
+  Special Logon                             {0CCE921B-69AE-11D9-BED3-505054503030}
+  Other Logon/Logoff Events                 {0CCE921C-69AE-11D9-BED3-505054503030}
+  Network Policy Server                     {0CCE9243-69AE-11D9-BED3-505054503030}
+  User / Device Claims                      {0CCE9247-69AE-11D9-BED3-505054503030}
+  Group Membership                          {0CCE9249-69AE-11D9-BED3-505054503030}
+Object Access                           {6997984A-797A-11D9-BED3-505054503030}
+  File System                               {0CCE921D-69AE-11D9-BED3-505054503030}
+  Registry                                  {0CCE921E-69AE-11D9-BED3-505054503030}
+  Kernel Object                             {0CCE921F-69AE-11D9-BED3-505054503030}
+  SAM                                       {0CCE9220-69AE-11D9-BED3-505054503030}
+  Certification Services                    {0CCE9221-69AE-11D9-BED3-505054503030}
+  Application Generated                     {0CCE9222-69AE-11D9-BED3-505054503030}
+  Handle Manipulation                       {0CCE9223-69AE-11D9-BED3-505054503030}
+  File Share                                {0CCE9224-69AE-11D9-BED3-505054503030}
+  Filtering Platform Packet Drop            {0CCE9225-69AE-11D9-BED3-505054503030}
+  Filtering Platform Connection             {0CCE9226-69AE-11D9-BED3-505054503030}
+  Other Object Access Events                {0CCE9227-69AE-11D9-BED3-505054503030}
+  Detailed File Share                       {0CCE9244-69AE-11D9-BED3-505054503030}
+  Removable Storage                         {0CCE9245-69AE-11D9-BED3-505054503030}
+  Central Policy Staging                    {0CCE9246-69AE-11D9-BED3-505054503030}
+Privilege Use                           {6997984B-797A-11D9-BED3-505054503030}
+  Sensitive Privilege Use                   {0CCE9228-69AE-11D9-BED3-505054503030}
+  Non Sensitive Privilege Use               {0CCE9229-69AE-11D9-BED3-505054503030}
+  Other Privilege Use Events                {0CCE922A-69AE-11D9-BED3-505054503030}
+Detailed Tracking                       {6997984C-797A-11D9-BED3-505054503030}
+  Process Creation                          {0CCE922B-69AE-11D9-BED3-505054503030}
+  Process Termination                       {0CCE922C-69AE-11D9-BED3-505054503030}
+  DPAPI Activity                            {0CCE922D-69AE-11D9-BED3-505054503030}
+  RPC Events                                {0CCE922E-69AE-11D9-BED3-505054503030}
+  Plug and Play Events                      {0CCE9248-69AE-11D9-BED3-505054503030}
+  Token Right Adjusted Events               {0CCE924A-69AE-11D9-BED3-505054503030}
+Policy Change                           {6997984D-797A-11D9-BED3-505054503030}
+  Audit Policy Change                       {0CCE922F-69AE-11D9-BED3-505054503030}
+  Authentication Policy Change              {0CCE9230-69AE-11D9-BED3-505054503030}
+  Authorization Policy Change               {0CCE9231-69AE-11D9-BED3-505054503030}
+  MPSSVC Rule-Level Policy Change           {0CCE9232-69AE-11D9-BED3-505054503030}
+  Filtering Platform Policy Change          {0CCE9233-69AE-11D9-BED3-505054503030}
+  Other Policy Change Events                {0CCE9234-69AE-11D9-BED3-505054503030}
+Account Management                      {6997984E-797A-11D9-BED3-505054503030}
+  User Account Management                   {0CCE9235-69AE-11D9-BED3-505054503030}
+  Computer Account Management               {0CCE9236-69AE-11D9-BED3-505054503030}
+  Security Group Management                 {0CCE9237-69AE-11D9-BED3-505054503030}
+  Distribution Group Management             {0CCE9238-69AE-11D9-BED3-505054503030}
+  Application Group Management              {0CCE9239-69AE-11D9-BED3-505054503030}
+  Other Account Management Events           {0CCE923A-69AE-11D9-BED3-505054503030}
+DS Access                               {6997984F-797A-11D9-BED3-505054503030}
+  Directory Service Access                  {0CCE923B-69AE-11D9-BED3-505054503030}
+  Directory Service Changes                 {0CCE923C-69AE-11D9-BED3-505054503030}
+  Directory Service Replication             {0CCE923D-69AE-11D9-BED3-505054503030}
+  Detailed Directory Service Replication    {0CCE923E-69AE-11D9-BED3-505054503030}
+Account Logon                           {69979850-797A-11D9-BED3-505054503030}
+  Credential Validation                     {0CCE923F-69AE-11D9-BED3-505054503030}
+  Kerberos Service Ticket Operations        {0CCE9240-69AE-11D9-BED3-505054503030}
+  Other Account Logon Events                {0CCE9241-69AE-11D9-BED3-505054503030}
+  Kerberos Authentication Service           {0CCE9242-69AE-11D9-BED3-505054503030}
+```
+AuditPolicyChanges
+```
+%%8448: Success removed (the system stopped logging successful attempts for the subcategory)
+%%8449: Success added (the system started logging successful attempts for the subcategory)
+%%8450: Failure removed (the system stopped logging failed attempts for the subcategory)
+%%8451: Failure added (the system started logging failed attempts for the subcategory)
+```
+
+
 
 
 

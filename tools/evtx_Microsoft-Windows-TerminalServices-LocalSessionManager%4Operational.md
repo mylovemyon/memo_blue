@@ -93,7 +93,7 @@ ORDER BY ALL;
 
 
 
-## 21
+## 21 (Remote Desktop Services: Session logon succeeded)
 ```sql
 TerminalServices-LocalSessionManager%4Op... D
 SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
@@ -149,7 +149,7 @@ ORDER BY je.fullkey;
 
 
 
-## 22
+## 22 (Remote Desktop Services: Shell start notification received)
 ```sql
 TerminalServices-LocalSessionManager%4Op... D
 SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
@@ -205,7 +205,7 @@ ORDER BY je.fullkey;
 
 
 
-## 23
+## 23 (Remote Desktop Services: Session logoff succeeded)
 ```sql
 TerminalServices-LocalSessionManager%4Op... D
 SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, COUNT(*)
@@ -256,7 +256,7 @@ ORDER BY je.fullkey;
 
 
 
-## 24
+## 24 (Remote Desktop Services: Session has been disconnected)
 ```sql
 TerminalServices-LocalSessionManager%4Op... D
 SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
@@ -314,7 +314,7 @@ ORDER BY je.fullkey;
 
 
 
-## 25
+## 25 (Remote Desktop Services: Session reconnection succeeded)
 ```sql
 TerminalServices-LocalSessionManager%4Op... D
 SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
@@ -356,7 +356,7 @@ SELECT je.fullkey, COUNT(*)
 
 
 
-## 40
+## 40 (Session (PayloadData1) has been disconnected, reason code (PayloadData2))
 ```sql
 TerminalServices-LocalSessionManager%4Op... D
 SELECT Event.System.Computer, Event.UserData.EventXML.Session, Event.UserData.EventXML.Reason, COUNT(*)

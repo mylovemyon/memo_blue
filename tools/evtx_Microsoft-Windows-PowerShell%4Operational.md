@@ -85,7 +85,7 @@ ORDER BY ALL;
 
 
 
-## 4103 (Contains contents of scripts run)
+## 4103
 ```sql
 
 ```
@@ -109,7 +109,7 @@ ORDER BY je.fullkey;
 
 
 
-## 4104
+## 4104 (Contains contents of scripts run)
 ```sql
 powershell_operational D
 SELECT Event.System.Computer, Event.EventData.Path,  Event.EventData.MessageNumber, Event.EventData.MessageTotal, Event.EventData.ScriptBlockText, COUNT(*)

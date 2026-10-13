@@ -974,6 +974,50 @@ S-1-16-20480: SECURITY_MANDATORY_PROTECTED_PROCESS_RID
 
 
 
+## 4696 (A privileged service was called)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ProcessName, Event.EventData.TargetProcessName, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4696
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetUserSid, Event.EventData.ProcessName, Event.EventData.TargetProcessName;
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────┬──────────────────┬────────────────┬─────────────┬───────────────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │ TargetUserSid │ TargetDomainName │ TargetUserName │ ProcessName │ TargetProcessName │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │    varchar    │     varchar      │    varchar     │   varchar   │      varchar      │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼───────────────┼──────────────────┼────────────────┼─────────────┼───────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18       │ -                 │ -               │ S-1-0-0       │ -                │ -              │             │ Registry          │            4 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴───────────────┴──────────────────┴────────────────┴─────────────┴───────────────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4696' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.ProcessId         │           26 │
+│ $.Event.EventData.ProcessName       │           26 │
+│ $.Event.EventData.SubjectDomainName │           26 │
+│ $.Event.EventData.SubjectLogonId    │           26 │
+│ $.Event.EventData.SubjectUserName   │           26 │
+│ $.Event.EventData.SubjectUserSid    │           26 │
+│ $.Event.EventData.TargetDomainName  │           26 │
+│ $.Event.EventData.TargetLogonId     │           26 │
+│ $.Event.EventData.TargetProcessId   │           26 │
+│ $.Event.EventData.TargetProcessName │           26 │
+│ $.Event.EventData.TargetUserName    │           26 │
+│ $.Event.EventData.TargetUserSid     │           26 │
+└─────────────────────────────────────┴──────────────┘
+  12 rows                                  2 columns
+```
+
+
+
 ## 4697
 ```sql
 security D

@@ -60,70 +60,137 @@ DESCRIBE;
 └──────────┴─────────┴──────────┴──────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┘
 ```
 
+## Computer
+```sql
+security D SELECT Event.System.Computer,COUNT(*)
+           FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+           WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+           GROUP BY ALL
+           ORDER BY ALL;
+┌───────────────────────────┬──────────────┐
+│         Computer          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ admin01.shieldbase.com    │       117595 │
+│ dc01.shieldbase.com       │       823171 │
+│ dev01.shieldbase.com      │         2125 │
+│ elf01.shieldbase.com      │       899092 │
+│ exchange01.shieldbase.com │       753154 │
+│ file01.shieldbase.com     │        85011 │
+│ ftp01                     │        32917 │
+│ hunt01.shieldbase.com     │       140358 │
+│ rd01.shieldbase.com       │        75333 │
+│ rd02.shieldbase.com       │       127932 │
+│ rd03.shieldbase.com       │       114829 │
+│ rd04.shieldbase.com       │        97991 │
+│ rd05.shieldbase.com       │       119049 │
+│ rd06.shieldbase.com       │       101638 │
+│ rd07.shieldbase.com       │       101079 │
+│ rd08.shieldbase.com       │       131827 │
+│ rd09.shieldbase.com       │        77059 │
+│ rd10.shieldbase.com       │        86740 │
+│ sql01.shieldbase.com      │        12712 │
+│ wac01.shieldbase.com      │        18074 │
+│ wkstn01.shieldbase.com    │        55704 │
+│ wkstn02.shieldbase.com    │        82585 │
+│ wkstn03.shieldbase.com    │        81738 │
+│ wkstn04.shieldbase.com    │       110226 │
+│ wkstn05.shieldbase.com    │        60512 │
+│ wkstn06.shieldbase.com    │       102831 │
+│ wkstn07.shieldbase.com    │        92470 │
+│ wkstn08.shieldbase.com    │        64720 │
+│ wkstn09.shieldbase.com    │        56311 │
+│ wkstn10.shieldbase.com    │        73677 │
+└───────────────────────────┴──────────────┘
+  30 rows                        2 columns
+```
+
+
+
 ## EventId
 ```sql
-security D
-SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-GROUP BY ALL
-ORDER BY ALL;
-┌─────────────────────┬─────────┬──────────────┐
-│      Computer       │ EventID │ count_star() │
-│       varchar       │  int64  │    int64     │
-├─────────────────────┼─────────┼──────────────┤
-│ rd01.shieldbase.com │    1100 │            4 │
-│ rd01.shieldbase.com │    4608 │            4 │
-│ rd01.shieldbase.com │    4610 │            4 │
-│ rd01.shieldbase.com │    4611 │          146 │
-│ rd01.shieldbase.com │    4614 │            8 │
-│ rd01.shieldbase.com │    4616 │            6 │
-│ rd01.shieldbase.com │    4622 │           40 │
-│ rd01.shieldbase.com │    4624 │         5470 │
-│ rd01.shieldbase.com │    4625 │           20 │
-│ rd01.shieldbase.com │    4634 │         1179 │
-│ rd01.shieldbase.com │    4647 │           18 │
-│ rd01.shieldbase.com │    4648 │          214 │
-│ rd01.shieldbase.com │    4672 │         5319 │
-│ rd01.shieldbase.com │    4688 │           44 │
-│ rd01.shieldbase.com │    4692 │            2 │
-│ rd01.shieldbase.com │    4694 │            3 │
-│ rd01.shieldbase.com │    4695 │           45 │
-│ rd01.shieldbase.com │    4696 │            4 │
-│ rd01.shieldbase.com │    4697 │          430 │
-│ rd01.shieldbase.com │    4724 │            1 │
-│ rd01.shieldbase.com │    4725 │            1 │
-│ rd01.shieldbase.com │    4738 │            2 │
-│ rd01.shieldbase.com │    4776 │           14 │
-│ rd01.shieldbase.com │    4778 │           12 │
-│ rd01.shieldbase.com │    4779 │           13 │
-│ rd01.shieldbase.com │    4793 │            1 │
-│ rd01.shieldbase.com │    4797 │           70 │
-│ rd01.shieldbase.com │    4798 │          141 │
-│ rd01.shieldbase.com │    4799 │         1025 │
-│ rd01.shieldbase.com │    4800 │           13 │
-│ rd01.shieldbase.com │    4826 │            4 │
-│ rd01.shieldbase.com │    4902 │            4 │
-│ rd01.shieldbase.com │    4904 │            4 │
-│ rd01.shieldbase.com │    4905 │            4 │
-│ rd01.shieldbase.com │    4907 │            1 │
-│ rd01.shieldbase.com │    4944 │            4 │
-│ rd01.shieldbase.com │    4945 │          943 │
-│ rd01.shieldbase.com │    4946 │          530 │
-│ rd01.shieldbase.com │    4947 │           29 │
-│ rd01.shieldbase.com │    4948 │          177 │
-│ rd01.shieldbase.com │    4954 │            6 │
-│ rd01.shieldbase.com │    4956 │            4 │
-│ rd01.shieldbase.com │    5061 │           50 │
-│ rd01.shieldbase.com │    5140 │           51 │
-│ rd01.shieldbase.com │    5142 │           15 │
-│ rd01.shieldbase.com │    5144 │            3 │
-│ rd01.shieldbase.com │    5379 │        59138 │
-│ rd01.shieldbase.com │    5381 │            1 │
-│ rd01.shieldbase.com │    5382 │          108 │
-│ rd01.shieldbase.com │    5478 │            4 │
-└─────────────────────┴─────────┴──────────────┘
-  50 rows                            3 columns
+security D SELECT Event.System.EventID, COUNT(*)
+           FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+           WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+           GROUP BY ALL
+           ORDER BY ALL;
+┌──────────────────────────────────────────────┬──────────────┐
+│                   EventID                    │ count_star() │
+│                     json                     │    int64     │
+├──────────────────────────────────────────────┼──────────────┤
+│ 1100                                         │           88 │
+│ 1101                                         │            2 │
+│ 1102                                         │            1 │
+│ 1108                                         │          439 │
+│ 4608                                         │           90 │
+│ 4610                                         │           90 │
+│ 4611                                         │        67654 │
+│ 4614                                         │          194 │
+│ 4616                                         │          101 │
+│ 4622                                         │          900 │
+│ 4624                                         │      1182359 │
+│ 4625                                         │        13258 │
+│ 4634                                         │      1047980 │
+│ 4647                                         │          139 │
+│ 4648                                         │        82733 │
+│ 4662                                         │          297 │
+│ 4672                                         │       407910 │
+│ 4688                                         │        41327 │
+│ 4692                                         │           11 │
+│ 4693                                         │            9 │
+│ 4694                                         │           26 │
+│ 4695                                         │          318 │
+│ 4696                                         │           90 │
+│ 4697                                         │         2818 │
+│ 4724                                         │           24 │
+│ 4725                                         │           18 │
+│ 4726                                         │            7 │
+│ 4729                                         │            7 │
+│ 4732                                         │            1 │
+│ 4733                                         │           13 │
+│ 4738                                         │           42 │
+│ 4755                                         │            1 │
+│ 4756                                         │            3 │
+│ 4757                                         │            2 │
+│ 4768                                         │        11962 │
+│ 4769                                         │        27488 │
+│ 4770                                         │         2624 │
+│ 4771                                         │            4 │
+│ 4776                                         │        45709 │
+│ 4778                                         │           99 │
+│ 4779                                         │          109 │
+│ 4793                                         │           22 │
+│ 4797                                         │          207 │
+│ 4798                                         │         2188 │
+│ 4799                                         │        34190 │
+│ 4800                                         │          109 │
+│ 4801                                         │           16 │
+│ 4826                                         │           90 │
+│ 4902                                         │           90 │
+│ 4904                                         │          238 │
+│ 4905                                         │          238 │
+│ 4907                                         │            5 │
+│ 4944                                         │           90 │
+│ 4945                                         │        19028 │
+│ 4946                                         │         4278 │
+│ 4947                                         │          750 │
+│ 4948                                         │         2093 │
+│ 4954                                         │          304 │
+│ 4956                                         │           90 │
+│ 5061                                         │          533 │
+│ 5136                                         │           63 │
+│ 5137                                         │            1 │
+│ 5140                                         │        83128 │
+│ 5142                                         │          375 │
+│ 5144                                         │           81 │
+│ 5379                                         │      1611505 │
+│ 5381                                         │           12 │
+│ 5382                                         │         1653 │
+│ 5478                                         │           90 │
+│ 6281                                         │            2 │
+│ {"#attributes":{"Qualifiers":0},"#text":521} │           44 │
+└──────────────────────────────────────────────┴──────────────┘
+  71 rows                                           2 columns
 ```
 
 

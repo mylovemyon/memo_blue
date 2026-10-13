@@ -422,7 +422,7 @@ ORDER BY je.fullkey;
 
 
 
-## 5001 (Real-time Protection was disabled)
+## 5007 (Real-time Protection was disabled)
 ```sql
 Windows_Defender%4Operational D
 SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Old Value", Event.EventData."New Value", COUNT(*)

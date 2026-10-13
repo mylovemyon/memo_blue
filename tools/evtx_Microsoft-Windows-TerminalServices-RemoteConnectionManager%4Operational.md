@@ -71,7 +71,7 @@ ORDER BY ALL;
 
 
 
-## 1149
+## 1149 (RDP network connection established)
 ```sql
 TerminalServices-RemoteConnectionManager... D
 SELECT Event.UserData.EventXML.Param1, Event.UserData.EventXML.Param2, Event.UserData.EventXML.Param3, COUNT(*)

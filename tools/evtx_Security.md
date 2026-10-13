@@ -956,7 +956,6 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 ```
 TokenElevationType
 ```
-: Token elevation is about User Account Control
 %%1936  - Type 1 is a full token with no privileges removed or groups disabled.  A full token is only used if User Account Control is disabled or if the user is the built-in Administrator account or a service account.
 %%1937 - Type 2 is an elevated token with no privileges removed or groups disabled.  An elevated token is used when User Account Control is enabled and the user chooses to start the program using Run as administrator.  An elevated token is also used when an application is configured to always require administrative privilege or to always require maximum privilege, and the user is a member of the Administrators group.
 %%1938 - Type 3 is the normal value when UAC is enabled and a user simply starts a program from the Start Menu.  It's a limited token with administrative privileges removed and administrative groups disabled.  The limited token is used when User Account Control is enabled, the application does not require administrative privilege, and the user does not choose to start the program using Run as administrator.
@@ -1018,16 +1017,15 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
-## 4697
+## 4697 (A service was installed on the system)
 ```sql
-security D
-SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ServiceAccount, Event.EventData.ServiceName, Event.EventData.ServiceFileName, Event.EventData.ServiceType, Event.EventData.ServiceStartType, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 4697
-AND Event.EventData.ServiceFileName NOT ILIKE 'C:\Windows\system32\svchost.exe%'
-GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ServiceFileName;
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ServiceAccount, Event.EventData.ServiceName, Event.EventData.ServiceFileName, Event.EventData.ServiceType, Event.EventData.ServiceStartType, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4697
+                AND Event.EventData.ServiceFileName NOT ILIKE 'C:\Windows\system32\svchost.exe%'
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ServiceFileName;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬────────────────┬─────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬─────────────┬──────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │ ServiceAccount │                 ServiceName                 │                                                       ServiceFileName                                                       │ ServiceType │ ServiceStartType │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │    varchar     │                   varchar                   │                                                           varchar                                                           │   varchar   │      int64       │    int64     │
@@ -1064,12 +1062,11 @@ ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ServiceFileName;
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4697' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4697' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌─────────────────────────────────────────┬──────────────┐
 │                 fullkey                 │ count_star() │
 │                 varchar                 │    int64     │
@@ -1088,6 +1085,24 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.SubjectUserSid        │          955 │
 └─────────────────────────────────────────┴──────────────┘
   12 rows                                      2 columns
+```
+ServiceType
+```
+0x1: Kernel Driver
+0x2: File System Driver
+0x8: Recognizer Driver
+0x10: Win32 Own Process
+0x20: Win32 Share Process
+0x110: Interactive Own Process
+0x120: Interactive Share Process
+```
+ServiceStartType
+```
+0: Boot
+1: System
+2: Automatic
+3: Manual
+4: Disabled
 ```
 
 

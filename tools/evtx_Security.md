@@ -1526,6 +1526,44 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4726 (A user account was deleted)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.PrivilegeList, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4726
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+┌────────────┬──────────────────────────────────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────┬───────────────┬──────────────┐
+│  Computer  │                SubjectUserSid                │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │ TargetUserName │ PrivilegeList │ count_star() │
+│  varchar   │                   varchar                    │      varchar      │     varchar     │                    varchar                    │     varchar      │    varchar     │    varchar    │    int64     │
+├────────────┼──────────────────────────────────────────────┼───────────────────┼─────────────────┼───────────────────────────────────────────────┼──────────────────┼────────────────┼───────────────┼──────────────┤
+│ tpl-packer │ S-1-5-21-2908624845-2463485410-257172065-500 │ TPL-PACKER        │ Administrator   │ S-1-5-21-2908624845-2463485410-257172065-1000 │ TPL-PACKER       │ defaultuser0   │ -             │            1 │
+└────────────┴──────────────────────────────────────────────┴───────────────────┴─────────────────┴───────────────────────────────────────────────┴──────────────────┴────────────────┴───────────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4726' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.PrivilegeList     │            1 │
+│ $.Event.EventData.SubjectDomainName │            1 │
+│ $.Event.EventData.SubjectLogonId    │            1 │
+│ $.Event.EventData.SubjectUserName   │            1 │
+│ $.Event.EventData.SubjectUserSid    │            1 │
+│ $.Event.EventData.TargetDomainName  │            1 │
+│ $.Event.EventData.TargetSid         │            1 │
+│ $.Event.EventData.TargetUserName    │            1 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4738
 ```sql
 security D

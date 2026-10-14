@@ -1347,6 +1347,68 @@ AuditPolicyChanges
 
 
 
+## 4720 (A new account was created)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.UserPrincipalName, Event.EventData.PrimaryGroupId, Event.EventData.UserParameters, Event.EventData.DisplayName,  Event.EventData.HomeDirectory, Event.EventData.HomePath, Event.EventData.ScriptPath, Event.EventData.ProfilePath, Event.EventData.UserWorkstations, Event.EventData.PasswordLastSet, Event.EventData.AccountExpires, Event.EventData.LogonHours, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl,  Event.EventData.AllowedToDelegateTo, Event.EventData.SidHistory, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4720
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+┌─────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────────┬────────────────────┬───────────────────┬────────────────┬────────────────┬─────────────┬───────────────┬──────────┬────────────┬─────────────┬──────────────────┬─────────────────┬────────────────┬────────────┬─────────────┬─────────────┬────────────────────────────────────────────┬─────────────────────┬────────────┬──────────────┐
+│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │   TargetUserName   │   SamAccountName   │ UserPrincipalName │ PrimaryGroupId │ UserParameters │ DisplayName │ HomeDirectory │ HomePath │ ScriptPath │ ProfilePath │ UserWorkstations │ PasswordLastSet │ AccountExpires │ LogonHours │ OldUacValue │ NewUacValue │             UserAccountControl             │ AllowedToDelegateTo │ SidHistory │ count_star() │
+│     varchar     │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │      varchar       │      varchar       │      varchar      │    varchar     │    varchar     │   varchar   │    varchar    │ varchar  │  varchar   │   varchar   │     varchar      │     varchar     │    varchar     │  varchar   │   varchar   │   varchar   │                  varchar                   │       varchar       │  varchar   │    int64     │
+├─────────────────┼────────────────┼───────────────────┼─────────────────┼───────────────────────────────────────────────┼──────────────────┼────────────────────┼────────────────────┼───────────────────┼────────────────┼────────────────┼─────────────┼───────────────┼──────────┼────────────┼─────────────┼──────────────────┼─────────────────┼────────────────┼────────────┼─────────────┼─────────────┼────────────────────────────────────────────┼─────────────────────┼────────────┼──────────────┤
+│ tpl-packer      │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-21-2908624845-2463485410-257172065-1000 │ TPL-PACKER       │ defaultuser0       │ defaultuser0       │ -                 │ 513            │ %%1793         │ %%1793      │ %%1793        │ %%1793   │ %%1793     │ %%1793      │ %%1793           │ %%1794          │ %%1794         │ %%1797     │ 0x0         │ 0x15        │ \r\n\t\t%%2080\r\n\t\t%%2082\r\n\t\t%%2084 │ -                   │ -          │            1 │
+│ rd01            │ S-1-5-18       │ WORKGROUP         │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-1001 │ RD01             │ SRLAdmin           │ SRLAdmin           │ -                 │ 513            │ %%1793         │ %%1793      │ %%1793        │ %%1793   │ %%1793     │ %%1793      │ %%1793           │ %%1794          │ %%1794         │ %%1797     │ 0x0         │ 0x15        │ \r\n\t\t%%2080\r\n\t\t%%2082\r\n\t\t%%2084 │ -                   │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-21-2908624845-2463485410-257172065-504  │ MINWINPC         │ WDAGUtilityAccount │ WDAGUtilityAccount │ -                 │ 513            │ %%1793         │ %%1793      │ %%1793        │ %%1793   │ %%1793     │ %%1793      │ %%1793           │ %%1794          │ %%1794         │ %%1797     │ 0x0         │ 0x15        │ \r\n\t\t%%2080\r\n\t\t%%2082\r\n\t\t%%2084 │ -                   │ -          │            1 │
+└─────────────────┴────────────────┴───────────────────┴─────────────────┴───────────────────────────────────────────────┴──────────────────┴────────────────────┴────────────────────┴───────────────────┴────────────────┴────────────────┴─────────────┴───────────────┴──────────┴────────────┴─────────────┴──────────────────┴─────────────────┴────────────────┴────────────┴─────────────┴─────────────┴────────────────────────────────────────────┴─────────────────────┴────────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4720' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌───────────────────────────────────────┬──────────────┐
+│                fullkey                │ count_star() │
+│                varchar                │    int64     │
+├───────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AccountExpires      │            3 │
+│ $.Event.EventData.AllowedToDelegateTo │            3 │
+│ $.Event.EventData.DisplayName         │            3 │
+│ $.Event.EventData.HomeDirectory       │            3 │
+│ $.Event.EventData.HomePath            │            3 │
+│ $.Event.EventData.LogonHours          │            3 │
+│ $.Event.EventData.NewUacValue         │            3 │
+│ $.Event.EventData.OldUacValue         │            3 │
+│ $.Event.EventData.PasswordLastSet     │            3 │
+│ $.Event.EventData.PrimaryGroupId      │            3 │
+│ $.Event.EventData.PrivilegeList       │            3 │
+│ $.Event.EventData.ProfilePath         │            3 │
+│ $.Event.EventData.SamAccountName      │            3 │
+│ $.Event.EventData.ScriptPath          │            3 │
+│ $.Event.EventData.SidHistory          │            3 │
+│ $.Event.EventData.SubjectDomainName   │            3 │
+│ $.Event.EventData.SubjectLogonId      │            3 │
+│ $.Event.EventData.SubjectUserName     │            3 │
+│ $.Event.EventData.SubjectUserSid      │            3 │
+│ $.Event.EventData.TargetDomainName    │            3 │
+│ $.Event.EventData.TargetSid           │            3 │
+│ $.Event.EventData.TargetUserName      │            3 │
+│ $.Event.EventData.UserAccountControl  │            3 │
+│ $.Event.EventData.UserParameters      │            3 │
+│ $.Event.EventData.UserPrincipalName   │            3 │
+│ $.Event.EventData.UserWorkstations    │            3 │
+└───────────────────────────────────────┴──────────────┘
+  26 rows                                    2 columns
+```
+```
+%%1793: value not set
+%%1794: never
+%%1997: ALL
+```
+
 
 
 ## 4724

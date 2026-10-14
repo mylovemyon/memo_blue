@@ -2793,6 +2793,148 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4801 (The workstation was unlocked)
+```sql
+security-rd08 D SELECT Event.System.Computer, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SessionId, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd08.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4801
+                GROUP BY ALL
+                ORDER BY Event.EventData.TargetUserSid;
+┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬────────────────┬───────────┬──────────────┐
+│      Computer       │                 TargetUserSid                  │ TargetDomainName │ TargetUserName │ SessionId │ count_star() │
+│       varchar       │                    varchar                     │     varchar      │    varchar     │   int64   │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼──────────────────┼────────────────┼───────────┼──────────────┤
+│ rd08.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1213 │ shieldbase       │ slevine        │         4 │            2 │
+│ rd08.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1213 │ shieldbase       │ slevine        │         2 │            6 │
+└─────────────────────┴────────────────────────────────────────────────┴──────────────────┴────────────────┴───────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd08 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd08.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4801' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.SessionId        │           15 │
+│ $.Event.EventData.TargetDomainName │           15 │
+│ $.Event.EventData.TargetLogonId    │           15 │
+│ $.Event.EventData.TargetUserName   │           15 │
+│ $.Event.EventData.TargetUserSid    │           15 │
+└────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 5136 (A directory service object was modified)
+```sql
+security-dc01 D SELECT Event.System.Computer, Event.EventData.ObjectClass, Event.EventData.AttributeLDAPDisplayName, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND json_extract_string(Event.System.EventID,'$') = '5136'
+                GROUP BY ALL
+                ORDER BY ALL;
+┌─────────────────────┬──────────────────────┬────────────────────────────────┬──────────────┐
+│      Computer       │     ObjectClass      │    AttributeLDAPDisplayName    │ count_star() │
+│       varchar       │       varchar        │            varchar             │    int64     │
+├─────────────────────┼──────────────────────┼────────────────────────────────┼──────────────┤
+│ dc01.shieldbase.com │ computer             │ servicePrincipalName           │            2 │
+│ dc01.shieldbase.com │ domainDNS            │ gPLink                         │            4 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ cn                             │            1 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ displayName                    │            3 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ flags                          │            1 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ gPCFileSysPath                 │            1 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ gPCFunctionalityVersion        │            1 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ gPCMachineExtensionNames       │            1 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ nTSecurityDescriptor           │           22 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ objectClass                    │            1 │
+│ dc01.shieldbase.com │ groupPolicyContainer │ versionNumber                  │           11 │
+│ dc01.shieldbase.com │ organizationalUnit   │ gPLink                         │           12 │
+│ dc01.shieldbase.com │ user                 │ deliverAndRedirect             │            2 │
+│ dc01.shieldbase.com │ user                 │ msExchGenericForwardingAddress │            1 │
+└─────────────────────┴──────────────────────┴────────────────────────────────┴──────────────┘
+  14 rows                                                                          4 columns
+```
+```sql
+security-dc01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.DSName, Event.EventData.DSType, Event.EventData.ObjectClass, Event.EventData.ObjectGUID, Event.EventData.ObjectDN, Event.EventData.AttributeLDAPDisplayName, Event.EventData.AttributeSyntaxOID, Event.EventData.AttributeValue, Event.EventData.OperationType, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND json_extract_string(Event.System.EventID,'$') = '5136'
+                AND Event.EventData.ObjectClass IN ('computer', 'user')
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid;
+┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬────────────────┬─────────┬─────────────┬──────────────────────────────────────┬────────────────────────────────────────────────────┬────────────────────────────────┬────────────────────┬─────────────────────────────────────────────┬───────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │     DSName     │ DSType  │ ObjectClass │              ObjectGUID              │                      ObjectDN                      │    AttributeLDAPDisplayName    │ AttributeSyntaxOID │               AttributeValue                │ OperationType │ count_star() │
+│       varchar       │                    varchar                     │      varchar      │     varchar     │    varchar     │ varchar │   varchar   │                 uuid                 │                      varchar                       │            varchar             │      varchar       │                   varchar                   │    varchar    │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼────────────────┼─────────┼─────────────┼──────────────────────────────────────┼────────────────────────────────────────────────────┼────────────────────────────────┼────────────────────┼─────────────────────────────────────────────┼───────────────┼──────────────┤
+│ dc01.shieldbase.com │ S-1-5-18                                       │ NT AUTHORITY      │ SYSTEM          │ shieldbase.com │ %%14676 │ computer    │ eeed7e83-636b-48b3-8411-fbf0b50bdd72 │ CN=DC01,OU=Domain Controllers,DC=shieldbase,DC=com │ servicePrincipalName           │ 2.5.5.12           │ TERMSRV/dc01.shieldbase.com                 │ %%14674       │            1 │
+│ dc01.shieldbase.com │ S-1-5-18                                       │ NT AUTHORITY      │ SYSTEM          │ shieldbase.com │ %%14676 │ computer    │ eeed7e83-636b-48b3-8411-fbf0b50bdd72 │ CN=DC01,OU=Domain Controllers,DC=shieldbase,DC=com │ servicePrincipalName           │ 2.5.5.12           │ TERMSRV/DC01                                │ %%14674       │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1148 │ shieldbase        │ EXCHANGE01$     │ shieldbase.com │ %%14676 │ user        │ dbe46a94-9a3b-4469-90cf-f8f32f1886c5 │ CN=Exchange Admin,CN=Users,DC=shieldbase,DC=com    │ msExchGenericForwardingAddress │ 2.5.5.12           │ smtp:marketing@mail.engagementsynergies.com │ %%14674       │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1148 │ shieldbase        │ EXCHANGE01$     │ shieldbase.com │ %%14676 │ user        │ dbe46a94-9a3b-4469-90cf-f8f32f1886c5 │ CN=Exchange Admin,CN=Users,DC=shieldbase,DC=com    │ deliverAndRedirect             │ 2.5.5.8            │ TRUE                                        │ %%14675       │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1148 │ shieldbase        │ EXCHANGE01$     │ shieldbase.com │ %%14676 │ user        │ dbe46a94-9a3b-4469-90cf-f8f32f1886c5 │ CN=Exchange Admin,CN=Users,DC=shieldbase,DC=com    │ deliverAndRedirect             │ 2.5.5.8            │ TRUE                                        │ %%14674       │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴────────────────┴─────────┴─────────────┴──────────────────────────────────────┴────────────────────────────────────────────────────┴────────────────────────────────┴────────────────────┴─────────────────────────────────────────────┴───────────────┴──────────────┘
+```
+fullkey
+```sql
+security-dc01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-dc01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '5136' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌────────────────────────────────────────────┬──────────────┐
+│                  fullkey                   │ count_star() │
+│                  varchar                   │    int64     │
+├────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AppCorrelationID         │           63 │
+│ $.Event.EventData.AttributeLDAPDisplayName │           63 │
+│ $.Event.EventData.AttributeSyntaxOID       │           63 │
+│ $.Event.EventData.AttributeValue           │           63 │
+│ $.Event.EventData.DSName                   │           63 │
+│ $.Event.EventData.DSType                   │           63 │
+│ $.Event.EventData.ObjectClass              │           63 │
+│ $.Event.EventData.ObjectDN                 │           63 │
+│ $.Event.EventData.ObjectGUID               │           63 │
+│ $.Event.EventData.OpCorrelationID          │           63 │
+│ $.Event.EventData.OperationType            │           63 │
+│ $.Event.EventData.SubjectDomainName        │           63 │
+│ $.Event.EventData.SubjectLogonId           │           63 │
+│ $.Event.EventData.SubjectUserName          │           63 │
+│ $.Event.EventData.SubjectUserSid           │           63 │
+└────────────────────────────────────────────┴──────────────┘
+  15 rows                                         2 columns
+```
+ObjectClass  
+https://learn.microsoft.com/en-us/windows/win32/adschema/classes-all  
+AttributeLDAPDisplayName  
+https://learn.microsoft.com/en-us/windows/win32/adschema/attributes-all  
+AttributeSyntaxOID
+```
+2.5.5.0:	Undefined	Not a legal syntax.
+2.5.5.1:	Object(DN-DN)	The fully qualified name of an object in the directory.
+2.5.5.2:	String(Object-Identifier)	The object identifier.
+2.5.5.3:	Case-Sensitive String	General String.
+2.5.5.4:	CaseIgnoreString(Teletex)	Differentiates uppercase and lowercase.
+2.5.5.5:	String(Printable), String(IA5)	Teletex. Doesn't differentiate uppercase and lowercase.
+2.5.5.6:	String(Numeric)	Printable string or IA5-String.
+2.5.5.7:	Object(DN-Binary)	Both character sets are case-sensitive.
+2.5.5.8:	Boolean	A sequence of digits.
+2.5.5.9:	Integer, Enumeration	A distinguished name plus a binary large object.
+2.5.5.10:	String(Octet)	TRUE or FALSE values.
+2.5.5.11:	String(UTC-Time), String(Generalized-Time)	A 32-bit number or enumeration.
+2.5.5.12:	String(Unicode)	A string of bytes.
+2.5.5.13:	Object(Presentation-Address)	UTC Time or Generalized-Time.
+2.5.5.14:	Object(DN-String)	Unicode string.
+2.5.5.15:	String(NT-Sec-Desc)	Presentation address.
+2.5.5.16:	LargeInteger	A DN-String plus a Unicode string.
+2.5.5.17:	String(Sid)	A Microsoft® Windows NT® Security descriptor.
+```
+
+
+
 ## 5140
 ```sql
 security D

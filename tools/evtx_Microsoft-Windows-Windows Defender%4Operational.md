@@ -175,7 +175,7 @@ Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventDa
   19 rows                                                                                                                                                                                                                                         13 columns
 ```
 fullkey
-```
+```sql
 Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
                                      FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
                                      WHERE e.json->>'$.Event.System.EventID' = '1001' AND je.fullkey LIKE '$.Event.EventData.%'
@@ -306,13 +306,12 @@ Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 1116 (Detection - The antimalware platform detected malware or other potentially unwanted software)
 ```sql
-Windows_Defender%4Operational D
-SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 1116
-GROUP BY ALL
-ORDER BY Event.EventData."Process Name";
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 1116
+                                     GROUP BY ALL
+                                     ORDER BY Event.EventData."Process Name";
 ┌─────────────────────┬──────────────────────────────┬─────────────────┬─────────────────────┬──────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │         Product Name         │ Product Version │   Detection User    │                         Process Name                         │                                                                                                                                                                                                                                            Path                                                                                                                                                                                                                                             │            Threat Name            │                                                        FWLink                                                         │ count_star() │
 │       varchar       │           varchar            │     varchar     │       varchar       │                           varchar                            │                                                                                                                                                                                                                                           varchar                                                                                                                                                                                                                                           │              varchar              │                                                        varchar                                                        │    int64     │
@@ -332,12 +331,11 @@ ORDER BY Event.EventData."Process Name";
 ```
 fullkey
 ```sql
-Windows_Defender%4Operational D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '1116' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '1116' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────────┬──────────────┐
 │                     fullkey                     │ count_star() │
 │                     varchar                     │    int64     │
@@ -392,13 +390,12 @@ ORDER BY je.fullkey;
 
 ## 1117 (Detection - The antimalware platform performed an action to protect your system from malware or other potentially unwanted software)
 ```sql
-Windows_Defender%4Operational D
-SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, Event.EventData."Remediation User", Event.EventData."Action Name", COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 1117
-GROUP BY ALL
-ORDER BY Event.EventData."Process Name";
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, Event.EventData."Remediation User", Event.EventData."Action Name", COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 1117
+                                     GROUP BY ALL
+                                     ORDER BY Event.EventData."Process Name";
 ┌─────────────────────┬──────────────────────────────┬─────────────────┬─────────────────────┬──────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬─────────────────────┬─────────────┬──────────────┐
 │      Computer       │         Product Name         │ Product Version │   Detection User    │                         Process Name                         │                                                                                                                                                                                                                                            Path                                                                                                                                                                                                                                             │            Threat Name            │                                                        FWLink                                                         │  Remediation User   │ Action Name │ count_star() │
 │       varchar       │           varchar            │     varchar     │       varchar       │                           varchar                            │                                                                                                                                                                                                                                           varchar                                                                                                                                                                                                                                           │              varchar              │                                                        varchar                                                        │       varchar       │   varchar   │    int64     │
@@ -414,12 +411,11 @@ ORDER BY Event.EventData."Process Name";
 ```
 fullkey
 ```sql
-Windows_Defender%4Operational D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '1117' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '1117' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────────┬──────────────┐
 │                     fullkey                     │ count_star() │
 │                     varchar                     │    int64     │

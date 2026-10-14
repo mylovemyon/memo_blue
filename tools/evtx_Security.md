@@ -502,17 +502,6 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 └─────────────────────────────────────────────┴──────────────┘
   27 rows                                          2 columns
 ```
-VirtualAccount
-```
-%%1842: yes
-%%1843: no
-```
-ImpersonationLevel
-```
-%%1832: Identification
-%%1833: Impersonation
-%%1840: Delegation
-```
 
 
 
@@ -1337,13 +1326,6 @@ Account Logon                           {69979850-797A-11D9-BED3-505054503030}
   Other Account Logon Events                {0CCE9241-69AE-11D9-BED3-505054503030}
   Kerberos Authentication Service           {0CCE9242-69AE-11D9-BED3-505054503030}
 ```
-AuditPolicyChanges
-```
-%%8448: Success removed (the system stopped logging successful attempts for the subcategory)
-%%8449: Success added (the system started logging successful attempts for the subcategory)
-%%8450: Failure removed (the system stopped logging failed attempts for the subcategory)
-%%8451: Failure added (the system started logging failed attempts for the subcategory)
-```
 
 
 
@@ -1402,11 +1384,6 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.UserWorkstations    │            3 │
 └───────────────────────────────────────┴──────────────┘
   26 rows                                    2 columns
-```
-```
-%%1793: value not set
-%%1794: never
-%%1997: ALL
 ```
 
 
@@ -2913,24 +2890,24 @@ AttributeLDAPDisplayName
 https://learn.microsoft.com/en-us/windows/win32/adschema/attributes-all  
 AttributeSyntaxOID
 ```
-2.5.5.0:	Undefined	Not a legal syntax.
-2.5.5.1:	Object(DN-DN)	The fully qualified name of an object in the directory.
-2.5.5.2:	String(Object-Identifier)	The object identifier.
-2.5.5.3:	Case-Sensitive String	General String.
-2.5.5.4:	CaseIgnoreString(Teletex)	Differentiates uppercase and lowercase.
-2.5.5.5:	String(Printable), String(IA5)	Teletex. Doesn't differentiate uppercase and lowercase.
-2.5.5.6:	String(Numeric)	Printable string or IA5-String.
-2.5.5.7:	Object(DN-Binary)	Both character sets are case-sensitive.
-2.5.5.8:	Boolean	A sequence of digits.
-2.5.5.9:	Integer, Enumeration	A distinguished name plus a binary large object.
-2.5.5.10:	String(Octet)	TRUE or FALSE values.
-2.5.5.11:	String(UTC-Time), String(Generalized-Time)	A 32-bit number or enumeration.
-2.5.5.12:	String(Unicode)	A string of bytes.
-2.5.5.13:	Object(Presentation-Address)	UTC Time or Generalized-Time.
-2.5.5.14:	Object(DN-String)	Unicode string.
-2.5.5.15:	String(NT-Sec-Desc)	Presentation address.
-2.5.5.16:	LargeInteger	A DN-String plus a Unicode string.
-2.5.5.17:	String(Sid)	A Microsoft® Windows NT® Security descriptor.
+2.5.5.0:	Undefined:	Not a legal syntax.
+2.5.5.1:	Object(DN-DN):	The fully qualified name of an object in the directory.
+2.5.5.2:	String(Object-Identifier):	The object identifier.
+2.5.5.3:	Case-Sensitive: String	General String.
+2.5.5.4:	CaseIgnoreString(Teletex):	Differentiates uppercase and lowercase.
+2.5.5.5:	String(Printable), String(IA5):	Teletex. Doesn't differentiate uppercase and lowercase.
+2.5.5.6:	String(Numeric):	Printable string or IA5-String.
+2.5.5.7:	Object(DN-Binary):	Both character sets are case-sensitive.
+2.5.5.8:	Boolean:	A sequence of digits.
+2.5.5.9:	Integer, Enumeration:	A distinguished name plus a binary large object.
+2.5.5.10:	String(Octet):	TRUE or FALSE values.
+2.5.5.11:	String(UTC-Time), String(Generalized-Time):	A 32-bit number or enumeration.
+2.5.5.12:	String(Unicode):	A string of bytes.
+2.5.5.13:	Object(Presentation-Address):	UTC Time or Generalized-Time.
+2.5.5.14:	Object(DN-String):	Unicode string.
+2.5.5.15:	String(NT-Sec-Desc):	Presentation address.
+2.5.5.16:	LargeInteger:	A DN-String plus a Unicode string.
+2.5.5.17:	String(Sid):	A Microsoft® Windows NT® Security descriptor.
 ```
 
 

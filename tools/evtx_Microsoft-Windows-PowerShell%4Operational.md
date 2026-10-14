@@ -83,7 +83,6 @@ powershell_operational D SELECT Event.System.Computer, Event.System.EventID, COU
 
 ## 4103 (Pipeline executed)
 ```sql
-  125 rows                                                                                                                                                                                                                                                                                                      4 columns
 powershell_operational D SELECT Event.System.Computer, regexp_extract(Event.EventData.ContextInfo, 'User = ([^\r\n]*)', 1) AS User, regexp_extract(Event.EventData.ContextInfo, 'Host Application = ([^\r\n]*)', 1) AS HostApplication, COUNT(*)
                          FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'

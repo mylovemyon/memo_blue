@@ -2639,7 +2639,7 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
                 AND Event.System.EventID = 4798
                 GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetSid;
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────────┬─────────────────────────────────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │   TargetUserName   │            CallerProcessName            │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │      varchar       │                 varchar                 │    int64     │
@@ -2687,15 +2687,14 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
-## 4799
+## 4799 (A security-enabled local group membership was enumerated)
 ```sql
-security D
-SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.TargetDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 4799
-GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.TargetDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4799
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬─────────────────┬──────────────┬──────────────────┬─────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ TargetDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │     TargetUserName      │                                                    CallerProcessName                                                     │ count_star() │
 │       varchar       │                    varchar                     │     varchar      │     varchar     │   varchar    │     varchar      │         varchar         │                                                         varchar                                                          │    int64     │
@@ -2732,12 +2731,11 @@ ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4799' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4799' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -2752,6 +2750,45 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.TargetSid         │         6625 │
 │ $.Event.EventData.TargetUserName    │         6625 │
 └─────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 4800 (The workstation was locked)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SessionId, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4800
+                GROUP BY ALL
+                ORDER BY Event.EventData.TargetUserSid;
+┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬────────────────┬───────────┬──────────────┐
+│      Computer       │                 TargetUserSid                  │ TargetDomainName │ TargetUserName │ SessionId │ count_star() │
+│       varchar       │                    varchar                     │     varchar      │    varchar     │   int64   │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼──────────────────┼────────────────┼───────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │        13 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │        14 │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase       │ tdungan        │         4 │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc         │        12 │            8 │
+└─────────────────────┴────────────────────────────────────────────────┴──────────────────┴────────────────┴───────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4800' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.SessionId        │           36 │
+│ $.Event.EventData.TargetDomainName │           36 │
+│ $.Event.EventData.TargetLogonId    │           36 │
+│ $.Event.EventData.TargetUserName   │           36 │
+│ $.Event.EventData.TargetUserSid    │           36 │
+└────────────────────────────────────┴──────────────┘
 ```
 
 

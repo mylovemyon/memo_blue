@@ -2356,15 +2356,14 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 
 
 
-## 4776
+## 4776 (NTLM authentication request)
 ```sql
-security D
-SELECT Event.System.Computer, Event.EventData.Workstation, Event.EventData.TargetUserName, Event.EventData.Status, Event.EventData.PackageName, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 4776
-GROUP BY ALL
-ORDER BY Event.EventData.TargetUserName;
+security-rd01 D SELECT Event.System.Computer, Event.EventData.Workstation, Event.EventData.TargetUserName, Event.EventData.Status, Event.EventData.PackageName, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4776
+                GROUP BY ALL
+                ORDER BY Event.EventData.TargetUserName;
 ┌─────────────────────┬─────────────┬────────────────┬────────────┬───────────────────────────────────────┬──────────────┐
 │      Computer       │ Workstation │ TargetUserName │   Status   │              PackageName              │ count_star() │
 │       varchar       │   varchar   │    varchar     │  varchar   │                varchar                │    int64     │
@@ -2374,12 +2373,11 @@ ORDER BY Event.EventData.TargetUserName;
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4776' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4776' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌──────────────────────────────────┬──────────────┐
 │             fullkey              │ count_star() │
 │             varchar              │    int64     │
@@ -2389,6 +2387,21 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.TargetUserName │           16 │
 │ $.Event.EventData.Workstation    │           16 │
 └──────────────────────────────────┴──────────────┘
+```
+Status
+```
+0xC0000064: user name does not exist
+0xC000006A: user name is correct but the password is wrong
+0XC000006D: the cause is either a bad username or authentication information
+0xC000006F: user logon outside authorized hours
+0xC0000070: user logon from unauthorized workstation
+0xC0000071: user logon with expired password
+0xC0000072: user logon to account disabled by administrator
+0xC0000193: user logon with expired account
+0XC0000224: user is required to change password at next logon
+0xC0000234: user is currently locked out
+0xC0000371: local account store does not contain secret material for the specified accounts
+0x0: Status OK
 ```
 
 

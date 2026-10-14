@@ -1566,19 +1566,19 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4728 (A member was added to a security-enabled global group)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.PrivilegeList, Event.EventData.MemberSid, Event.EventData.MemberName, COUNT(*)
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.MemberSid, Event.EventData.MemberName, Event.EventData.PrivilegeList, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.EventID = 4728
                 GROUP BY ALL
                 ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid, Event.EventData.MemberSid;
-┌─────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────┬──────────────────┬────────────────┬───────────────┬───────────────────────────────────────────────┬────────────┬──────────────┐
-│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                  TargetSid                   │ TargetDomainName │ TargetUserName │ PrivilegeList │                   MemberSid                   │ MemberName │ count_star() │
-│     varchar     │    varchar     │      varchar      │     varchar     │                   varchar                    │     varchar      │    varchar     │    varchar    │                    varchar                    │  varchar   │    int64     │
-├─────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────────────────────────────────────┼──────────────────┼────────────────┼───────────────┼───────────────────────────────────────────────┼────────────┼──────────────┤
-│ tpl-packer      │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-21-2908624845-2463485410-257172065-513 │ TPL-PACKER       │ None           │ -             │ S-1-5-21-2908624845-2463485410-257172065-1000 │ -          │            1 │
-│ rd01            │ S-1-5-18       │ WORKGROUP         │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-513 │ RD01             │ None           │ -             │ S-1-5-21-2908624845-2463485410-257172065-1001 │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-21-2908624845-2463485410-257172065-513 │ MINWINPC         │ None           │ -             │ S-1-5-21-2908624845-2463485410-257172065-504  │ -          │            1 │
-└─────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────────────┴──────────────────┴────────────────┴───────────────┴───────────────────────────────────────────────┴────────────┴──────────────┘
+┌─────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────┬──────────────────┬────────────────┬───────────────────────────────────────────────┬────────────┬───────────────┬──────────────┐
+│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                  TargetSid                   │ TargetDomainName │ TargetUserName │                   MemberSid                   │ MemberName │ PrivilegeList │ count_star() │
+│     varchar     │    varchar     │      varchar      │     varchar     │                   varchar                    │     varchar      │    varchar     │                    varchar                    │  varchar   │    varchar    │    int64     │
+├─────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────────────────────────────────────┼──────────────────┼────────────────┼───────────────────────────────────────────────┼────────────┼───────────────┼──────────────┤
+│ tpl-packer      │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-21-2908624845-2463485410-257172065-513 │ TPL-PACKER       │ None           │ S-1-5-21-2908624845-2463485410-257172065-1000 │ -          │ -             │            1 │
+│ rd01            │ S-1-5-18       │ WORKGROUP         │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-513 │ RD01             │ None           │ S-1-5-21-2908624845-2463485410-257172065-1001 │ -          │ -             │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-21-2908624845-2463485410-257172065-513 │ MINWINPC         │ None           │ S-1-5-21-2908624845-2463485410-257172065-504  │ -          │ -             │            1 │
+└─────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────────────┴──────────────────┴────────────────┴───────────────────────────────────────────────┴────────────┴───────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -1607,29 +1607,29 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
-## 4731
+## 4731 (A security-enabled local group was created)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.PrivilegeList, Event.EventData.SamAccountName, Event.EventData.SidHistory, COUNT(*)
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.PrivilegeList, Event.EventData.SidHistory, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.EventID = 4731
                 GROUP BY ALL
                 ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
-┌─────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────┬──────────────────┬─────────────────────────────────────┬───────────────┬─────────────────────────────────────┬────────────┬──────────────┐
-│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │           TargetUserName            │ PrivilegeList │           SamAccountName            │ SidHistory │ count_star() │
-│     varchar     │    varchar     │      varchar      │     varchar     │   varchar    │     varchar      │               varchar               │    varchar    │               varchar               │  varchar   │    int64     │
-├─────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────┼──────────────────┼─────────────────────────────────────┼───────────────┼─────────────────────────────────────┼────────────┼──────────────┤
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users                │ -             │ Remote Desktop Users                │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-556 │ Builtin          │ Network Configuration Operators     │ -             │ Network Configuration Operators     │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-558 │ Builtin          │ Performance Monitor Users           │ -             │ Performance Monitor Users           │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-559 │ Builtin          │ Performance Log Users               │ -             │ Performance Log Users               │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-562 │ Builtin          │ Distributed COM Users               │ -             │ Distributed COM Users               │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-568 │ Builtin          │ IIS_IUSRS                           │ -             │ IIS_IUSRS                           │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-569 │ Builtin          │ Cryptographic Operators             │ -             │ Cryptographic Operators             │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-573 │ Builtin          │ Event Log Readers                   │ -             │ Event Log Readers                   │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-578 │ Builtin          │ Hyper-V Administrators              │ -             │ Hyper-V Administrators              │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-579 │ Builtin          │ Access Control Assistance Operators │ -             │ Access Control Assistance Operators │ -          │            1 │
-│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-580 │ Builtin          │ Remote Management Users             │ -             │ Remote Management Users             │ -          │            1 │
-└─────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────┴──────────────────┴─────────────────────────────────────┴───────────────┴─────────────────────────────────────┴────────────┴──────────────┘
+┌─────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────┬──────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬───────────────┬────────────┬──────────────┐
+│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │           TargetUserName            │           SamAccountName            │ PrivilegeList │ SidHistory │ count_star() │
+│     varchar     │    varchar     │      varchar      │     varchar     │   varchar    │     varchar      │               varchar               │               varchar               │    varchar    │  varchar   │    int64     │
+├─────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────┼──────────────────┼─────────────────────────────────────┼─────────────────────────────────────┼───────────────┼────────────┼──────────────┤
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users                │ Remote Desktop Users                │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-556 │ Builtin          │ Network Configuration Operators     │ Network Configuration Operators     │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-558 │ Builtin          │ Performance Monitor Users           │ Performance Monitor Users           │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-559 │ Builtin          │ Performance Log Users               │ Performance Log Users               │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-562 │ Builtin          │ Distributed COM Users               │ Distributed COM Users               │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-568 │ Builtin          │ IIS_IUSRS                           │ IIS_IUSRS                           │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-569 │ Builtin          │ Cryptographic Operators             │ Cryptographic Operators             │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-573 │ Builtin          │ Event Log Readers                   │ Event Log Readers                   │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-578 │ Builtin          │ Hyper-V Administrators              │ Hyper-V Administrators              │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-579 │ Builtin          │ Access Control Assistance Operators │ Access Control Assistance Operators │ -             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-580 │ Builtin          │ Remote Management Users             │ Remote Management Users             │ -             │ -          │            1 │
+└─────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────┴──────────────────┴─────────────────────────────────────┴─────────────────────────────────────┴───────────────┴────────────┴──────────────┘
   11 rows                                                                                                                                                                                                               11 columns
 ```
 fullkey
@@ -1653,6 +1653,59 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.TargetDomainName  │           11 │
 │ $.Event.EventData.TargetSid         │           11 │
 │ $.Event.EventData.TargetUserName    │           11 │
+└─────────────────────────────────────┴──────────────┘
+  10 rows                                  2 columns
+```
+
+
+
+## 4732 (A member was added to a security-enabled local group)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.MemberSid, Event.EventData.MemberName, Event.EventData.PrivilegeList, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4732
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬──────────────────┬──────────────────────┬────────────────────────────────────────────────┬────────────┬───────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │    TargetUserName    │                   MemberSid                    │ MemberName │ PrivilegeList │ count_star() │
+│       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │     varchar      │       varchar        │                    varchar                     │  varchar   │    varchar    │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼──────────────┼──────────────────┼──────────────────────┼────────────────────────────────────────────────┼────────────┼───────────────┼──────────────┤
+│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators       │ S-1-5-21-2838623409-1327563992-2591358621-512  │ -          │ -             │            1 │
+│ tpl-packer          │ S-1-5-18                                       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-544 │ Builtin          │ Administrators       │ S-1-5-21-2908624845-2463485410-257172065-1000  │ -          │ -             │            1 │
+│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators       │ S-1-5-21-2908624845-2463485410-257172065-1001  │ -          │ -             │            1 │
+│ OFFDEVS-TUHMGJE     │ S-1-5-18                                       │                   │ MINWINPC$       │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-4                                        │ -          │ -             │            1 │
+│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-21-2908624845-2463485410-257172065-1001  │ -          │ -             │            1 │
+│ OFFDEVS-TUHMGJE     │ S-1-5-18                                       │                   │ MINWINPC$       │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-11                                       │ -          │ -             │            1 │
+│ tpl-packer          │ S-1-5-18                                       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-21-2908624845-2463485410-257172065-1000  │ -          │ -             │            1 │
+│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-21-2838623409-1327563992-2591358621-513  │ -          │ -             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users │ S-1-5-21-2838623409-1327563992-2591358621-513  │ -          │ -             │            1 │
+│ OFFDEVS-TUHMGJE     │ S-1-5-18                                       │                   │ MINWINPC$       │ S-1-5-32-568 │ Builtin          │ IIS_IUSRS            │ S-1-5-17                                       │ -          │ -             │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ S-1-5-32-573 │ Builtin          │ Event Log Readers    │ S-1-5-20                                       │ -          │ -             │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ -          │ -             │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────┴──────────────────┴──────────────────────┴────────────────────────────────────────────────┴────────────┴───────────────┴──────────────┘
+  12 rows                                                                                                                                                                                                                                               11 columns
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4732' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.MemberName        │           12 │
+│ $.Event.EventData.MemberSid         │           12 │
+│ $.Event.EventData.PrivilegeList     │           12 │
+│ $.Event.EventData.SubjectDomainName │           12 │
+│ $.Event.EventData.SubjectLogonId    │           12 │
+│ $.Event.EventData.SubjectUserName   │           12 │
+│ $.Event.EventData.SubjectUserSid    │           12 │
+│ $.Event.EventData.TargetDomainName  │           12 │
+│ $.Event.EventData.TargetSid         │           12 │
+│ $.Event.EventData.TargetUserName    │           12 │
 └─────────────────────────────────────┴──────────────┘
   10 rows                                  2 columns
 ```

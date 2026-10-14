@@ -1607,6 +1607,58 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4731
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.PrivilegeList, Event.EventData.SamAccountName, Event.EventData.SidHistory, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4731
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+┌─────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────┬──────────────────┬─────────────────────────────────────┬───────────────┬─────────────────────────────────────┬────────────┬──────────────┐
+│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │           TargetUserName            │ PrivilegeList │           SamAccountName            │ SidHistory │ count_star() │
+│     varchar     │    varchar     │      varchar      │     varchar     │   varchar    │     varchar      │               varchar               │    varchar    │               varchar               │  varchar   │    int64     │
+├─────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────┼──────────────────┼─────────────────────────────────────┼───────────────┼─────────────────────────────────────┼────────────┼──────────────┤
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users                │ -             │ Remote Desktop Users                │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-556 │ Builtin          │ Network Configuration Operators     │ -             │ Network Configuration Operators     │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-558 │ Builtin          │ Performance Monitor Users           │ -             │ Performance Monitor Users           │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-559 │ Builtin          │ Performance Log Users               │ -             │ Performance Log Users               │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-562 │ Builtin          │ Distributed COM Users               │ -             │ Distributed COM Users               │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-568 │ Builtin          │ IIS_IUSRS                           │ -             │ IIS_IUSRS                           │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-569 │ Builtin          │ Cryptographic Operators             │ -             │ Cryptographic Operators             │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-573 │ Builtin          │ Event Log Readers                   │ -             │ Event Log Readers                   │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-578 │ Builtin          │ Hyper-V Administrators              │ -             │ Hyper-V Administrators              │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-579 │ Builtin          │ Access Control Assistance Operators │ -             │ Access Control Assistance Operators │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-32-580 │ Builtin          │ Remote Management Users             │ -             │ Remote Management Users             │ -          │            1 │
+└─────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────┴──────────────────┴─────────────────────────────────────┴───────────────┴─────────────────────────────────────┴────────────┴──────────────┘
+  11 rows                                                                                                                                                                                                               11 columns
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4731' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.PrivilegeList     │           11 │
+│ $.Event.EventData.SamAccountName    │           11 │
+│ $.Event.EventData.SidHistory        │           11 │
+│ $.Event.EventData.SubjectDomainName │           11 │
+│ $.Event.EventData.SubjectLogonId    │           11 │
+│ $.Event.EventData.SubjectUserName   │           11 │
+│ $.Event.EventData.SubjectUserSid    │           11 │
+│ $.Event.EventData.TargetDomainName  │           11 │
+│ $.Event.EventData.TargetSid         │           11 │
+│ $.Event.EventData.TargetUserName    │           11 │
+└─────────────────────────────────────┴──────────────┘
+  10 rows                                  2 columns
+```
+
+
+
 ## 4738
 ```sql
 security D

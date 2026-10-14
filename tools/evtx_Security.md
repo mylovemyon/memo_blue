@@ -2311,6 +2311,50 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4771 (Kerberos pre-authentication failed)
+```sql
+security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.PreAuthType, Event.EventData.TicketOptions, Event.EventData.Status, Event.EventData.IpAddress, Event.EventData.CertIssuerName, Event.EventData.CertSerialNumber, Event.EventData.CertThumbprint, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND json_extract_string(Event.System.EventID,'$') = '4771'
+                GROUP BY ALL
+                ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.IpAddress;
+┌─────────────────────┬────────────────────────────────────────────────┬────────────────┬───────────────────┬─────────────┬───────────────┬─────────┬────────────────────┬────────────────┬──────────────────┬────────────────┬──────────────┐
+│      Computer       │                   TargetSid                    │ TargetUserName │    ServiceName    │ PreAuthType │ TicketOptions │ Status  │     IpAddress      │ CertIssuerName │ CertSerialNumber │ CertThumbprint │ count_star() │
+│       varchar       │                    varchar                     │    varchar     │      varchar      │   varchar   │    varchar    │ varchar │      varchar       │    varchar     │     varchar      │    varchar     │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼────────────────┼───────────────────┼─────────────┼───────────────┼─────────┼────────────────────┼────────────────┼──────────────────┼────────────────┼──────────────┤
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ cbarton-a      │ krbtgt/shieldbase │ 2           │ 0x40810010    │ 0x18    │ ::ffff:172.16.5.25 │                │                  │                │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1124 │ rsydow         │ krbtgt/shieldbase │ 2           │ 0x40810010    │ 0x18    │ ::ffff:172.16.4.6  │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ rsydow-a       │ krbtgt/shieldbase │ 2           │ 0x40810010    │ 0x18    │ ::ffff:172.16.5.26 │                │                  │                │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴────────────────┴───────────────────┴─────────────┴───────────────┴─────────┴────────────────────┴────────────────┴──────────────────┴────────────────┴──────────────┘
+```
+fullkey
+```sql
+security-dc01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-dc01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4771' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.CertIssuerName   │            4 │
+│ $.Event.EventData.CertSerialNumber │            4 │
+│ $.Event.EventData.CertThumbprint   │            4 │
+│ $.Event.EventData.IpAddress        │            4 │
+│ $.Event.EventData.IpPort           │            4 │
+│ $.Event.EventData.PreAuthType      │            4 │
+│ $.Event.EventData.ServiceName      │            4 │
+│ $.Event.EventData.Status           │            4 │
+│ $.Event.EventData.TargetSid        │            4 │
+│ $.Event.EventData.TargetUserName   │            4 │
+│ $.Event.EventData.TicketOptions    │            4 │
+└────────────────────────────────────┴──────────────┘
+  11 rows                                 2 columns
+```
+
+
 
 ## 4776
 ```sql
@@ -2345,38 +2389,6 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.TargetUserName │           16 │
 │ $.Event.EventData.Workstation    │           16 │
 └──────────────────────────────────┴──────────────┘
-```
-
-
-
-## 4769 (A Kerberos service ticket was requested)
-```sql
-
-```
-fullkey
-```
-security-dc01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('C:/Users/SANSDFIR/security-dc01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4769' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
-┌────────────────────────────────────────┬──────────────┐
-│                fullkey                 │ count_star() │
-│                varchar                 │    int64     │
-├────────────────────────────────────────┼──────────────┤
-│ $.Event.EventData.IpAddress            │        27488 │
-│ $.Event.EventData.IpPort               │        27488 │
-│ $.Event.EventData.LogonGuid            │        27488 │
-│ $.Event.EventData.ServiceName          │        27488 │
-│ $.Event.EventData.ServiceSid           │        27488 │
-│ $.Event.EventData.Status               │        27488 │
-│ $.Event.EventData.TargetDomainName     │        27488 │
-│ $.Event.EventData.TargetUserName       │        27488 │
-│ $.Event.EventData.TicketEncryptionType │        27488 │
-│ $.Event.EventData.TicketOptions        │        27488 │
-│ $.Event.EventData.TransmittedServices  │        27488 │
-└────────────────────────────────────────┴──────────────┘
-  11 rows                                     2 columns
 ```
 
 

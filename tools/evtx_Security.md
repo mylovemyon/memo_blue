@@ -1662,34 +1662,23 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4732 (A member was added to a security-enabled local group)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.MemberSid, Event.EventData.MemberName, Event.EventData.PrivilegeList, COUNT(*)
-                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.EventID = 4732
+security-rd09 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.MemberSid, Event.EventData.MemberName, Event.EventData.PrivilegeList, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd09.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4732
                 GROUP BY ALL
                 ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid, Event.EventData.MemberSid;
-┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬──────────────────┬──────────────────────┬────────────────────────────────────────────────┬────────────┬───────────────┬──────────────┐
-│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │    TargetUserName    │                   MemberSid                    │ MemberName │ PrivilegeList │ count_star() │
-│       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │     varchar      │       varchar        │                    varchar                     │  varchar   │    varchar    │    int64     │
-├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼──────────────┼──────────────────┼──────────────────────┼────────────────────────────────────────────────┼────────────┼───────────────┼──────────────┤
-│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators       │ S-1-5-21-2838623409-1327563992-2591358621-512  │ -          │ -             │            1 │
-│ tpl-packer          │ S-1-5-18                                       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-544 │ Builtin          │ Administrators       │ S-1-5-21-2908624845-2463485410-257172065-1000  │ -          │ -             │            1 │
-│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators       │ S-1-5-21-2908624845-2463485410-257172065-1001  │ -          │ -             │            1 │
-│ OFFDEVS-TUHMGJE     │ S-1-5-18                                       │                   │ MINWINPC$       │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-11                                       │ -          │ -             │            1 │
-│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-21-2838623409-1327563992-2591358621-513  │ -          │ -             │            1 │
-│ tpl-packer          │ S-1-5-18                                       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-21-2908624845-2463485410-257172065-1000  │ -          │ -             │            1 │
-│ rd01                │ S-1-5-18                                       │ WORKGROUP         │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-21-2908624845-2463485410-257172065-1001  │ -          │ -             │            1 │
-│ OFFDEVS-TUHMGJE     │ S-1-5-18                                       │                   │ MINWINPC$       │ S-1-5-32-545 │ Builtin          │ Users                │ S-1-5-4                                        │ -          │ -             │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users │ S-1-5-21-2838623409-1327563992-2591358621-513  │ -          │ -             │            1 │
-│ OFFDEVS-TUHMGJE     │ S-1-5-18                                       │                   │ MINWINPC$       │ S-1-5-32-568 │ Builtin          │ IIS_IUSRS            │ S-1-5-17                                       │ -          │ -             │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ S-1-5-32-573 │ Builtin          │ Event Log Readers    │ S-1-5-20                                       │ -          │ -             │            1 │
-│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ S-1-5-32-555 │ Builtin          │ Remote Desktop Users │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ -          │ -             │            1 │
-└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────┴──────────────────┴──────────────────────┴────────────────────────────────────────────────┴────────────┴───────────────┴──────────────┘
-  12 rows                                                                                                                                                                                                                                               11 columns
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────┬──────────────────┬────────────────┬────────────────────────────────────────────────┬────────────┬───────────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │ TargetUserName │                   MemberSid                    │ MemberName │ PrivilegeList │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │   varchar    │     varchar      │    varchar     │                    varchar                     │  varchar   │    varchar    │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────┼──────────────────┼────────────────┼────────────────────────────────────────────────┼────────────┼───────────────┼──────────────┤
+│ rd09.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD09$           │ S-1-5-32-544 │ Builtin          │ Administrators │ S-1-5-21-2838623409-1327563992-2591358621-1134 │ -          │ -             │            1 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────┴──────────────────┴────────────────┴────────────────────────────────────────────────┴────────────┴───────────────┴──────────────┘
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+security-rd09 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd09.json') AS e, json_tree(e.json) AS je
                 WHERE e.json->>'$.Event.System.EventID' = '4732' AND je.fullkey LIKE '$.Event.EventData.%'
                 GROUP BY je.fullkey
                 ORDER BY je.fullkey;

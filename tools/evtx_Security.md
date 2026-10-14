@@ -2912,15 +2912,57 @@ AttributeSyntaxOID
 
 
 
-## 5140
+## 5137 (A directory service object was created)
 ```sql
-security D
-SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, Event.EventData.ObjectType, Event.EventData.IpAddress, Event.EventData.AccessMask, Event.EventData.AccessList, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 5140
-GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName, Event.EventData.IpAddress;
+security-dc01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.DSName, Event.EventData.DSType, Event.EventData.ObjectClass, Event.EventData.ObjectGUID, Event.EventData.ObjectDN, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND json_extract_string(Event.System.EventID,'$') = '5137'
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid;
+┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬────────────────┬─────────┬──────────────────────┬──────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │     DSName     │ DSType  │     ObjectClass      │              ObjectGUID              │                                       ObjectDN                                       │ count_star() │
+│       varchar       │                    varchar                     │      varchar      │     varchar     │    varchar     │ varchar │       varchar        │                 uuid                 │                                       varchar                                        │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼────────────────┼─────────┼──────────────────────┼──────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase        │ rsydow-a        │ shieldbase.com │ %%14676 │ groupPolicyContainer │ e1c172d0-5f61-42b2-82fe-73cd767fe1cd │ CN={6EEADF6A-579D-4D1B-8AC8-69CD74D191DE},CN=Policies,CN=System,DC=shieldbase,DC=com │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴────────────────┴─────────┴──────────────────────┴──────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+security-dc01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-dc01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '5137' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AppCorrelationID  │            1 │
+│ $.Event.EventData.DSName            │            1 │
+│ $.Event.EventData.DSType            │            1 │
+│ $.Event.EventData.ObjectClass       │            1 │
+│ $.Event.EventData.ObjectDN          │            1 │
+│ $.Event.EventData.ObjectGUID        │            1 │
+│ $.Event.EventData.OpCorrelationID   │            1 │
+│ $.Event.EventData.SubjectDomainName │            1 │
+│ $.Event.EventData.SubjectLogonId    │            1 │
+│ $.Event.EventData.SubjectUserName   │            1 │
+│ $.Event.EventData.SubjectUserSid    │            1 │
+└─────────────────────────────────────┴──────────────┘
+  11 rows                                  2 columns
+```
+
+
+
+## 5140 (A network share object was accessed)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, Event.EventData.ObjectType, Event.EventData.IpAddress, Event.EventData.AccessMask, Event.EventData.AccessList, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 5140
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName, Event.EventData.IpAddress;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬────────────────┬────────────┬───────────────────────────┬────────────┬────────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  ShareName   │ ShareLocalPath │ ObjectType │         IpAddress         │ AccessMask │     AccessList     │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │    varchar     │  varchar   │          varchar          │  varchar   │      varchar       │    int64     │
@@ -2943,12 +2985,11 @@ ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName, Event.EventD
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '5140' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '5140' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -2970,15 +3011,14 @@ ORDER BY je.fullkey;
 
 
 
-## 5142
+## 5142 (A network share object was added)
 ```sql
-security D
-SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 5142
-GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 5142
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  ShareName   │ ShareLocalPath │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │    varchar     │    int64     │
@@ -2991,12 +3031,11 @@ ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '5142' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '5142' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -3012,15 +3051,62 @@ ORDER BY je.fullkey;
 
 
 
-## 5144
+## 5143 (A network share object was modified)
 ```sql
-security D
-SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 5144
-GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
+security-file01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, Event.EventData.ObjectType, Event.EventData.OldShareFlags, Event.EventData.OldRemark, Event.EventData.OldMaxUsers, Event.EventData.OldSD, Event.EventData.NewShareFlags, Event.EventData.NewRemark, Event.EventData.NewMaxUsers, Event.EventData.NewSD, COUNT(*)
+                  FROM read_json('C:/Users/SANSDFIR/security-file01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                  WHERE json_extract_string(Event.System.EventID,'$') = '5143'
+                  GROUP BY ALL
+                  ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
+┌───────────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────┬────────────────────────────┬────────────┬───────────────┬───────────┬─────────────┬─────────┬───────────────┬───────────┬─────────────┬─────────┬──────────────┐
+│       Computer        │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │      ShareName       │       ShareLocalPath       │ ObjectType │ OldShareFlags │ OldRemark │ OldMaxUsers │  OldSD  │ NewShareFlags │ NewRemark │ NewMaxUsers │  NewSD  │ count_star() │
+│        varchar        │    varchar     │      varchar      │     varchar     │       varchar        │          varchar           │  varchar   │    varchar    │  varchar  │   varchar   │ varchar │    varchar    │  varchar  │   varchar   │ varchar │    int64     │
+├───────────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────────────┼────────────────────────────┼────────────┼───────────────┼───────────┼─────────────┼─────────┼───────────────┼───────────┼─────────────┼─────────┼──────────────┤
+│ file01.shieldbase.com │ S-1-5-18       │ shieldbase        │ FILE01$         │ \\*\Installers       │ C:\Shares\Installers       │ Directory  │ 0x0           │ N/A       │ 0xffffffff  │ NULL    │ 0x0           │ N/A       │ 0xffffffff  │ NULL    │            1 │
+│ file01.shieldbase.com │ S-1-5-18       │ shieldbase        │ FILE01$         │ \\*\SRL-Admin        │ C:\Shares\SRL-Admin        │ Directory  │ 0x0           │ N/A       │ 0xffffffff  │ NULL    │ 0x0           │ N/A       │ 0xffffffff  │ NULL    │            1 │
+│ file01.shieldbase.com │ S-1-5-18       │ shieldbase        │ FILE01$         │ \\*\shieldbase-share │ C:\Shares\shieldbase-share │ Directory  │ 0x0           │ N/A       │ 0xffffffff  │ NULL    │ 0x0           │ N/A       │ 0xffffffff  │ NULL    │            1 │
+└───────────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────────────┴────────────────────────────┴────────────┴───────────────┴───────────┴─────────────┴─────────┴───────────────┴───────────┴─────────────┴─────────┴──────────────┘
+```
+fullkey
+```sql
+security-file01 D SELECT je.fullkey, COUNT(*)
+                  FROM read_json_objects('C:/Users/SANSDFIR/security-file01.json') AS e, json_tree(e.json) AS je
+                  WHERE e.json->>'$.Event.System.EventID' = '5143' AND je.fullkey LIKE '$.Event.EventData.%'
+                  GROUP BY je.fullkey
+                  ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.NewMaxUsers       │            3 │
+│ $.Event.EventData.NewRemark         │            3 │
+│ $.Event.EventData.NewSD             │            3 │
+│ $.Event.EventData.NewShareFlags     │            3 │
+│ $.Event.EventData.ObjectType        │            3 │
+│ $.Event.EventData.OldMaxUsers       │            3 │
+│ $.Event.EventData.OldRemark         │            3 │
+│ $.Event.EventData.OldSD             │            3 │
+│ $.Event.EventData.OldShareFlags     │            3 │
+│ $.Event.EventData.ShareLocalPath    │            3 │
+│ $.Event.EventData.ShareName         │            3 │
+│ $.Event.EventData.SubjectDomainName │            3 │
+│ $.Event.EventData.SubjectLogonId    │            3 │
+│ $.Event.EventData.SubjectUserName   │            3 │
+│ $.Event.EventData.SubjectUserSid    │            3 │
+└─────────────────────────────────────┴──────────────┘
+  15 rows                                  2 columns
+```
+
+
+
+## 5144 (A network share object was deleted)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 5144
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┬────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │  ShareName   │ ShareLocalPath │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │   varchar    │    varchar     │    int64     │
@@ -3030,12 +3116,11 @@ ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '5144' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '5144' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -3047,4 +3132,161 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.SubjectUserName   │            3 │
 │ $.Event.EventData.SubjectUserSid    │            3 │
 └─────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 5379 (Credential Manager credentials were read)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetName, Event.EventData.ReadOperation, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 5379
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetName;
+┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────────────────────────────┬───────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │                              TargetName                               │ ReadOperation │ count_star() │
+│       varchar       │                    varchar                     │      varchar      │     varchar     │                                varchar                                │    varchar    │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼───────────────────────────────────────────────────────────────────────┼───────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ MicrosoftAccount:user=02ljejifphxphkae                                │ %%8100        │        18860 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ WindowsLive:(cert):name=02ljejifphxphkae;serviceuri=*                 │ %%8100        │        11503 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ WindowsLive:(token):name=02ljejifphxphkae;serviceuri=*                │ %%8100        │        11503 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ WindowsLive:target=virtualapp/didlogical                              │ %%8100        │         2130 │
+│ rd01.shieldbase.com │ S-1-5-19                                       │ NT AUTHORITY      │ LOCAL SERVICE   │ MicrosoftAccount:user=02nyzpzsqlsoqfjn                                │ %%8100        │          160 │
+│ rd01.shieldbase.com │ S-1-5-19                                       │ NT AUTHORITY      │ LOCAL SERVICE   │ WindowsLive:(cert):name=02nyzpzsqlsoqfjn;serviceuri=*                 │ %%8100        │          120 │
+│ rd01.shieldbase.com │ S-1-5-19                                       │ NT AUTHORITY      │ LOCAL SERVICE   │ WindowsLive:(token):name=02nyzpzsqlsoqfjn;serviceuri=*                │ %%8100        │          120 │
+│ rd01.shieldbase.com │ S-1-5-19                                       │ NT AUTHORITY      │ LOCAL SERVICE   │ WindowsLive:target=virtualapp/didlogical                              │ %%8100        │           49 │
+│ rd01.shieldbase.com │ S-1-5-20                                       │ shieldbase        │ RD01$           │ MicrosoftAccount:user=02etqktgjtgolqnz                                │ %%8100        │           67 │
+│ rd01.shieldbase.com │ S-1-5-20                                       │ shieldbase        │ RD01$           │ WindowsLive:(cert):name=02etqktgjtgolqnz;serviceuri=*                 │ %%8100        │           46 │
+│ rd01.shieldbase.com │ S-1-5-20                                       │ shieldbase        │ RD01$           │ WindowsLive:(token):name=02etqktgjtgolqnz;serviceuri=*                │ %%8100        │           46 │
+│ rd01.shieldbase.com │ S-1-5-20                                       │ shieldbase        │ RD01$           │ WindowsLive:target=virtualapp/didlogical                              │ %%8100        │           23 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ Microsoft OneDrive Generic Data - Personal Vault VHD Info             │ %%8100        │           14 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftAccount:user=02mxdhnbqjkqpsrt                                │ %%8100        │          245 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftAccount:user=tdungan@stark-research-labs.com                 │ %%8100        │        11554 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftAccount:user=tdungan@stark-research-labs.com                 │ %%8099        │          218 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftOffice*                                                      │ %%8100        │           26 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftOffice16_Data:ADAL:*                                         │ %%8100        │           52 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftOffice16_Data:ADALWAM:*                                      │ %%8100        │           52 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftOffice16_Data:SSPI:*                                         │ %%8100        │           52 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ MicrosoftOffice16_Data:live:cid=*                                     │ %%8100        │           27 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ OneDrive-INTCachedCredential*                                         │ %%8100        │            6 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ OneDriveCachedCredential*                                             │ %%8100        │            6 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SkyDrive Cached Credential                                            │ %%8099        │            3 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SkyDrive-INT Cached Credential                                        │ %%8099        │            3 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ WindowsLive:(cert):name=02mxdhnbqjkqpsrt;serviceuri=*                 │ %%8100        │          398 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ WindowsLive:(cert):name=tdungan@stark-research-labs.com;serviceuri=*  │ %%8100        │          165 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ WindowsLive:(token):name=02mxdhnbqjkqpsrt;serviceuri=*                │ %%8100        │          398 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ WindowsLive:(token):name=tdungan@stark-research-labs.com;serviceuri=* │ %%8100        │          165 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ WindowsLive:target=virtualapp/didlogical                              │ %%8100        │          349 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ MicrosoftAccount:user=02bdyeokokcxzhbc                                │ %%8100        │           97 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ MicrosoftAccount:user=02bdyeokokcxzhbc                                │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ MicrosoftOffice*                                                      │ %%8100        │            9 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ MicrosoftOffice16_Data:ADAL:*                                         │ %%8100        │           24 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ MicrosoftOffice16_Data:ADALWAM:*                                      │ %%8100        │           24 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ MicrosoftOffice16_Data:SSPI:*                                         │ %%8100        │           24 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ MicrosoftOffice16_Data:live:cid=*                                     │ %%8100        │           11 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ OneDrive Cached Credential                                            │ %%8100        │            5 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ OneDrive Cached Credential*                                           │ %%8100        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ OneDrive-INTCachedCredential*                                         │ %%8100        │            8 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ OneDriveCachedCredential*                                             │ %%8100        │            8 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ SkyDrive Cached Credential                                            │ %%8099        │            3 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ SkyDrive-INT Cached Credential                                        │ %%8099        │            3 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/d                                                             │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/de                                                            │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev                                                           │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev0                                                          │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01                                                         │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.                                                        │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.s                                                       │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.sh                                                      │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shi                                                     │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shie                                                    │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shiel                                                   │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shield                                                  │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldb                                                 │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldba                                                │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldbas                                               │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldbase                                              │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldbase.                                             │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldbase.c                                            │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldbase.co                                           │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ TERMSRV/dev01.shieldbase.com                                          │ %%8099        │            6 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(cert):name=02bdyeokokcxzhbc;serviceuri=*                 │ %%8100        │          152 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(cert):name=02gcgnqpbtfgqeym;serviceuri=*                 │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(cert):name=02qbckrjqyeclccf;serviceuri=*                 │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(cert):name=02vxkihhmncrdtya;serviceuri=*                 │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(token):name=02bdyeokokcxzhbc;serviceuri=*                │ %%8100        │          152 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(token):name=02gcgnqpbtfgqeym;serviceuri=*                │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(token):name=02qbckrjqyeclccf;serviceuri=*                │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:(token):name=02vxkihhmncrdtya;serviceuri=*                │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:name=*                                                    │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:target=virtualapp/didlogical                              │ %%8100        │          137 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ WindowsLive:user=*                                                    │ %%8100        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ d                                                                     │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ de                                                                    │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev                                                                   │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev0                                                                  │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01                                                                 │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.                                                                │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.s                                                               │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.sh                                                              │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shi                                                             │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shie                                                            │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shiel                                                           │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shield                                                          │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldb                                                         │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldba                                                        │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldbas                                                       │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldbase                                                      │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldbase.                                                     │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldbase.c                                                    │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldbase.co                                                   │ %%8099        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ dev01.shieldbase.com                                                  │ %%8099        │            6 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=d                       │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=de                      │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev                     │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev0                    │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01                   │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.                  │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.s                 │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.sh                │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shi               │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shie              │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shiel             │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shield            │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldb           │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldba          │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldbas         │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldbase        │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldbase.       │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldbase.c      │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldbase.co     │ %%8099        │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ {28bfc32f-10f6-4738-98d1-1ac061df716a}:target=dev01.shieldbase.com    │ %%8099        │            3 │
+└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴───────────────────────────────────────────────────────────────────────┴───────────────┴──────────────┘
+  114 rows                                                                                                                                                                                                7 columns
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '5379' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌──────────────────────────────────────────────┬──────────────┐
+│                   fullkey                    │ count_star() │
+│                   varchar                    │    int64     │
+├──────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.ClientProcessId            │        81294 │
+│ $.Event.EventData.CountOfCredentialsReturned │        81294 │
+│ $.Event.EventData.ProcessCreationTime        │        81294 │
+│ $.Event.EventData.ReadOperation              │        81294 │
+│ $.Event.EventData.ReturnCode                 │        81294 │
+│ $.Event.EventData.SubjectDomainName          │        81294 │
+│ $.Event.EventData.SubjectLogonId             │        81294 │
+│ $.Event.EventData.SubjectUserName            │        81294 │
+│ $.Event.EventData.SubjectUserSid             │        81294 │
+│ $.Event.EventData.TargetName                 │        81294 │
+│ $.Event.EventData.Type                       │        81294 │
+└──────────────────────────────────────────────┴──────────────┘
+  11 rows                                           2 columns
 ```

@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f Windows_Defender%4Operational.json "C:\Windows\System32\winevt\logs\Microsoft-Windows-Windows Defender%4Operational.evtx"
+PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f Windows_Defender%4Operational-rd01.json "C:\Windows\System32\winevt\logs\Microsoft-Windows-Windows Defender%4Operational.evtx"
 PS C:\Users\SANSDFIR>
 ```
 
@@ -13,8 +13,7 @@ Windows_Defender%4Operational D
 
 ## .databases
 ```sql
-Windows_Defender%4Operational D
-.databases
+Windows_Defender%4Operational-rd01 D .databases
 ┌────────────────────────────────────────┐
 │               databases                │
 │                                        │
@@ -24,8 +23,7 @@ Windows_Defender%4Operational D
 
 ## .table
 ```sql
-Windows_Defender%4Operational D
-.tables
+Windows_Defender%4Operational-rd01 D .tables
  ────── Windows_Defender%4Operational ───────
  ─────────────────── main ───────────────────
 ┌───────────────────────────────┐┌───────────┐
@@ -37,8 +35,7 @@ Windows_Defender%4Operational D
 
 ## DESCRIBE
 ```sql
-Windows_Defender%4Operational D
-DESCRIBE;
+Windows_Defender%4Operational-rd01 D DESCRIBE;
 ┌───────────────────────────────┬─────────┬───────────────────────────────┬──────────────┬──────────────┬───────────┐
 │           database            │ schema  │             name              │ column_names │ column_types │ temporary │
 │            varchar            │ varchar │            varchar            │  varchar[]   │  varchar[]   │  boolean  │
@@ -48,46 +45,46 @@ DESCRIBE;
 └───────────────────────────────┴─────────┴───────────────────────────────┴──────────────┴──────────────┴───────────┘
 ```
 
-
 ## EventID
 ```sql
-Windows_Defender%4Operational D
-SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-GROUP BY ALL
-ORDER BY ALL;
-┌─────────────────────┬─────────┬──────────────┐
-│      Computer       │ EventID │ count_star() │
-│       varchar       │  int64  │    int64     │
-├─────────────────────┼─────────┼──────────────┤
-│ rd01.shieldbase.com │    1000 │           20 │
-│ rd01.shieldbase.com │    1001 │           19 │
-│ rd01.shieldbase.com │    1002 │            1 │
-│ rd01.shieldbase.com │    1013 │           17 │
-│ rd01.shieldbase.com │    1116 │           15 │
-│ rd01.shieldbase.com │    1117 │            8 │
-│ rd01.shieldbase.com │    1150 │            1 │
-│ rd01.shieldbase.com │    1151 │          466 │
-│ rd01.shieldbase.com │    2001 │          188 │
-│ rd01.shieldbase.com │    5000 │            3 │
-│ rd01.shieldbase.com │    5007 │           15 │
-│ rd01.shieldbase.com │    5013 │            2 │
-└─────────────────────┴─────────┴──────────────┘
-  12 rows                            3 columns
+Windows_Defender%4Operational D SELECT Event.System.EventID, COUNT(*)
+                                FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                GROUP BY ALL
+                                ORDER BY ALL;
+┌─────────┬──────────────┐
+│ EventID │ count_star() │
+│  int64  │    int64     │
+├─────────┼──────────────┤
+│    1000 │          647 │
+│    1001 │          628 │
+│    1002 │           20 │
+│    1013 │          554 │
+│    1116 │           36 │
+│    1117 │           23 │
+│    1150 │          221 │
+│    1151 │        15502 │
+│    2000 │           64 │
+│    2001 │         5313 │
+│    2010 │            4 │
+│    5000 │           44 │
+│    5001 │            2 │
+│    5007 │          260 │
+│    5013 │           40 │
+└─────────┴──────────────┘
+  15 rows      2 columns
 ```
 
 
 
 ## 1000 (An antimalware scan started)
 ```sql
-Windows_Defender%4Operational D
-SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 1000
-GROUP BY ALL
-ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 1000
+                                     GROUP BY ALL
+                                     ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
 ┌─────────────────────┬──────────┬──────────────┬─────────┬──────────────────────────────┬─────────────────┬────────────────────────────────────────┬─────────────┬─────────────────┬──────────────┐
 │      Computer       │   SID    │    Domain    │  User   │         Product Name         │ Product Version │                Scan ID                 │  Scan Type  │ Scan Parameters │ count_star() │
 │       varchar       │ varchar  │   varchar    │ varchar │           varchar            │     varchar     │                varchar                 │   varchar   │     varchar     │    int64     │
@@ -117,12 +114,11 @@ ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
 ```
 fullkey
 ```sql
-Windows_Defender%4Operational D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '1000' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '1000' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
 ┌─────────────────────────────────────────┬──────────────┐
 │                 fullkey                 │ count_star() │
 │                 varchar                 │    int64     │
@@ -146,13 +142,12 @@ ORDER BY je.fullkey;
 
 ## 1001 (An antimalware scan finished)
 ```sql
-Windows_Defender%4Operational D
-SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", Event.EventData."Scan Time Hours", Event.EventData."Scan Time Minutes", Event.EventData."Scan Time Seconds", COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 1001
-GROUP BY ALL
-ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", Event.EventData."Scan Time Hours", Event.EventData."Scan Time Minutes", Event.EventData."Scan Time Seconds", COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 1001
+                                     GROUP BY ALL
+                                     ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
 ┌─────────────────────┬──────────┬──────────────┬─────────┬──────────────────────────────┬─────────────────┬────────────────────────────────────────┬─────────────┬─────────────────┬─────────────────┬───────────────────┬───────────────────┬──────────────┐
 │      Computer       │   SID    │    Domain    │  User   │         Product Name         │ Product Version │                Scan ID                 │  Scan Type  │ Scan Parameters │ Scan Time Hours │ Scan Time Minutes │ Scan Time Seconds │ count_star() │
 │       varchar       │ varchar  │   varchar    │ varchar │           varchar            │     varchar     │                varchar                 │   varchar   │     varchar     │     varchar     │      varchar      │      varchar      │    int64     │
@@ -181,12 +176,11 @@ ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
 ```
 fullkey
 ```
-Windows_Defender%4Operational D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '1001' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '1001' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
 ┌─────────────────────────────────────────┬──────────────┐
 │                 fullkey                 │ count_star() │
 │                 varchar                 │    int64     │
@@ -212,13 +206,12 @@ ORDER BY je.fullkey;
 
 ## 1002 (Warning - An antimalware scan was stopped before it finished)
 ```sql
-Windows_Defender%4Operational D
-SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 1002
-GROUP BY ALL
-ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 1002
+                                     GROUP BY ALL
+                                     ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
 ┌─────────────────────┬──────────┬──────────────┬─────────┬──────────────────────────────┬─────────────────┬────────────────────────────────────────┬─────────────┬─────────────────┬──────────────┐
 │      Computer       │   SID    │    Domain    │  User   │         Product Name         │ Product Version │                Scan ID                 │  Scan Type  │ Scan Parameters │ count_star() │
 │       varchar       │ varchar  │   varchar    │ varchar │           varchar            │     varchar     │                varchar                 │   varchar   │     varchar     │    int64     │
@@ -228,12 +221,11 @@ ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
 ```
 fullkey
 ```sql
-Windows_Defender%4Operational D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '1002' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '1002' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
 ┌─────────────────────────────────────────┬──────────────┐
 │                 fullkey                 │ count_star() │
 │                 varchar                 │    int64     │
@@ -250,6 +242,64 @@ ORDER BY je.fullkey;
 │ $.Event.EventData.User                  │            1 │
 └─────────────────────────────────────────┴──────────────┘
   10 rows                                      2 columns
+```
+
+
+
+## 1013 (The antimalware platform deleted history of malware and other potentially unwanted software)
+```sql
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData.Timestamp,  COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 1013
+                                     GROUP BY ALL
+                                     ORDER BY Event.EventData.SID, Event.EventData.Timestamp;
+┌─────────────────────┬──────────┬──────────────┬─────────┬──────────────────────────────┬─────────────────┬─────────────────────┬──────────────┐
+│      Computer       │   SID    │    Domain    │  User   │         Product Name         │ Product Version │      Timestamp      │ count_star() │
+│       varchar       │ varchar  │   varchar    │ varchar │           varchar            │     varchar     │      timestamp      │    int64     │
+├─────────────────────┼──────────┼──────────────┼─────────┼──────────────────────────────┼─────────────────┼─────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-23 02:24:35 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-24 02:24:36 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-25 02:24:37 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-26 02:24:38 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-27 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-28 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-29 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-30 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2022-12-31 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-01 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-03 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-04 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-06 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-07 02:22:45 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-08 02:24:39 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-09 00:51:19 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ 2023-01-10 00:41:01 │            1 │
+└─────────────────────┴──────────┴──────────────┴─────────┴──────────────────────────────┴─────────────────┴─────────────────────┴──────────────┘
+  17 rows                                                                                                                             8 columns
+```
+fullkey
+```sql
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '1013' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
+┌───────────────────────────────────┬──────────────┐
+│              fullkey              │ count_star() │
+│              varchar              │    int64     │
+├───────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Domain          │           17 │
+│ $.Event.EventData.Product Name    │           17 │
+│ $.Event.EventData.Product Version │           17 │
+│ $.Event.EventData.SID             │           17 │
+│ $.Event.EventData.Timestamp       │           17 │
+│ $.Event.EventData.Unused          │           17 │
+│ $.Event.EventData.Unused2         │           17 │
+│ $.Event.EventData.Unused3         │           17 │
+│ $.Event.EventData.Unused4         │           17 │
+│ $.Event.EventData.User            │           17 │
+└───────────────────────────────────┴──────────────┘
 ```
 
 

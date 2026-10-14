@@ -2487,6 +2487,65 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4781 (The name of an account was changed)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.OldTargetUserName, Event.EventData.NewTargetUserName, Event.EventData.PrivilegeList, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4781
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+┌────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────┬──────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬───────────────┬──────────────┐
+│  Computer  │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                  TargetSid                   │ TargetDomainName │          OldTargetUserName          │          NewTargetUserName          │ PrivilegeList │ count_star() │
+│  varchar   │    varchar     │      varchar      │     varchar     │                   varchar                    │     varchar      │               varchar               │               varchar               │    varchar    │    int64     │
+├────────────┼────────────────┼───────────────────┼─────────────────┼──────────────────────────────────────────────┼──────────────────┼─────────────────────────────────────┼─────────────────────────────────────┼───────────────┼──────────────┤
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-21-2908624845-2463485410-257172065-513 │ TPL-PACKER       │ None                                │ None                                │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-544                                 │ Builtin          │ Administrators                      │ Administrators                      │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-545                                 │ Builtin          │ Users                               │ Users                               │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-546                                 │ Builtin          │ Guests                              │ Guests                              │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-547                                 │ Builtin          │ Power Users                         │ Power Users                         │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-551                                 │ Builtin          │ Backup Operators                    │ Backup Operators                    │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-552                                 │ Builtin          │ Replicator                          │ Replicator                          │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-555                                 │ Builtin          │ Remote Desktop Users                │ Remote Desktop Users                │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-556                                 │ Builtin          │ Network Configuration Operators     │ Network Configuration Operators     │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-558                                 │ Builtin          │ Performance Monitor Users           │ Performance Monitor Users           │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-559                                 │ Builtin          │ Performance Log Users               │ Performance Log Users               │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-562                                 │ Builtin          │ Distributed COM Users               │ Distributed COM Users               │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-568                                 │ Builtin          │ IIS_IUSRS                           │ IIS_IUSRS                           │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-569                                 │ Builtin          │ Cryptographic Operators             │ Cryptographic Operators             │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-573                                 │ Builtin          │ Event Log Readers                   │ Event Log Readers                   │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-578                                 │ Builtin          │ Hyper-V Administrators              │ Hyper-V Administrators              │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-579                                 │ Builtin          │ Access Control Assistance Operators │ Access Control Assistance Operators │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-580                                 │ Builtin          │ Remote Management Users             │ Remote Management Users             │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-581                                 │ Builtin          │ System Managed Accounts Group       │ System Managed Accounts Group       │ -             │            1 │
+│ tpl-packer │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-32-583                                 │ Builtin          │ Device Owners                       │ Device Owners                       │ -             │            1 │
+└────────────┴────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────────────┴──────────────────┴─────────────────────────────────────┴─────────────────────────────────────┴───────────────┴──────────────┘
+  20 rows                                                                                                                                                                                                                             10 columns
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4781' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.NewTargetUserName │           20 │
+│ $.Event.EventData.OldTargetUserName │           20 │
+│ $.Event.EventData.PrivilegeList     │           20 │
+│ $.Event.EventData.SubjectDomainName │           20 │
+│ $.Event.EventData.SubjectLogonId    │           20 │
+│ $.Event.EventData.SubjectUserName   │           20 │
+│ $.Event.EventData.SubjectUserSid    │           20 │
+│ $.Event.EventData.TargetDomainName  │           20 │
+│ $.Event.EventData.TargetSid         │           20 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4799
 ```sql
 security D

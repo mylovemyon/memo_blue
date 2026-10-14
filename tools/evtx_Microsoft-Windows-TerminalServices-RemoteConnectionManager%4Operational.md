@@ -13,8 +13,7 @@ TerminalServices-RemoteConnectionManager... D
 
 ## .databaess
 ```sql
-TerminalServices-RemoteConnectionManager... D
-.databases
+TerminalServices-RemoteConnectionManager... D .databases
 ┌────────────────────────────────────────────────────────────────┐
 │                           databases                            │
 │                                                                │
@@ -24,8 +23,7 @@ TerminalServices-RemoteConnectionManager... D
 
 ## .tables
 ```sql
-TerminalServices-RemoteConnectionManager... D
-.tables
+TerminalServices-RemoteConnectionManager... D .tables
  ────── TerminalServices-RemoteConnectionManager%4Operational ───────
  ─────────────────────────────── main ───────────────────────────────
 ┌───────────┐┌───────────────────────────────────────────────────────┐
@@ -37,8 +35,7 @@ TerminalServices-RemoteConnectionManager... D
 
 ## DESCRIBE
 ```sql
-TerminalServices-RemoteConnectionManager... D
-DESCRIBE;
+TerminalServices-RemoteConnectionManager... D DESCRIBE;
 ┌───────────────────────────────────────────────────────┬─────────┬───────────────────────────────────────────────────────┬──────────────┬──────────────┬───────────┐
 │                       database                        │ schema  │                         name                          │ column_names │ column_types │ temporary │
 │                        varchar                        │ varchar │                        varchar                        │  varchar[]   │  varchar[]   │  boolean  │
@@ -50,12 +47,11 @@ DESCRIBE;
 
 ## EventID
 ```sql
-TerminalServices-RemoteConnectionManager... D
-SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/TerminalServices-RemoteConnectionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-GROUP BY ALL
-ORDER BY ALL;
+TerminalServices-RemoteConnectionManager... D SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
+                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-RemoteConnectionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                              GROUP BY ALL
+                                              ORDER BY ALL;
 ┌─────────────────────┬─────────┬──────────────┐
 │      Computer       │ EventID │ count_star() │
 │       varchar       │  int64  │    int64     │
@@ -73,33 +69,31 @@ ORDER BY ALL;
 
 ## 1149 (RDP network connection established)
 ```sql
-TerminalServices-RemoteConnectionManager... D
-SELECT Event.UserData.EventXML.Param1, Event.UserData.EventXML.Param2, Event.UserData.EventXML.Param3, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/TerminalServices-RemoteConnectionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 1149
-GROUP BY ALL
-ORDER BY ALL;
-┌─────────┬────────────┬──────────────┬──────────────┐
-│ Param1  │   Param2   │    Param3    │ count_star() │
-│ varchar │  varchar   │   varchar    │    int64     │
-├─────────┼────────────┼──────────────┼──────────────┤
-│ tdungan │ shieldbase │ 172.16.30.20 │            1 │
-│ NULL    │ NULL       │ 172.16.30.14 │            3 │
-│ NULL    │ NULL       │ 172.16.30.20 │            6 │
-│ NULL    │ NULL       │ 172.16.30.23 │            3 │
-│ NULL    │ NULL       │ 172.16.30.3  │            4 │
-│ NULL    │ NULL       │ 172.16.30.8  │            7 │
-└─────────┴────────────┴──────────────┴──────────────┘
+TerminalServices-RemoteConnectionManager... D SELECT Event.UserData.EventXML.Param2, Event.UserData.EventXML.Param1, Event.UserData.EventXML.Param3, COUNT(*)
+                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-RemoteConnectionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                              AND Event.System.EventID = 1149
+                                              GROUP BY ALL
+                                              ORDER BY ALL;
+┌────────────┬─────────┬──────────────┬──────────────┐
+│   Param2   │ Param1  │    Param3    │ count_star() │
+│  varchar   │ varchar │   varchar    │    int64     │
+├────────────┼─────────┼──────────────┼──────────────┤
+│ shieldbase │ tdungan │ 172.16.30.20 │            1 │
+│ NULL       │ NULL    │ 172.16.30.14 │            3 │
+│ NULL       │ NULL    │ 172.16.30.20 │            6 │
+│ NULL       │ NULL    │ 172.16.30.23 │            3 │
+│ NULL       │ NULL    │ 172.16.30.3  │            4 │
+│ NULL       │ NULL    │ 172.16.30.8  │            7 │
+└────────────┴─────────┴──────────────┴──────────────┘
 ```
 fullkey
 ```sql
-TerminalServices-RemoteConnectionManager... D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-RemoteConnectionManager%4Operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '1149' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+TerminalServices-RemoteConnectionManager... D SELECT je.fullkey, COUNT(*)
+                                              FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-RemoteConnectionManager%4Operational.json') AS e, json_tree(e.json) AS je
+                                              WHERE e.json->>'$.Event.System.EventID' = '1149' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+                                              GROUP BY je.fullkey
+                                              ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────┬──────────────┐
 │                   fullkey                   │ count_star() │
 │                   varchar                   │    int64     │

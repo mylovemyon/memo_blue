@@ -1564,6 +1564,49 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4728 (A member was added to a security-enabled global group)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.PrivilegeList, Event.EventData.MemberSid, Event.EventData.MemberName, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4728
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid, Event.EventData.MemberSid;
+┌─────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────┬──────────────────┬────────────────┬───────────────┬───────────────────────────────────────────────┬────────────┬──────────────┐
+│    Computer     │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                  TargetSid                   │ TargetDomainName │ TargetUserName │ PrivilegeList │                   MemberSid                   │ MemberName │ count_star() │
+│     varchar     │    varchar     │      varchar      │     varchar     │                   varchar                    │     varchar      │    varchar     │    varchar    │                    varchar                    │  varchar   │    int64     │
+├─────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────────────────────────────────────┼──────────────────┼────────────────┼───────────────┼───────────────────────────────────────────────┼────────────┼──────────────┤
+│ tpl-packer      │ S-1-5-18       │ WORKGROUP         │ TPL-PACKER$     │ S-1-5-21-2908624845-2463485410-257172065-513 │ TPL-PACKER       │ None           │ -             │ S-1-5-21-2908624845-2463485410-257172065-1000 │ -          │            1 │
+│ rd01            │ S-1-5-18       │ WORKGROUP         │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-513 │ RD01             │ None           │ -             │ S-1-5-21-2908624845-2463485410-257172065-1001 │ -          │            1 │
+│ OFFDEVS-TUHMGJE │ S-1-5-18       │                   │ MINWINPC$       │ S-1-5-21-2908624845-2463485410-257172065-513 │ MINWINPC         │ None           │ -             │ S-1-5-21-2908624845-2463485410-257172065-504  │ -          │            1 │
+└─────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────────────┴──────────────────┴────────────────┴───────────────┴───────────────────────────────────────────────┴────────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4728' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.MemberName        │            3 │
+│ $.Event.EventData.MemberSid         │            3 │
+│ $.Event.EventData.PrivilegeList     │            3 │
+│ $.Event.EventData.SubjectDomainName │            3 │
+│ $.Event.EventData.SubjectLogonId    │            3 │
+│ $.Event.EventData.SubjectUserName   │            3 │
+│ $.Event.EventData.SubjectUserSid    │            3 │
+│ $.Event.EventData.TargetDomainName  │            3 │
+│ $.Event.EventData.TargetSid         │            3 │
+│ $.Event.EventData.TargetUserName    │            3 │
+└─────────────────────────────────────┴──────────────┘
+  10 rows                                  2 columns
+```
+
+
+
 ## 4738
 ```sql
 security D

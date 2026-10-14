@@ -2546,6 +2546,43 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4793 (The Password Policy Checking API was called)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserName, Event.EventData.Workstation, Event.EventData.Status, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.EventID = 4793
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName;
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬────────────────┬─────────────┬─────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │ TargetUserName │ Workstation │ Status  │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │    varchar     │   varchar   │ varchar │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼────────────────┼─────────────┼─────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ SRLAdmin       │ RD01        │ 0x0     │            1 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴────────────────┴─────────────┴─────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4793' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Status            │            1 │
+│ $.Event.EventData.SubjectDomainName │            1 │
+│ $.Event.EventData.SubjectLogonId    │            1 │
+│ $.Event.EventData.SubjectUserName   │            1 │
+│ $.Event.EventData.SubjectUserSid    │            1 │
+│ $.Event.EventData.TargetUserName    │            1 │
+│ $.Event.EventData.Workstation       │            1 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4799
 ```sql
 security D

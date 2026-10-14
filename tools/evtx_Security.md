@@ -1702,6 +1702,49 @@ security-rd09 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4733 (A member was removed from a security-enabled local group)
+```sql
+security-rd08 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.MemberSid, Event.EventData.MemberName, Event.EventData.PrivilegeList, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd08.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4733
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid, Event.EventData.MemberSid;
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────┬──────────────────┬────────────────┬────────────────────────────────────────────────┬────────────┬───────────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │ TargetUserName │                   MemberSid                    │ MemberName │ PrivilegeList │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │   varchar    │     varchar      │    varchar     │                    varchar                     │  varchar   │    varchar    │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼──────────────┼──────────────────┼────────────────┼────────────────────────────────────────────────┼────────────┼───────────────┼──────────────┤
+│ rd08.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD08$           │ S-1-5-32-544 │ Builtin          │ Administrators │ S-1-5-21-2251190123-3620890617-4175171818-1000 │ -          │ -             │            1 │
+│ rd08.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD08$           │ S-1-5-32-545 │ Builtin          │ Users          │ S-1-5-21-2251190123-3620890617-4175171818-1000 │ -          │ -             │            1 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴──────────────┴──────────────────┴────────────────┴────────────────────────────────────────────────┴────────────┴───────────────┴──────────────┘
+```
+fullkey
+```sql
+security-rd08 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd08.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4733' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.MemberName        │            5 │
+│ $.Event.EventData.MemberSid         │            5 │
+│ $.Event.EventData.PrivilegeList     │            5 │
+│ $.Event.EventData.SubjectDomainName │            5 │
+│ $.Event.EventData.SubjectLogonId    │            5 │
+│ $.Event.EventData.SubjectUserName   │            5 │
+│ $.Event.EventData.SubjectUserSid    │            5 │
+│ $.Event.EventData.TargetDomainName  │            5 │
+│ $.Event.EventData.TargetSid         │            5 │
+│ $.Event.EventData.TargetUserName    │            5 │
+└─────────────────────────────────────┴──────────────┘
+  10 rows                                  2 columns
+```
+
+
+
 ## 4738
 ```sql
 security D

@@ -2632,6 +2632,61 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4798 (A user's local group membership was enumerated)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4798
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetSid;
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────────┬─────────────────────────────────────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │   TargetUserName   │            CallerProcessName            │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │      varchar       │                 varchar                 │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼───────────────────────────────────────────────┼──────────────────┼────────────────────┼─────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-1001 │ RD01             │ SRLAdmin           │ C:\Windows\System32\svchost.exe         │           18 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-1001 │ RD01             │ SRLAdmin           │ C:\Windows\System32\wbem\WmiPrvSE.exe   │            6 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-1001 │ RD01             │ SRLAdmin           │ C:\Windows\System32\CompatTelRunner.exe │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-500  │ RD01             │ Administrator      │ C:\Windows\System32\CompatTelRunner.exe │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-500  │ RD01             │ Administrator      │ C:\Windows\System32\svchost.exe         │           18 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-500  │ RD01             │ Administrator      │ C:\Windows\System32\wbem\WmiPrvSE.exe   │            6 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-501  │ RD01             │ Guest              │ C:\Windows\System32\CompatTelRunner.exe │           17 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-501  │ RD01             │ Guest              │ C:\Windows\System32\svchost.exe         │           18 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-501  │ RD01             │ Guest              │ C:\Windows\System32\wbem\WmiPrvSE.exe   │            6 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-503  │ RD01             │ DefaultAccount     │ C:\Windows\System32\CompatTelRunner.exe │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-503  │ RD01             │ DefaultAccount     │ C:\Windows\System32\svchost.exe         │           18 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-503  │ RD01             │ DefaultAccount     │ C:\Windows\System32\wbem\WmiPrvSE.exe   │            6 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-504  │ RD01             │ WDAGUtilityAccount │ C:\Windows\System32\svchost.exe         │           18 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-504  │ RD01             │ WDAGUtilityAccount │ C:\Windows\System32\wbem\WmiPrvSE.exe   │            6 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-504  │ RD01             │ WDAGUtilityAccount │ C:\Windows\System32\CompatTelRunner.exe │            1 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴───────────────────────────────────────────────┴──────────────────┴────────────────────┴─────────────────────────────────────────┴──────────────┘
+  15 rows                                                                                                                                                                                                           9 columns
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4798' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.CallerProcessId   │          409 │
+│ $.Event.EventData.CallerProcessName │          409 │
+│ $.Event.EventData.SubjectDomainName │          409 │
+│ $.Event.EventData.SubjectLogonId    │          409 │
+│ $.Event.EventData.SubjectUserName   │          409 │
+│ $.Event.EventData.SubjectUserSid    │          409 │
+│ $.Event.EventData.TargetDomainName  │          409 │
+│ $.Event.EventData.TargetSid         │          409 │
+│ $.Event.EventData.TargetUserName    │          409 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 4799
 ```sql
 security D

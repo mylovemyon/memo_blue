@@ -13,8 +13,7 @@ powershell_operational D
 
 ## .databases
 ```sql
-powershell_operational D 
-.databases
+powershell_operational D .databases
 ┌─────────────────────────────────┐
 │            databases            │
 │                                 │
@@ -24,8 +23,7 @@ powershell_operational D
 
 ## .tables
 ```sql
-powershell_operational D
-.tables
+powershell_operational D .tables
  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── powershell_operational ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── main ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -42,8 +40,7 @@ powershell_operational D
 
 ## DESCRIBE
 ```sql
-powershell_operational D
-DESCRIBE;
+powershell_operational D DESCRIBE;
 ┌────────────────────────┬─────────┬────────────────────────┬──────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────┐
 │        database        │ schema  │          name          │ column_names │                                                                                                                                                                                                                                                                                                                                                                                column_types                                                                                                                                                                                                                                                                                                                                                                                │ temporary │
 │        varchar         │ varchar │        varchar         │  varchar[]   │                                                                                                                                                                                                                                                                                                                                                                                 varchar[]                                                                                                                                                                                                                                                                                                                                                                                  │  boolean  │
@@ -57,12 +54,11 @@ DESCRIBE;
 
 ## EventID
 ```sql
-powershell_operational D
-SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-GROUP BY ALL
-ORDER BY ALL;
+powershell_operational D SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
+                         FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                         GROUP BY ALL
+                         ORDER BY ALL;
 ┌─────────────────────┬─────────┬──────────────┐
 │      Computer       │ EventID │ count_star() │
 │       varchar       │  int64  │    int64     │
@@ -85,18 +81,17 @@ ORDER BY ALL;
 
 
 
-## 4103
+## 4103 (Pipeline executed)
 ```sql
 
 ```
 fullkey
 ```sql
-powershell_operational D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/powershell_operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4103' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+powershell_operational D SELECT je.fullkey, COUNT(*)
+                         FROM read_json_objects('C:/Users/SANSDFIR/powershell_operational.json') AS e, json_tree(e.json) AS je
+                         WHERE e.json->>'$.Event.System.EventID' = '4103' AND je.fullkey LIKE '$.Event.EventData.%'
+                         GROUP BY je.fullkey
+                         ORDER BY je.fullkey;
 ┌───────────────────────────────┬──────────────┐
 │            fullkey            │ count_star() │
 │            varchar            │    int64     │
@@ -111,13 +106,12 @@ ORDER BY je.fullkey;
 
 ## 4104 (Contains contents of scripts run)
 ```sql
-powershell_operational D
-SELECT Event.System.Computer, Event.EventData.Path,  Event.EventData.MessageNumber, Event.EventData.MessageTotal, Event.EventData.ScriptBlockText, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 4104
-GROUP BY ALL
-ORDER BY Event.EventData.Path, Event.EventData.ScriptBlockText;
+powershell_operational D SELECT Event.System.Computer, Event.EventData.Path,  Event.EventData.MessageNumber, Event.EventData.MessageTotal, Event.EventData.ScriptBlockText, COUNT(*)
+                         FROM read_json('C:/Users/SANSDFIR/powershell_operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                         AND Event.System.EventID = 4104
+                         GROUP BY ALL
+                         ORDER BY Event.EventData.Path, Event.EventData.ScriptBlockText;
 ┌─────────────────────┬─────────────────────────────────────────────────────────────────────────────────────┬───────────────┬──────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                                        Path                                         │ MessageNumber │ MessageTotal │                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ScriptBlockText                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             │ count_star() │
 │       varchar       │                                       varchar                                       │     int64     │    int64     │                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                varchar                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 │    int64     │
@@ -494,12 +488,11 @@ ORDER BY Event.EventData.Path, Event.EventData.ScriptBlockText;
 ```
 fullkey
 ```sql
-powershell_operational D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/powershell_operational.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4104' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+powershell_operational D SELECT je.fullkey, COUNT(*)
+                         FROM read_json_objects('C:/Users/SANSDFIR/powershell_operational.json') AS e, json_tree(e.json) AS je
+                         WHERE e.json->>'$.Event.System.EventID' = '4104' AND je.fullkey LIKE '$.Event.EventData.%'
+                         GROUP BY je.fullkey
+                         ORDER BY je.fullkey;
 ┌───────────────────────────────────┬──────────────┐
 │              fullkey              │ count_star() │
 │              varchar              │    int64     │

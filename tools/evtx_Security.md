@@ -2550,7 +2550,8 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserName, Event.EventData.Workstation, Event.EventData.Status, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.EventID = 4793
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4793
                 GROUP BY ALL
                 ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬────────────────┬─────────────┬─────────┬──────────────┐
@@ -2578,6 +2579,54 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.SubjectUserSid    │            1 │
 │ $.Event.EventData.TargetUserName    │            1 │
 │ $.Event.EventData.Workstation       │            1 │
+└─────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 4797 (An attempt was made to query the existence of a blank password for an account)
+```sql
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.Workstation, COUNT(*)
+                FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4797
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName;
+┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────────┬────────────────────┬─────────────┬──────────────┐
+│      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │ TargetDomainName │   TargetUserName   │ Workstation │ count_star() │
+│       varchar       │                    varchar                     │      varchar      │     varchar     │     varchar      │      varchar       │   varchar   │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼──────────────────┼────────────────────┼─────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ RD01             │ Administrator      │ RD01        │           12 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ RD01             │ DefaultAccount     │ RD01        │           12 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ RD01             │ Guest              │ RD01        │           12 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ RD01             │ SRLAdmin           │ RD01        │           12 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ RD01             │ WDAGUtilityAccount │ RD01        │           12 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ RD01             │ Administrator      │ RD01        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ RD01             │ DefaultAccount     │ RD01        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ RD01             │ Guest              │ RD01        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ RD01             │ SRLAdmin           │ RD01        │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ RD01             │ WDAGUtilityAccount │ RD01        │            2 │
+└─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────────┴────────────────────┴─────────────┴──────────────┘
+  10 rows                                                                                                                                                               8 columns
+```
+fullkey
+```sql
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4797' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
+┌─────────────────────────────────────┬──────────────┐
+│               fullkey               │ count_star() │
+│               varchar               │    int64     │
+├─────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.SubjectDomainName │          105 │
+│ $.Event.EventData.SubjectLogonId    │          105 │
+│ $.Event.EventData.SubjectUserName   │          105 │
+│ $.Event.EventData.SubjectUserSid    │          105 │
+│ $.Event.EventData.TargetDomainName  │          105 │
+│ $.Event.EventData.TargetUserName    │          105 │
+│ $.Event.EventData.Workstation       │          105 │
 └─────────────────────────────────────┴──────────────┘
 ```
 

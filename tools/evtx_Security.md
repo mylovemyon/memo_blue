@@ -1835,31 +1835,28 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
-## 4738
+## 4738 (A user account was changed)
 ```sql
-security D
-SELECT Event.System.Computer,Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl, Event.EventData.SamAccountName, Event.EventData.PasswordLastSet, Event.EventData.PrimaryGroupId, COUNT(*)
-FROM read_json('C:/Users/SANSDFIR/security.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-AND Event.System.EventID = 4738
-GROUP BY ALL
-ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
-┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────┬─────────────┬─────────────┬────────────────────┬────────────────┬─────────────────────┬────────────────┬──────────────┐
-│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │ TargetUserName │ OldUacValue │ NewUacValue │ UserAccountControl │ SamAccountName │   PasswordLastSet   │ PrimaryGroupId │ count_star() │
-│       varchar       │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │    varchar     │   varchar   │   varchar   │      varchar       │    varchar     │       varchar       │    varchar     │    int64     │
-├─────────────────────┼────────────────┼───────────────────┼─────────────────┼───────────────────────────────────────────────┼──────────────────┼────────────────┼─────────────┼─────────────┼────────────────────┼────────────────┼─────────────────────┼────────────────┼──────────────┤
-│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-1001 │ RD01             │ SRLAdmin       │ 0x10        │ 0x10        │ -                  │ SRLAdmin       │ 1/2/2023 2:59:48 PM │ 513            │            1 │
-│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-500  │ RD01             │ Administrator  │ 0x210       │ 0x211       │ \r\n\t\t%%2080     │ -              │ -                   │ -              │            1 │
-└─────────────────────┴────────────────┴───────────────────┴─────────────────┴───────────────────────────────────────────────┴──────────────────┴────────────────┴─────────────┴─────────────┴────────────────────┴────────────────┴─────────────────────┴────────────────┴──────────────┘
+security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.UserPrincipalName, Event.EventData.PrimaryGroupId, Event.EventData.UserParameters, Event.EventData.DisplayName,  Event.EventData.HomeDirectory, Event.EventData.HomePath, Event.EventData.ScriptPath, Event.EventData.ProfilePath, Event.EventData.UserWorkstations, Event.EventData.PasswordLastSet, Event.EventData.AccountExpires, Event.EventData.LogonHours, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl,  Event.EventData.AllowedToDelegateTo, Event.EventData.SidHistory, COUNT(*)FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                AND Event.System.EventID = 4738
+                GROUP BY ALL
+                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetSid;
+┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────┬────────────────┬───────────────────┬────────────────┬────────────────┬─────────────┬───────────────┬──────────┬────────────┬─────────────┬──────────────────┬─────────────────────┬────────────────┬────────────┬─────────────┬─────────────┬────────────────────┬─────────────────────┬────────────┬──────────────┐
+│      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │ TargetUserName │ SamAccountName │ UserPrincipalName │ PrimaryGroupId │ UserParameters │ DisplayName │ HomeDirectory │ HomePath │ ScriptPath │ ProfilePath │ UserWorkstations │   PasswordLastSet   │ AccountExpires │ LogonHours │ OldUacValue │ NewUacValue │ UserAccountControl │ AllowedToDelegateTo │ SidHistory │ count_star() │
+│       varchar       │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │    varchar     │    varchar     │      varchar      │    varchar     │    varchar     │   varchar   │    varchar    │ varchar  │  varchar   │   varchar   │     varchar      │       varchar       │    varchar     │  varchar   │   varchar   │   varchar   │      varchar       │       varchar       │  varchar   │    int64     │
+├─────────────────────┼────────────────┼───────────────────┼─────────────────┼───────────────────────────────────────────────┼──────────────────┼────────────────┼────────────────┼───────────────────┼────────────────┼────────────────┼─────────────┼───────────────┼──────────┼────────────┼─────────────┼──────────────────┼─────────────────────┼────────────────┼────────────┼─────────────┼─────────────┼────────────────────┼─────────────────────┼────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-1001 │ RD01             │ SRLAdmin       │ SRLAdmin       │ -                 │ 513            │ -              │ %%1793      │ %%1793        │ %%1793   │ %%1793     │ %%1793      │ %%1793           │ 1/2/2023 2:59:48 PM │ %%1794         │ %%1797     │ 0x10        │ 0x10        │ -                  │ -                   │ -          │            1 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-500  │ RD01             │ Administrator  │ -              │ -                 │ -              │ -              │ -           │ -             │ -        │ -          │ -           │ -                │ -                   │ -              │ -          │ 0x210       │ 0x211       │ \r\n\t\t%%2080     │ -                   │ -          │            1 │
+└─────────────────────┴────────────────┴───────────────────┴─────────────────┴───────────────────────────────────────────────┴──────────────────┴────────────────┴────────────────┴───────────────────┴────────────────┴────────────────┴─────────────┴───────────────┴──────────┴────────────┴─────────────┴──────────────────┴─────────────────────┴────────────────┴────────────┴─────────────┴─────────────┴────────────────────┴─────────────────────┴────────────┴──────────────┘
 ```
 fullkey
 ```sql
-security D
-SELECT je.fullkey, COUNT(*)
-FROM read_json_objects('C:/Users/SANSDFIR/security.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '4738' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+security-rd01 D SELECT je.fullkey, COUNT(*)
+                FROM read_json_objects('C:/Users/SANSDFIR/security-rd01.json') AS e, json_tree(e.json) AS je
+                WHERE e.json->>'$.Event.System.EventID' = '4738' AND je.fullkey LIKE '$.Event.EventData.%'
+                GROUP BY je.fullkey
+                ORDER BY je.fullkey;
 ┌───────────────────────────────────────┬──────────────┐
 │                fullkey                │ count_star() │
 │                varchar                │    int64     │

@@ -211,3 +211,37 @@ system_db D WITH evtx AS (
 └────────────────────────────────────────────────┴─────────┴──────────────┘
   136 rows                                                      3 columns
 ```
+
+
+## 26 (Application Error)
+```sql
+system-rd05 D SELECT Event.EventData.Caption, Event.EventData.Message, COUNT(*)
+              FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+              AND json_extract_string(Event.System.EventID, '$') = '26'
+              GROUP BY ALL
+              ORDER BY ALL;
+┌──────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│                   Caption                    │                                                                              Message                                                                               │ count_star() │
+│                   varchar                    │                                                                              varchar                                                                               │    int64     │
+├──────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ CompatTelRunner.exe - Fatal Application Exit │ Exception Processing Message 0x40000015 - Unexpected parameters                                                                                                    │            1 │
+│ PhoneExperienceHost.exe - Application Error  │ The exception unknown software exception (0xe0434352) occurred in the application at location 0x00007FFC6495428C.\r\n                                              │            1 │
+│ Windows - Out of Virtual Memory              │ Your system is low on virtual memory. To ensure that Windows runs properly, increase the size of your virtual memory paging file. For more information, see Help.  │            1 │
+└──────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+system-rd05 D SELECT je.fullkey, COUNT(*)
+              FROM read_json_objects('C:/Users/SANSDFIR/system-rd05.json') AS e, json_tree(e.json) AS je
+              WHERE e.json->>'$.Event.System.EventID' = '26' AND je.fullkey LIKE '$.Event.EventData.%'
+              GROUP BY je.fullkey
+              ORDER BY je.fullkey;
+┌───────────────────────────┬──────────────┐
+│          fullkey          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ $.Event.EventData.Caption │            3 │
+│ $.Event.EventData.Message │            3 │
+└───────────────────────────┴──────────────┘
+```

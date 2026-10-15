@@ -245,3 +245,38 @@ system-rd05 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.Message │            3 │
 └───────────────────────────┴──────────────┘
 ```
+
+
+
+## 6005 (The Event log service was started)
+```sql
+system-rd01 D SELECT Event.System.TimeCreated."#attributes".SystemTime , COUNT(*)
+              FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+              AND json_extract_string(Event.System.EventID, '$."#text"') = '6005'
+              GROUP BY ALL
+              ORDER BY ALL;
+┌────────────────────────────┬──────────────┐
+│         SystemTime         │ count_star() │
+│         timestamp          │    int64     │
+├────────────────────────────┼──────────────┤
+│ 2023-01-02 12:38:08.386482 │            1 │
+│ 2023-01-28 01:10:33.741012 │            1 │
+└────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+system-rd01 D SELECT je.fullkey, COUNT(*)
+              FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
+              WHERE e.json->>'$.Event.System.EventID."#text"' = '6005' AND je.fullkey LIKE '$.Event.EventData.%'
+              GROUP BY je.fullkey
+              ORDER BY je.fullkey;
+┌──────────────────────────────┬──────────────┐
+│           fullkey            │ count_star() │
+│           varchar            │    int64     │
+├──────────────────────────────┼──────────────┤
+│ $.Event.EventData.Binary     │           26 │
+│ $.Event.EventData.Data       │           26 │
+│ $.Event.EventData.Data.#text │           26 │
+└──────────────────────────────┴──────────────┘
+```

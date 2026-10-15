@@ -1879,7 +1879,7 @@ https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/u
 security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.PreAuthType, Event.EventData.TicketEncryptionType, Event.EventData.TicketOptions, Event.EventData.Status, Event.EventData.IpAddress, Event.EventData.CertIssuerName, Event.EventData.CertSerialNumber, Event.EventData.CertThumbprint, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID,'$') = '4768'
+                AND json_extract_string(Event.System.EventID, '$') = '4768'
                 GROUP BY ALL
                 ORDER BY Event.EventData.TargetSid, Event.EventData.ServiceSid, Event.EventData.IpAddress;
 ┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬──────────────────────┬───────────────────────────────────────────────┬─────────────┬─────────────┬──────────────────────┬───────────────┬─────────┬────────────────────┬────────────────┬──────────────────┬────────────────┬──────────────┐
@@ -2136,7 +2136,7 @@ https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/se
 security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.TicketOptions, Event.EventData.TicketEncryptionType, Event.EventData.Status, Event.EventData.IpAddress, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID,'$') = '4769'
+                AND json_extract_string(Event.System.EventID, '$') = '4769'
                 AND Event.EventData.TargetUserName = 'tdungan@SHIELDBASE.COM'
                 GROUP BY ALL
                 ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.IpAddress;
@@ -2186,7 +2186,7 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.TicketOptions, Event.EventData.TicketEncryptionType, Event.EventData.IpAddress, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID,'$') = '4770'
+                AND json_extract_string(Event.System.EventID, '$') = '4770'
                 GROUP BY ALL
                 ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.IpAddress;
 ┌─────────────────────┬──────────────────┬─────────────────────────────────────┬───────────────────────────────────────────────┬─────────────┬───────────────┬──────────────────────┬────────────────────┬──────────────┐
@@ -2293,7 +2293,7 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.PreAuthType, Event.EventData.TicketOptions, Event.EventData.Status, Event.EventData.IpAddress, Event.EventData.CertIssuerName, Event.EventData.CertSerialNumber, Event.EventData.CertThumbprint, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID,'$') = '4771'
+                AND json_extract_string(Event.System.EventID, '$') = '4771'
                 GROUP BY ALL
                 ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.IpAddress;
 ┌─────────────────────┬────────────────────────────────────────────────┬────────────────┬───────────────────┬─────────────┬───────────────┬─────────┬────────────────────┬────────────────┬──────────────────┬────────────────┬──────────────┐
@@ -2812,7 +2812,7 @@ security-rd08 D SELECT je.fullkey, COUNT(*)
 security-dc01 D SELECT Event.System.Computer, Event.EventData.ObjectClass, Event.EventData.AttributeLDAPDisplayName, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID,'$') = '5136'
+                AND json_extract_string(Event.System.EventID, '$') = '5136'
                 GROUP BY ALL
                 ORDER BY ALL;
 ┌─────────────────────┬──────────────────────┬────────────────────────────────┬──────────────┐
@@ -2840,7 +2840,7 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.ObjectClass, Event
 security-dc01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.DSName, Event.EventData.DSType, Event.EventData.ObjectClass, Event.EventData.ObjectGUID, Event.EventData.ObjectDN, Event.EventData.AttributeLDAPDisplayName, Event.EventData.AttributeSyntaxOID, Event.EventData.AttributeValue, Event.EventData.OperationType, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID,'$') = '5136'
+                AND json_extract_string(Event.System.EventID, '$') = '5136'
                 AND Event.EventData.ObjectClass IN ('computer', 'user')
                 GROUP BY ALL
                 ORDER BY Event.EventData.SubjectUserSid;
@@ -2917,7 +2917,7 @@ AttributeSyntaxOID
 security-dc01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.DSName, Event.EventData.DSType, Event.EventData.ObjectClass, Event.EventData.ObjectGUID, Event.EventData.ObjectDN, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID,'$') = '5137'
+                AND json_extract_string(Event.System.EventID, '$') = '5137'
                 GROUP BY ALL
                 ORDER BY Event.EventData.SubjectUserSid;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬────────────────┬─────────┬──────────────────────┬──────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
@@ -3055,7 +3055,7 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 ```sql
 security-file01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, Event.EventData.ObjectType, Event.EventData.OldShareFlags, Event.EventData.OldRemark, Event.EventData.OldMaxUsers, Event.EventData.OldSD, Event.EventData.NewShareFlags, Event.EventData.NewRemark, Event.EventData.NewMaxUsers, Event.EventData.NewSD, COUNT(*)
                   FROM read_json('C:/Users/SANSDFIR/security-file01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                  WHERE json_extract_string(Event.System.EventID,'$') = '5143'
+                  WHERE json_extract_string(Event.System.EventID, '$') = '5143'
                   GROUP BY ALL
                   ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ShareName;
 ┌───────────────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────┬────────────────────────────┬────────────┬───────────────┬───────────┬─────────────┬─────────┬───────────────┬───────────┬─────────────┬─────────┬──────────────┐

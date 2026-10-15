@@ -606,6 +606,39 @@ Windows_Defender%4Operational-ftp01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 5000 (Real-time Protection was enabled)
+```sql
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 5000
+                                     GROUP BY ALL
+                                     ORDER BY ALL;
+┌─────────────────────┬──────────────────────────────┬─────────────────┬──────────────┐
+│      Computer       │         Product Name         │ Product Version │ count_star() │
+│       varchar       │           varchar            │     varchar     │    int64     │
+├─────────────────────┼──────────────────────────────┼─────────────────┼──────────────┤
+│ rd01.shieldbase.com │ Microsoft Defender Antivirus │ 4.18.2211.5     │            3 │
+└─────────────────────┴──────────────────────────────┴─────────────────┴──────────────┘
+```
+fullkey
+```sql
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '5000' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
+┌───────────────────────────────────┬──────────────┐
+│              fullkey              │ count_star() │
+│              varchar              │    int64     │
+├───────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Product Name    │            3 │
+│ $.Event.EventData.Product Version │            3 │
+└───────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 5007 (Real-time Protection was disabled)
 ```sql
 Windows_Defender%4Operational D

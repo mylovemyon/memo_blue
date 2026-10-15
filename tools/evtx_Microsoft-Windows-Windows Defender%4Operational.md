@@ -468,6 +468,144 @@ Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 1150 (Defender is up and running in a healthy state)
+```sql
+Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Platform version", COUNT(*)
+                                     FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                     WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                     AND Event.System.EventID = 1150
+                                     GROUP BY ALL
+                                     ORDER BY ALL;
+┌─────────────────────┬──────────────────────────────┬──────────────────┬──────────────┐
+│      Computer       │         Product Name         │ Platform version │ count_star() │
+│       varchar       │           varchar            │     varchar      │    int64     │
+├─────────────────────┼──────────────────────────────┼──────────────────┼──────────────┤
+│ rd01.shieldbase.com │ Microsoft Defender Antivirus │ 4.18.2211.5      │            1 │
+└─────────────────────┴──────────────────────────────┴──────────────────┴──────────────┘
+```
+fullkey
+```sql
+Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
+                                     FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+                                     WHERE e.json->>'$.Event.System.EventID' = '1150' AND je.fullkey LIKE '$.Event.EventData.%'
+                                     GROUP BY je.fullkey
+                                     ORDER BY je.fullkey;
+┌─────────────────────────────────────────────────┬──────────────┐
+│                     fullkey                     │ count_star() │
+│                     varchar                     │    int64     │
+├─────────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Engine version                │            1 │
+│ $.Event.EventData.Platform version              │            1 │
+│ $.Event.EventData.Product Name                  │            1 │
+│ $.Event.EventData.Security intelligence version │            1 │
+│ $.Event.EventData.Unused                        │            1 │
+└─────────────────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 2000 (The antimalware definitions updated successfully)
+```sql
+Windows_Defender%4Operational-ftp01 D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Update Type", Event.EventData."Security intelligence Type", Event.EventData."Previous Engine Version", Event.EventData."Current Engine Version", Event.EventData."Previous security intelligence Version", Event.EventData."Current security intelligence Version", COUNT(*)
+                                      FROM read_json('C:/Users/SANSDFIR/Windows_Defender%4Operational-ftp01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+                                      WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+                                      AND Event.System.EventID = 2000
+                                      GROUP BY ALL
+                                      ORDER BY Event.EventData.SID, Event.EventData."Security intelligence Type", Event.EventData."Previous security intelligence Version";
+┌──────────┬──────────┬──────────────┬─────────┬──────────────────────────────┬─────────────────┬─────────────┬────────────────────────────┬─────────────────────────┬────────────────────────┬────────────────────────────────────────┬───────────────────────────────────────┬──────────────┐
+│ Computer │   SID    │    Domain    │  User   │         Product Name         │ Product Version │ Update Type │ Security intelligence Type │ Previous Engine Version │ Current Engine Version │ Previous security intelligence Version │ Current security intelligence Version │ count_star() │
+│ varchar  │ varchar  │   varchar    │ varchar │           varchar            │     varchar     │   varchar   │          varchar           │         varchar         │        varchar         │                varchar                 │                varchar                │    int64     │
+├──────────┼──────────┼──────────────┼─────────┼──────────────────────────────┼─────────────────┼─────────────┼────────────────────────────┼─────────────────────────┼────────────────────────┼────────────────────────────────────────┼───────────────────────────────────────┼──────────────┤
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1474.0                           │ 1.381.1533.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1533.0                           │ 1.381.1605.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1605.0                           │ 1.381.1668.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1668.0                           │ 1.381.1725.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1725.0                           │ 1.381.1784.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1784.0                           │ 1.381.1842.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1842.0                           │ 1.381.1887.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1887.0                           │ 1.381.1935.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1935.0                           │ 1.381.1972.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1972.0                           │ 1.381.2027.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2027.0                           │ 1.381.2070.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2070.0                           │ 1.381.2114.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2114.0                           │ 1.381.2164.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2164.0                           │ 1.381.2198.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2198.0                           │ 1.381.2244.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2244.0                           │ 1.381.2295.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2295.0                           │ 1.381.2347.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2347.0                           │ 1.381.2387.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2387.0                           │ 1.381.2428.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2428.0                           │ 1.381.2475.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2475.0                           │ 1.381.2518.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2518.0                           │ 1.381.2558.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2558.0                           │ 1.381.2606.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2606.0                           │ 1.381.2658.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2658.0                           │ 1.381.2710.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2710.0                           │ 1.381.2748.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiSpyware                │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2748.0                           │ 1.381.2799.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1474.0                           │ 1.381.1533.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1533.0                           │ 1.381.1605.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1605.0                           │ 1.381.1668.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1668.0                           │ 1.381.1725.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1725.0                           │ 1.381.1784.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1784.0                           │ 1.381.1842.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1842.0                           │ 1.381.1887.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1887.0                           │ 1.381.1935.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1935.0                           │ 1.381.1972.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.1972.0                           │ 1.381.2027.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2027.0                           │ 1.381.2070.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2070.0                           │ 1.381.2114.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2114.0                           │ 1.381.2164.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2164.0                           │ 1.381.2198.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2198.0                           │ 1.381.2244.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2244.0                           │ 1.381.2295.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2295.0                           │ 1.381.2347.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2347.0                           │ 1.381.2387.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2387.0                           │ 1.381.2428.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2428.0                           │ 1.381.2475.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2475.0                           │ 1.381.2518.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2518.0                           │ 1.381.2558.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2558.0                           │ 1.381.2606.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2606.0                           │ 1.381.2658.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2658.0                           │ 1.381.2710.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2710.0                           │ 1.381.2748.0                          │            1 │
+│ ftp01    │ S-1-5-18 │ NT AUTHORITY │ SYSTEM  │ Microsoft Defender Antivirus │ 4.18.2211.5     │ Delta       │ AntiVirus                  │ 1.1.19900.2             │ 1.1.19900.2            │ 1.381.2748.0                           │ 1.381.2799.0                          │            1 │
+└──────────┴──────────┴──────────────┴─────────┴──────────────────────────────┴─────────────────┴─────────────┴────────────────────────────┴─────────────────────────┴────────────────────────┴────────────────────────────────────────┴───────────────────────────────────────┴──────────────┘
+  54 rows                                                                                                                                                                                                                                                                          13 columns
+```
+fullkey
+```sql
+Windows_Defender%4Operational-ftp01 D SELECT je.fullkey, COUNT(*)
+                                      FROM read_json_objects('C:/Users/SANSDFIR/Windows_Defender%4Operational-ftp01.json') AS e, json_tree(e.json) AS je
+                                      WHERE e.json->>'$.Event.System.EventID' = '2000' AND je.fullkey LIKE '$.Event.EventData.%'
+                                      GROUP BY je.fullkey
+                                      ORDER BY je.fullkey;
+┌──────────────────────────────────────────────────────────┬──────────────┐
+│                         fullkey                          │ count_star() │
+│                         varchar                          │    int64     │
+├──────────────────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Current Engine Version                 │           58 │
+│ $.Event.EventData.Current security intelligence Version  │           58 │
+│ $.Event.EventData.Domain                                 │           58 │
+│ $.Event.EventData.Previous Engine Version                │           58 │
+│ $.Event.EventData.Previous security intelligence Version │           58 │
+│ $.Event.EventData.Product Name                           │           58 │
+│ $.Event.EventData.Product Version                        │           58 │
+│ $.Event.EventData.SID                                    │           58 │
+│ $.Event.EventData.Security intelligence Type             │           58 │
+│ $.Event.EventData.Security intelligence Type Index       │           58 │
+│ $.Event.EventData.Unused                                 │           58 │
+│ $.Event.EventData.Unused2                                │           58 │
+│ $.Event.EventData.Unused3                                │           58 │
+│ $.Event.EventData.Update Type                            │           58 │
+│ $.Event.EventData.Update Type Index                      │           58 │
+│ $.Event.EventData.User                                   │           58 │
+└──────────────────────────────────────────────────────────┴──────────────┘
+  16 rows                                                       2 columns
+```
+
+
+
 ## 5007 (Real-time Protection was disabled)
 ```sql
 Windows_Defender%4Operational D

@@ -25,15 +25,20 @@ Name      Count
 0xa2,0xff  1478
 0xa4          7
 ```
-### 0x04
+### 0x04 (SMB_COM_CLOSE)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smb.pcap -Y "smb.cmd == 0x04" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.path -e smb.flags.response -E header=y -E separator=","  -E quote=d | Out-File -Encoding utf8 -FilePath .\0x04.csv
 ```
 ```powershell
-0x04 D SELECT "smb.path", "smb.flags.response", "ip.src", "ip.dst", COUNT(*)
+PS C:\Users\Public> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\0x04.csv
+DuckDB v1.5.6 (Variegata)
+Enter ".help" for usage hints.
+0x04 D
+
+0x04 D SELECT "ip.src", "ip.dst", "smb.path", "smb.flags.response", "ip.src", "ip.dst", COUNT(*)
        FROM read_csv_auto('0x04.csv')
        GROUP BY ALL
-       ORDER BY "smb.path";
+       ORDER BY "smb.path", "smb.flags.response";
 ┌───────────────────────────────────────────┬────────────────────┬───────────┬───────────┬──────────────┐
 │                 smb.path                  │ smb.flags.response │  ip.src   │  ip.dst   │ count_star() │
 │                  varchar                  │      boolean       │  varchar  │  varchar  │    int64     │

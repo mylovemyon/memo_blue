@@ -27,96 +27,104 @@ Name      Count
 ```
 ### 0x04 (SMB_COM_CLOSE)
 ```powershell
-PS C:\users\public> tshark.exe -r .\smb.pcap -Y "smb.cmd == 0x04" -T fields -e smb.cmd -e ip.src -e ip.dst -e smb.path -e smb.flags.response -e smb.nt_status -E header=y -E separator=","  -E quote=d | Out-File -Encoding utf8 -FilePath .\0x04.csv
+PS C:\users\public> tshark.exe -r .\smb.pcap -Y "smb.cmd == 0x04" -T fields -e smb.cmd -e smb.path -e smb.flags.response -e smb.nt_status -e ip.src -e ip.dst -E header=y -E separator=","  -E quote=d | Out-File -Encoding utf8 -FilePath .\0x04.csv
 ```
 ```sql
 PS C:\Users\Public> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\0x04.csv
 DuckDB v1.5.6 (Variegata)
 Enter ".help" for usage hints.
 
-0x04 D SELECT "smb.path", "smb.flags.response", "ip.src", "ip.dst", "smb.nt_status", COUNT(*)
+0x04 D SELECT "smb.path", "smb.flags.response", hex("smb.nt_status"), "ip.src", "ip.dst", COUNT(*)
        FROM read_csv_auto('0x04.csv')
        GROUP BY ALL
        ORDER BY "smb.path", COUNT(*), "smb.flags.response";
-┌───────────────────────────────────────────┬────────────────────┬───────────┬───────────┬───────────────┬──────────────┐
-│                 smb.path                  │ smb.flags.response │  ip.src   │  ip.dst   │ smb.nt_status │ count_star() │
-│                  varchar                  │      boolean       │  varchar  │  varchar  │     int64     │    int64     │
-├───────────────────────────────────────────┼────────────────────┼───────────┼───────────┼───────────────┼──────────────┤
-│ ADMIN$                                    │ false              │ 10.3.58.7 │ 10.3.58.5 │          NULL │            2 │
-│ ADMIN$                                    │ true               │ 10.3.58.5 │ 10.3.58.7 │          NULL │            2 │
-│ \\\\10.3.58.4\\ADMIN$                     │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │           12 │
-│ \\\\10.3.58.4\\ADMIN$                     │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │           12 │
-│ \\\\10.3.58.4\\C$                         │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │           11 │
-│ \\\\10.3.58.4\\C$                         │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │           11 │
-│ \\\\10.3.58.4\\IPC$                       │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │           52 │
-│ \\\\10.3.58.4\\IPC$                       │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │           52 │
-│ \\\\10.3.58.5\\ADMIN$                     │ false              │ 10.3.58.7 │ 10.3.58.5 │             0 │            8 │
-│ \\\\10.3.58.5\\ADMIN$                     │ true               │ 10.3.58.5 │ 10.3.58.7 │             0 │            8 │
-│ \\\\10.3.58.5\\IPC$                       │ false              │ 10.3.58.7 │ 10.3.58.5 │             0 │           49 │
-│ \\\\10.3.58.5\\IPC$                       │ true               │ 10.3.58.5 │ 10.3.58.7 │             0 │           49 │
-│ \\\\10.3.58.6\\ADMIN$                     │ false              │ 10.3.58.7 │ 10.3.58.6 │             0 │            9 │
-│ \\\\10.3.58.6\\ADMIN$                     │ true               │ 10.3.58.6 │ 10.3.58.7 │             0 │            9 │
-│ \\\\10.3.58.6\\C$                         │ false              │ 10.3.58.7 │ 10.3.58.6 │             0 │           45 │
-│ \\\\10.3.58.6\\C$                         │ true               │ 10.3.58.6 │ 10.3.58.7 │             0 │           45 │
-│ \\\\10.3.58.6\\IPC$                       │ false              │ 10.3.58.7 │ 10.3.58.6 │             0 │           41 │
-│ \\\\10.3.58.6\\IPC$                       │ true               │ 10.3.58.6 │ 10.3.58.7 │             0 │           41 │
-│ \\\\10.3.58.7\\C$                         │ false              │ 10.3.58.4 │ 10.3.58.7 │             0 │           21 │
-│ \\\\10.3.58.7\\C$                         │ true               │ 10.3.58.7 │ 10.3.58.4 │             0 │           21 │
-│ \\\\10.3.58.7\\IPC$                       │ false              │ 10.3.58.5 │ 10.3.58.7 │             0 │           13 │
-│ \\\\10.3.58.7\\IPC$                       │ true               │ 10.3.58.7 │ 10.3.58.5 │             0 │           13 │
-│ \\\\10.3.58.7\\IPC$                       │ false              │ 10.3.58.4 │ 10.3.58.7 │             0 │           38 │
-│ \\\\10.3.58.7\\IPC$                       │ true               │ 10.3.58.7 │ 10.3.58.4 │             0 │           38 │
-│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\IPC$     │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │           17 │
-│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\IPC$     │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │           17 │
-│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ false              │ 10.3.58.7 │ 10.3.58.9 │             0 │           65 │
-│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ true               │ 10.3.58.9 │ 10.3.58.7 │             0 │           65 │
-│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │          113 │
-│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │          113 │
-│ \\\\CONTROLLER\\IPC$                      │ false              │ 10.3.58.7 │ 10.3.58.9 │             0 │            8 │
-│ \\\\CONTROLLER\\IPC$                      │ true               │ 10.3.58.9 │ 10.3.58.7 │             0 │            8 │
-│ \\\\CONTROLLER\\IPC$                      │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │           17 │
-│ \\\\CONTROLLER\\IPC$                      │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │           17 │
-│ \\\\WKS-WINXP32BIT.SHIELDBASE.LOCAL\\IPC$ │ false              │ 10.3.58.4 │ 10.3.58.7 │             0 │            2 │
-│ \\\\WKS-WINXP32BIT.SHIELDBASE.LOCAL\\IPC$ │ true               │ 10.3.58.7 │ 10.3.58.4 │             0 │            2 │
-│ \\\\WKS-WINXP32BIT\\IPC$                  │ false              │ 10.3.58.4 │ 10.3.58.7 │             0 │           30 │
-│ \\\\WKS-WINXP32BIT\\IPC$                  │ true               │ 10.3.58.7 │ 10.3.58.4 │             0 │           30 │
-└───────────────────────────────────────────┴────────────────────┴───────────┴───────────┴───────────────┴──────────────┘
-  38 rows                                                                                                     6 columns
+┌───────────────────────────────────────────┬────────────────────┬──────────────────────┬───────────┬───────────┬──────────────┐
+│                 smb.path                  │ smb.flags.response │ hex("smb.nt_status") │  ip.src   │  ip.dst   │ count_star() │
+│                  varchar                  │      boolean       │       varchar        │  varchar  │  varchar  │    int64     │
+├───────────────────────────────────────────┼────────────────────┼──────────────────────┼───────────┼───────────┼──────────────┤
+│ ADMIN$                                    │ false              │ NULL                 │ 10.3.58.7 │ 10.3.58.5 │            2 │
+│ ADMIN$                                    │ true               │ NULL                 │ 10.3.58.5 │ 10.3.58.7 │            2 │
+│ \\\\10.3.58.4\\ADMIN$                     │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           12 │
+│ \\\\10.3.58.4\\ADMIN$                     │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           12 │
+│ \\\\10.3.58.4\\C$                         │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           11 │
+│ \\\\10.3.58.4\\C$                         │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           11 │
+│ \\\\10.3.58.4\\IPC$                       │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           52 │
+│ \\\\10.3.58.4\\IPC$                       │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           52 │
+│ \\\\10.3.58.5\\ADMIN$                     │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.5 │            8 │
+│ \\\\10.3.58.5\\ADMIN$                     │ true               │ 0                    │ 10.3.58.5 │ 10.3.58.7 │            8 │
+│ \\\\10.3.58.5\\IPC$                       │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.5 │           49 │
+│ \\\\10.3.58.5\\IPC$                       │ true               │ 0                    │ 10.3.58.5 │ 10.3.58.7 │           49 │
+│ \\\\10.3.58.6\\ADMIN$                     │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.6 │            9 │
+│ \\\\10.3.58.6\\ADMIN$                     │ true               │ 0                    │ 10.3.58.6 │ 10.3.58.7 │            9 │
+│ \\\\10.3.58.6\\C$                         │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.6 │           45 │
+│ \\\\10.3.58.6\\C$                         │ true               │ 0                    │ 10.3.58.6 │ 10.3.58.7 │           45 │
+│ \\\\10.3.58.6\\IPC$                       │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.6 │           41 │
+│ \\\\10.3.58.6\\IPC$                       │ true               │ 0                    │ 10.3.58.6 │ 10.3.58.7 │           41 │
+│ \\\\10.3.58.7\\C$                         │ false              │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           21 │
+│ \\\\10.3.58.7\\C$                         │ true               │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           21 │
+│ \\\\10.3.58.7\\IPC$                       │ false              │ 0                    │ 10.3.58.5 │ 10.3.58.7 │           13 │
+│ \\\\10.3.58.7\\IPC$                       │ true               │ 0                    │ 10.3.58.7 │ 10.3.58.5 │           13 │
+│ \\\\10.3.58.7\\IPC$                       │ false              │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           38 │
+│ \\\\10.3.58.7\\IPC$                       │ true               │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           38 │
+│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\IPC$     │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           17 │
+│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\IPC$     │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           17 │
+│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.9 │           65 │
+│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ true               │ 0                    │ 10.3.58.9 │ 10.3.58.7 │           65 │
+│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │          113 │
+│ \\\\CONTROLLER.SHIELDBASE.LOCAL\\SYSVOL   │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │          113 │
+│ \\\\CONTROLLER\\IPC$                      │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.9 │            8 │
+│ \\\\CONTROLLER\\IPC$                      │ true               │ 0                    │ 10.3.58.9 │ 10.3.58.7 │            8 │
+│ \\\\CONTROLLER\\IPC$                      │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           17 │
+│ \\\\CONTROLLER\\IPC$                      │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           17 │
+│ \\\\WKS-WINXP32BIT.SHIELDBASE.LOCAL\\IPC$ │ false              │ 0                    │ 10.3.58.4 │ 10.3.58.7 │            2 │
+│ \\\\WKS-WINXP32BIT.SHIELDBASE.LOCAL\\IPC$ │ true               │ 0                    │ 10.3.58.7 │ 10.3.58.4 │            2 │
+│ \\\\WKS-WINXP32BIT\\IPC$                  │ false              │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           30 │
+│ \\\\WKS-WINXP32BIT\\IPC$                  │ true               │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           30 │
+└───────────────────────────────────────────┴────────────────────┴──────────────────────┴───────────┴───────────┴──────────────┘
+  38 rows                                                                                                            6 columns
 ```
 ### 0x10 (SMB_COM_CHECK_DIRECTORY)
 ```powershell
-PS C:\users\public> tshark.exe -r .\smb.pcap -Y "smb.cmd == 0x10" -T fields -e smb.cmd -e ip.src -e ip.dst -e smb.path -e smb.dir_name -e smb.file -e smb.flags.response -e smb.nt_status -E header=y -E separator=","  -E quote=d | Out-File -Encoding utf8 -FilePath .\0x10.csv
+PS C:\users\public> tshark.exe -r .\smb.pcap -Y "smb.cmd == 0x10" -T fields -e smb.cmd -e smb.path -e smb.dir_name -e smb.file -e smb.flags.response -e smb.nt_status -e ip.src -e ip.dst -E header=y -E separator=","  -E quote=d | Out-File -Encoding utf8 -FilePath .\0x10.csv
 ```
 ```sql
 PS C:\users\public>  .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\0x10.csv
 DuckDB v1.5.6 (Variegata)
 Enter ".help" for usage hints.
 
-0x10 D SELECT "smb.path", "smb.dir_name", "smb.file", "smb.flags.response", "ip.src", "ip.dst", "smb.nt_status", COUNT(*)
+0x10 D SELECT "smb.path", "smb.dir_name", "smb.file", "smb.flags.response", hex("smb.nt_status"), "ip.src", "ip.dst", COUNT(*)
        FROM read_csv_auto('0x10.csv')
        GROUP BY ALL
        ORDER BY "smb.path", COUNT(*), "smb.dir_name", "smb.file";
-┌──────────────────────┬───────────────────────┬───────────────────────┬────────────────────┬───────────┬───────────┬───────────────┬──────────────┐
-│       smb.path       │     smb.dir_name      │       smb.file        │ smb.flags.response │  ip.src   │  ip.dst   │ smb.nt_status │ count_star() │
-│       varchar        │        varchar        │        varchar        │      boolean       │  varchar  │  varchar  │     int64     │    int64     │
-├──────────────────────┼───────────────────────┼───────────────────────┼────────────────────┼───────────┼───────────┼───────────────┼──────────────┤
-│ \\\\10.3.58.4\\C$    │ \\windows\\system32   │ NULL                  │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │            2 │
-│ \\\\10.3.58.4\\C$    │ NULL                  │ \\windows\\system32   │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │            2 │
-│ \\\\10.3.58.4\\C$    │ \\Temp                │ NULL                  │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │            4 │
-│ \\\\10.3.58.4\\C$    │ NULL                  │ \\Temp                │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │            4 │
-│ \\\\10.3.58.6\\C$    │ \\Users\\Public\\Temp │ NULL                  │ false              │ 10.3.58.7 │ 10.3.58.6 │             0 │            1 │
-│ \\\\10.3.58.6\\C$    │ NULL                  │ \\Users\\Public\\Temp │ true               │ 10.3.58.6 │ 10.3.58.7 │    3221225524 │            1 │
-│ \\\\CONTROLLER\\HOME │ \\vibranium           │ NULL                  │ false              │ 10.3.58.7 │ 10.3.58.9 │             0 │            1 │
-│ \\\\CONTROLLER\\HOME │ NULL                  │ \\vibranium           │ true               │ 10.3.58.9 │ 10.3.58.7 │    3221225524 │            1 │
-│ \\\\CONTROLLER\\HOME │ \\%username%          │ NULL                  │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │            5 │
-│ \\\\CONTROLLER\\HOME │ NULL                  │ \\%username%          │ true               │ 10.3.58.4 │ 10.3.58.7 │    3221225524 │            5 │
-│ \\\\CONTROLLER\\HOME │ \\rsydow              │ NULL                  │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │            8 │
-│ \\\\CONTROLLER\\HOME │ NULL                  │ \\rsydow              │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │            8 │
-│ \\\\CONTROLLER\\HOME │ \\tdungan             │ NULL                  │ false              │ 10.3.58.7 │ 10.3.58.4 │             0 │           12 │
-│ \\\\CONTROLLER\\HOME │ NULL                  │ \\tdungan             │ true               │ 10.3.58.4 │ 10.3.58.7 │             0 │           12 │
-└──────────────────────┴───────────────────────┴───────────────────────┴────────────────────┴───────────┴───────────┴───────────────┴──────────────┘
-  14 rows                                                                                                                                8 columns
+┌──────────────────────┬───────────────────────┬───────────────────────┬────────────────────┬──────────────────────┬───────────┬───────────┬──────────────┐
+│       smb.path       │     smb.dir_name      │       smb.file        │ smb.flags.response │ hex("smb.nt_status") │  ip.src   │  ip.dst   │ count_star() │
+│       varchar        │        varchar        │        varchar        │      boolean       │       varchar        │  varchar  │  varchar  │    int64     │
+├──────────────────────┼───────────────────────┼───────────────────────┼────────────────────┼──────────────────────┼───────────┼───────────┼──────────────┤
+│ \\\\10.3.58.4\\C$    │ \\windows\\system32   │ NULL                  │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │            2 │
+│ \\\\10.3.58.4\\C$    │ NULL                  │ \\windows\\system32   │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │            2 │
+│ \\\\10.3.58.4\\C$    │ \\Temp                │ NULL                  │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │            4 │
+│ \\\\10.3.58.4\\C$    │ NULL                  │ \\Temp                │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │            4 │
+│ \\\\10.3.58.6\\C$    │ \\Users\\Public\\Temp │ NULL                  │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.6 │            1 │
+│ \\\\10.3.58.6\\C$    │ NULL                  │ \\Users\\Public\\Temp │ true               │ C0000034             │ 10.3.58.6 │ 10.3.58.7 │            1 │
+│ \\\\CONTROLLER\\HOME │ \\vibranium           │ NULL                  │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.9 │            1 │
+│ \\\\CONTROLLER\\HOME │ NULL                  │ \\vibranium           │ true               │ C0000034             │ 10.3.58.9 │ 10.3.58.7 │            1 │
+│ \\\\CONTROLLER\\HOME │ \\%username%          │ NULL                  │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │            5 │
+│ \\\\CONTROLLER\\HOME │ NULL                  │ \\%username%          │ true               │ C0000034             │ 10.3.58.4 │ 10.3.58.7 │            5 │
+│ \\\\CONTROLLER\\HOME │ \\rsydow              │ NULL                  │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │            8 │
+│ \\\\CONTROLLER\\HOME │ NULL                  │ \\rsydow              │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │            8 │
+│ \\\\CONTROLLER\\HOME │ \\tdungan             │ NULL                  │ false              │ 0                    │ 10.3.58.7 │ 10.3.58.4 │           12 │
+│ \\\\CONTROLLER\\HOME │ NULL                  │ \\tdungan             │ true               │ 0                    │ 10.3.58.4 │ 10.3.58.7 │           12 │
+└──────────────────────┴───────────────────────┴───────────────────────┴────────────────────┴──────────────────────┴───────────┴───────────┴──────────────┘
+  14 rows                                                                                                                                       8 columns
 ```
+### 0x24 (SMB_COM_LOCKING_ANDX)
+```powershell
+
+```
+### 0x25 (SMB_COM_TRANSACTION)
+
+### 0x2d (SMB_COM_OPEN_ANDX)
+
 
 
 

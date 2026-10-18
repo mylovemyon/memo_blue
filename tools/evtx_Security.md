@@ -194,7 +194,7 @@ security D SELECT Event.System.EventID, COUNT(*)
 
 ## 1100 (The event logging service has shut down)
 ```sql
-security-rd01 D SELECT Event.System.Computer,Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+security-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
                 AND Event.System.EventID = 1100
@@ -228,7 +228,7 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 1102 (Event log cleared)
 ```sql
-security-dev01 D SELECT Event.System.Computer,Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+security-dev01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
                  FROM read_json('C:/Users/SANSDFIR/security-dev01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                  WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
                  AND Event.System.EventID = 1102
@@ -259,7 +259,7 @@ security-dev01 D SELECT je.fullkey, COUNT(*)
 
 ## 4608 (Windows is starting up)
 ```sql
-security-rd01 D SELECT Event.System.Computer,Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+security-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
                 FROM read_json('C:/Users/SANSDFIR/security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                 WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
                 AND Event.System.EventID = 4608

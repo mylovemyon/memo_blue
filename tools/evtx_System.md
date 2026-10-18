@@ -478,5 +478,17 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 ```
 fullkey
 ```sql
-
+system-rd06 D SELECT je.fullkey, COUNT(*)
+              FROM read_json_objects('C:/Users/SANSDFIR/system-rd06.json') AS e, json_tree(e.json) AS je
+              WHERE e.json->>'$.Event.System.EventID' = '40960' AND je.fullkey LIKE '$.Event.EventData.%'
+              GROUP BY je.fullkey
+              ORDER BY je.fullkey;
+┌────────────────────────────┬──────────────┐
+│          fullkey           │ count_star() │
+│          varchar           │    int64     │
+├────────────────────────────┼──────────────┤
+│ $.Event.EventData.Error    │            1 │
+│ $.Event.EventData.Protocol │            1 │
+│ $.Event.EventData.Target   │            1 │
+└────────────────────────────┴──────────────┘
 ```

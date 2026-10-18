@@ -250,8 +250,8 @@ system-rd05 D SELECT je.fullkey, COUNT(*)
 
 ## 6005 (The Event log service was started)
 ```sql
-system-rd01 D SELECT Event.System.TimeCreated."#attributes".SystemTime , COUNT(*)
-              FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+system-rd01 D SELECT Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+              FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
               WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
               AND json_extract_string(Event.System.EventID, '$."#text"') = '6005'
               GROUP BY ALL
@@ -260,8 +260,10 @@ system-rd01 D SELECT Event.System.TimeCreated."#attributes".SystemTime , COUNT(*
 │         SystemTime         │ count_star() │
 │         timestamp          │    int64     │
 ├────────────────────────────┼──────────────┤
-│ 2023-01-02 12:38:08.386482 │            1 │
-│ 2023-01-28 01:10:33.741012 │            1 │
+│ 2023-01-02 18:24:28.478925 │            1 │
+│ 2023-01-23 14:51:18.603897 │            1 │
+│ 2023-01-25 14:19:08.712955 │            1 │
+│ 2023-01-25 14:38:30.479009 │            1 │
 └────────────────────────────┴──────────────┘
 ```
 fullkey
@@ -279,4 +281,83 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.Data       │           26 │
 │ $.Event.EventData.Data.#text │           26 │
 └──────────────────────────────┴──────────────┘
+```
+
+
+
+## 6006 (The Event log service was stopped)
+```powershell
+system-rd01 D SELECT Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+              FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+              AND json_extract_string(Event.System.EventID, '$."#text"') = '6006'
+              GROUP BY ALL
+              ORDER BY ALL;
+┌────────────────────────────┬──────────────┐
+│         SystemTime         │ count_star() │
+│         timestamp          │    int64     │
+├────────────────────────────┼──────────────┤
+│ 2023-01-02 18:24:07.618005 │            1 │
+│ 2023-01-23 14:50:54.20556  │            1 │
+│ 2023-01-25 14:18:51.756586 │            1 │
+│ 2023-01-25 14:33:34.463867 │            1 │
+└────────────────────────────┴──────────────┘
+```
+fullkey
+```powershell
+system-rd01 D SELECT je.fullkey, COUNT(*)
+              FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
+              WHERE e.json->>'$.Event.System.EventID."#text"' = '6006' AND je.fullkey LIKE '$.Event.EventData.%'
+              GROUP BY je.fullkey
+              ORDER BY je.fullkey;
+┌──────────────────────────────┬──────────────┐
+│           fullkey            │ count_star() │
+│           varchar            │    int64     │
+├──────────────────────────────┼──────────────┤
+│ $.Event.EventData.Binary     │           24 │
+│ $.Event.EventData.Data       │           24 │
+│ $.Event.EventData.Data.#text │           24 │
+└──────────────────────────────┴──────────────┘
+```
+
+
+
+## 6008 (Unexpected system shutdown)
+```powershell
+system-rd05 D SELECT Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
+              FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+              AND json_extract_string(Event.System.EventID, '$."#text"') = '6008'
+              GROUP BY ALL
+              ORDER BY ALL;
+┌─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
+│ "Event".EventData."Data"."#text"[0] │ "Event".EventData."Data"."#text"[1] │ count_star() │
+│                json                 │                json                 │    int64     │
+├─────────────────────────────────────┼─────────────────────────────────────┼──────────────┤
+│ "7:38:24 PM"                        │ "‎1/‎27/‎2023"                         │            1 │
+└─────────────────────────────────────┴─────────────────────────────────────┴──────────────┘
+```
+fullkey
+```powershell
+system-rd05 D SELECT je.fullkey, COUNT(*)
+              FROM read_json_objects('C:/Users/SANSDFIR/system-rd05.json') AS e, json_tree(e.json) AS je
+              WHERE e.json->>'$.Event.System.EventID."#text"' = '6008' AND je.fullkey LIKE '$.Event.EventData.%'
+              GROUP BY je.fullkey
+              ORDER BY je.fullkey;
+┌─────────────────────────────────┬──────────────┐
+│             fullkey             │ count_star() │
+│             varchar             │    int64     │
+├─────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Binary        │            1 │
+│ $.Event.EventData.Data          │            1 │
+│ $.Event.EventData.Data.#text    │            1 │
+│ $.Event.EventData.Data.#text[0] │            1 │
+│ $.Event.EventData.Data.#text[1] │            1 │
+│ $.Event.EventData.Data.#text[2] │            1 │
+│ $.Event.EventData.Data.#text[3] │            1 │
+│ $.Event.EventData.Data.#text[4] │            1 │
+│ $.Event.EventData.Data.#text[5] │            1 │
+│ $.Event.EventData.Data.#text[6] │            1 │
+└─────────────────────────────────┴──────────────┘
+  10 rows                              2 columns
 ```

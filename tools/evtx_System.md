@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f system.json E:\Windows\System32\winevt\Logs\System.evtx
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f system.json C:\Windows\System32\winevt\Logs\System.evtx
 PS C:\Users\SANSDFIR>
 ```
 
@@ -213,22 +213,23 @@ system_db D WITH evtx AS (
 ```
 
 
+
 ## 26 (Application Error)
 ```sql
-system-rd05 D SELECT Event.EventData.Caption, Event.EventData.Message, COUNT(*)
+system-rd05 D SELECT Event.System.Computer, Event.EventData.Caption, Event.EventData.Message, COUNT(*)
               FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
               WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
               AND json_extract_string(Event.System.EventID, '$') = '26'
               GROUP BY ALL
               ORDER BY ALL;
-┌──────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
-│                   Caption                    │                                                                              Message                                                                               │ count_star() │
-│                   varchar                    │                                                                              varchar                                                                               │    int64     │
-├──────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
-│ CompatTelRunner.exe - Fatal Application Exit │ Exception Processing Message 0x40000015 - Unexpected parameters                                                                                                    │            1 │
-│ PhoneExperienceHost.exe - Application Error  │ The exception unknown software exception (0xe0434352) occurred in the application at location 0x00007FFC6495428C.\r\n                                              │            1 │
-│ Windows - Out of Virtual Memory              │ Your system is low on virtual memory. To ensure that Windows runs properly, increase the size of your virtual memory paging file. For more information, see Help.  │            1 │
-└──────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                   Caption                    │                                                                              Message                                                                               │ count_star() │
+│       varchar       │                   varchar                    │                                                                              varchar                                                                               │    int64     │
+├─────────────────────┼──────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd05.shieldbase.com │ CompatTelRunner.exe - Fatal Application Exit │ Exception Processing Message 0x40000015 - Unexpected parameters                                                                                                    │            1 │
+│ rd05.shieldbase.com │ PhoneExperienceHost.exe - Application Error  │ The exception unknown software exception (0xe0434352) occurred in the application at location 0x00007FFC6495428C.\r\n                                              │            1 │
+│ rd05.shieldbase.com │ Windows - Out of Virtual Memory              │ Your system is low on virtual memory. To ensure that Windows runs properly, increase the size of your virtual memory paging file. For more information, see Help.  │            1 │
+└─────────────────────┴──────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -250,21 +251,21 @@ system-rd05 D SELECT je.fullkey, COUNT(*)
 
 ## 6005 (The Event log service was started)
 ```sql
-system-rd01 D SELECT Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+system-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
               FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
               WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
               AND json_extract_string(Event.System.EventID, '$."#text"') = '6005'
               GROUP BY ALL
               ORDER BY ALL;
-┌────────────────────────────┬──────────────┐
-│         SystemTime         │ count_star() │
-│         timestamp          │    int64     │
-├────────────────────────────┼──────────────┤
-│ 2023-01-02 18:24:28.478925 │            1 │
-│ 2023-01-23 14:51:18.603897 │            1 │
-│ 2023-01-25 14:19:08.712955 │            1 │
-│ 2023-01-25 14:38:30.479009 │            1 │
-└────────────────────────────┴──────────────┘
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │         SystemTime         │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-02 18:24:28.478925 │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 14:51:18.603897 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:19:08.712955 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:38:30.479009 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -286,25 +287,25 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 ## 6006 (The Event log service was stopped)
-```powershell
-system-rd01 D SELECT Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+```sql
+system-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
               FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
               WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
               AND json_extract_string(Event.System.EventID, '$."#text"') = '6006'
               GROUP BY ALL
               ORDER BY ALL;
-┌────────────────────────────┬──────────────┐
-│         SystemTime         │ count_star() │
-│         timestamp          │    int64     │
-├────────────────────────────┼──────────────┤
-│ 2023-01-02 18:24:07.618005 │            1 │
-│ 2023-01-23 14:50:54.20556  │            1 │
-│ 2023-01-25 14:18:51.756586 │            1 │
-│ 2023-01-25 14:33:34.463867 │            1 │
-└────────────────────────────┴──────────────┘
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │         SystemTime         │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-02 18:24:07.618005 │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 14:50:54.20556  │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:18:51.756586 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:33:34.463867 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
 ```
 fullkey
-```powershell
+```sql
 system-rd01 D SELECT je.fullkey, COUNT(*)
               FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
               WHERE e.json->>'$.Event.System.EventID."#text"' = '6006' AND je.fullkey LIKE '$.Event.EventData.%'
@@ -323,22 +324,22 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 ## 6008 (Unexpected system shutdown)
-```powershell
-system-rd05 D SELECT Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
+```sql
+system-rd05 D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
               FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
               WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
               AND json_extract_string(Event.System.EventID, '$."#text"') = '6008'
               GROUP BY ALL
               ORDER BY ALL;
-┌─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
-│ "Event".EventData."Data"."#text"[0] │ "Event".EventData."Data"."#text"[1] │ count_star() │
-│                json                 │                json                 │    int64     │
-├─────────────────────────────────────┼─────────────────────────────────────┼──────────────┤
-│ "7:38:24 PM"                        │ "‎1/‎27/‎2023"                         │            1 │
-└─────────────────────────────────────┴─────────────────────────────────────┴──────────────┘
+┌─────────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
+│      Computer       │ "Event".EventData."Data"."#text"[0] │ "Event".EventData."Data"."#text"[1] │ count_star() │
+│       varchar       │                json                 │                json                 │    int64     │
+├─────────────────────┼─────────────────────────────────────┼─────────────────────────────────────┼──────────────┤
+│ rd05.shieldbase.com │ "7:38:24 PM"                        │ "‎1/‎27/‎2023"                         │            1 │
+└─────────────────────┴─────────────────────────────────────┴─────────────────────────────────────┴──────────────┘
 ```
 fullkey
-```powershell
+```sql
 system-rd05 D SELECT je.fullkey, COUNT(*)
               FROM read_json_objects('C:/Users/SANSDFIR/system-rd05.json') AS e, json_tree(e.json) AS je
               WHERE e.json->>'$.Event.System.EventID."#text"' = '6008' AND je.fullkey LIKE '$.Event.EventData.%'
@@ -365,22 +366,22 @@ system-rd05 D SELECT je.fullkey, COUNT(*)
 
 
 ## 6011 (System Name Changed)
-```powershell
-system-rd01 D SELECT Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
+```sql
+system-rd01 D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
               FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
               WHERE json_extract_string(Event.System.EventID, '$."#text"') = '6011'
               GROUP BY ALL
               ORDER BY ALL;
-┌─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
-│ "Event".EventData."Data"."#text"[0] │ "Event".EventData."Data"."#text"[1] │ count_star() │
-│                json                 │                json                 │    int64     │
-├─────────────────────────────────────┼─────────────────────────────────────┼──────────────┤
-│ "OFFDEVS-TUHMGJE"                   │ "TPL-PACKER"                        │            1 │
-│ "TPL-PACKER"                        │ "RD01"                              │            1 │
-└─────────────────────────────────────┴─────────────────────────────────────┴──────────────┘
+┌────────────┬─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
+│  Computer  │ "Event".EventData."Data"."#text"[0] │ "Event".EventData."Data"."#text"[1] │ count_star() │
+│  varchar   │                json                 │                json                 │    int64     │
+├────────────┼─────────────────────────────────────┼─────────────────────────────────────┼──────────────┤
+│ rd01       │ "TPL-PACKER"                        │ "RD01"                              │            1 │
+│ tpl-packer │ "OFFDEVS-TUHMGJE"                   │ "TPL-PACKER"                        │            1 │
+└────────────┴─────────────────────────────────────┴─────────────────────────────────────┴──────────────┘
 ```
 fullkey
-```powershell
+```sql
 system-rd01 D SELECT je.fullkey, COUNT(*)
               FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
               WHERE e.json->>'$.Event.System.EventID."#text"' = '6011' AND je.fullkey LIKE '$.Event.EventData.%'
@@ -401,51 +402,51 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 ## 6013 (System uptime)
-```powershell
-system-rd01 D SELECT Event.EventData.Data."#text"[4], Event.EventData.Data."#text"[6], replace(replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00\x00', '|'), '\x00', ''), COUNT(*)
+```sql
+system-rd01 D SELECT Event.System.Computer, Event.EventData.Data."#text"[4], Event.EventData.Data."#text"[6], replace(replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00\x00', '|'), '\x00', ''), COUNT(*)
               FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
               WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
               AND json_extract_string(Event.System.EventID, '$."#text"') = '6013'
               GROUP BY ALL
               ORDER BY ALL;
-┌─────────────────────────────────────┬─────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
-│ "Event".EventData."Data"."#text"[4] │ "Event".EventData."Data"."#text"[6] │                                        "replace"("replace"(CAST(from_hex("Event".EventData."Binary") AS VARCHAR), '\x00\x00', '|'), '\x00', '')                                         │ count_star() │
-│                json                 │                json                 │                                                                                         varchar                                                                                         │    int64     │
-├─────────────────────────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
-│ "1031741"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "11"                                │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1118141"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1204541"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1290941"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1377341"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1463741"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1532642"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1550142"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1619043"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1636541"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "167741"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "1722941"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "254141"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "340541"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "4"                                 │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "426941"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "5"                                 │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "513341"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "599741"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "686141"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "772541"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "7733"                              │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "8"                                 │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "81342"                             │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "8496"                              │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "858941"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "94133"                             │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-│ "945341"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
-└─────────────────────────────────────┴─────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
-  29 rows                                                                                                                                                                                                                                                                  4 columns
+┌─────────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │ "Event".EventData."Data"."#text"[4] │ "Event".EventData."Data"."#text"[6] │                                        "replace"("replace"(CAST(from_hex("Event".EventData."Binary") AS VARCHAR), '\x00\x00', '|'), '\x00', '')                                         │ count_star() │
+│       varchar       │                json                 │                json                 │                                                                                         varchar                                                                                         │    int64     │
+├─────────────────────┼─────────────────────────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ "1031741"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "11"                                │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1118141"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1204541"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1290941"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1377341"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1463741"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1532642"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1550142"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1619043"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1636541"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "167741"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "1722941"                           │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "254141"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "340541"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "4"                                 │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "426941"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "5"                                 │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "513341"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "599741"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "686141"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "772541"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "7733"                              │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "8"                                 │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "81342"                             │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "8496"                              │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "858941"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "94133"                             │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+│ rd01.shieldbase.com │ "945341"                            │ "300 Eastern Standard Time"         │ 1.1|0|Windows 10 Pro for Workstations|10.0.22000 Build 22000  |Multiprocessor Free|22000.co_release.210604-1628|630f9c10|Not Available|Not Available|9|2|4036|409|rd01.shieldbase.com|| │            1 │
+└─────────────────────┴─────────────────────────────────────┴─────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+  29 rows                                                                                                                                                                                                                                                                                        5 columns
 ```
 fullkey
-```powershell
+```sql
 system-rd01 D SELECT je.fullkey, COUNT(*)
               FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
               WHERE e.json->>'$.Event.System.EventID."#text"' = '6013' AND je.fullkey LIKE '$.Event.EventData.%'
@@ -467,4 +468,15 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.Data.#text[6] │          144 │
 └─────────────────────────────────┴──────────────┘
   10 rows                              2 columns
+```
+
+
+
+## 40960 (Security authentication error)
+```sql
+
+```
+fullkey
+```sql
+
 ```

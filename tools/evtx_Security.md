@@ -817,6 +817,30 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4656 (A handle to an object was requested)
+
+
+
+## 4657 (A registry value was modified)
+
+
+
+## 4658 (The handle to an object was closed)
+
+
+
+## 4661 (Handle requested to an object)
+
+
+
+## 4662 (Operation performed on an object)
+
+
+
+## 4663 (Attempt was made to access an object)
+
+
+
 ## 4672 (Administrative logon)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.PrivilegeList, COUNT(*)
@@ -891,6 +915,14 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4673 (A privileged service was called)
+
+
+
+## 4674 (An operation was attempted on a privileged object)
+
+
+
 ## 4688 (A new process has been created)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TokenElevationType, Event.EventData.MandatoryLabel, Event.EventData.ParentProcessName, Event.EventData.NewProcessName, Event.EventData.CommandLine, COUNT(*)
@@ -959,6 +991,10 @@ S-1-16-12288: SECURITY_MANDATORY_HIGH_RID
 S-1-16-16384: SECURITY_MANDATORY_SYSTEM_RID
 S-1-16-20480: SECURITY_MANDATORY_PROTECTED_PROCESS_RID
 ```
+
+
+
+## 4689 (A process has exited)
 
 
 
@@ -1093,6 +1129,54 @@ ServiceStartType
 3: Manual
 4: Disabled
 ```
+
+
+
+## 4698 (Scheduled Task created)
+
+
+
+## 4699 (Scheduled Task deleted)
+
+
+
+## 4700 (A scheduled task was enabled)
+
+
+
+## 4701 (A scheduled task was disabled)
+
+
+
+## 4702 (A scheduled task was updated)
+
+
+
+## 4703 (A user right was adjusted)
+
+
+
+## 4704 (A user right was assigned)
+
+
+
+## 4705 (A user right was removed)
+
+
+
+## 4706 (A new trust was created to a domain)
+
+
+
+## 4707 (A trust to a domain was removed)
+
+
+
+## 4713 (Kerberos policy was changed)
+
+
+
+## 4716 (Trusted domain information was modified0)
 
 
 
@@ -1427,6 +1511,10 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4723 (An attempt was made to change an account's password)
+
+
+
 ## 4724 (An attempt was made to reset an account's password)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
@@ -1722,6 +1810,10 @@ security-rd08 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4734 (A security-enabled local group was deleted)
+
+
+
 ## 4735 (A security-enabled local group was changed)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.PrivilegeList, Event.EventData.SidHistory, COUNT(*)
@@ -1871,6 +1963,26 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 ```
 UAC  
 https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties#list-of-property-flags
+
+
+
+## 4740 (A user account was locked out)
+
+
+
+## 4741 (A computer account was created)
+
+
+
+## 4742 (A computer account was changed)
+
+
+
+## 4743 (A computer account was deleted)
+
+
+
+## 4764 (A group's type was changed)
 
 
 
@@ -2333,6 +2445,22 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4772 (A Kerberos authentication ticket request failed)
+
+
+
+## 4773 (A Kerberos service ticket request failed)
+
+
+
+## 4774 (An account was mapped for logon)
+
+
+
+## 4775 (An account could not be mapped for logon)
+
+
+
 ## 4776 (NTLM authentication request)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.Workstation, Event.EventData.TargetUserName, Event.EventData.Status, Event.EventData.PackageName, COUNT(*)
@@ -2380,6 +2508,10 @@ Status
 0xC0000371: local account store does not contain secret material for the specified accounts
 0x0: Status OK
 ```
+
+
+
+## 4777 (The domain controller failed to validate the credentials for an account)
 
 
 
@@ -2520,6 +2652,10 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.TargetSid         │           20 │
 └─────────────────────────────────────┴──────────────┘
 ```
+
+
+
+## 4782 (The password hash of an account was accessed)
 
 
 
@@ -2807,6 +2943,14 @@ security-rd08 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 4802 (The screen saver was invoked)
+
+
+
+## 4803 (The screen saver was dismissed)
+
+
+
 ## 5136 (A directory service object was modified)
 ```sql
 security-dc01 D SELECT Event.System.Computer, Event.EventData.ObjectClass, Event.EventData.AttributeLDAPDisplayName, COUNT(*)
@@ -2955,6 +3099,14 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 5138 (A directory service object was undeleted)
+
+
+
+## 5139 (A directory service object was moved)
+
+
+
 ## 5140 (A network share object was accessed)
 ```sql
 security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, Event.EventData.ObjectType, Event.EventData.IpAddress, Event.EventData.AccessMask, Event.EventData.AccessList, COUNT(*)
@@ -3008,6 +3160,10 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 └─────────────────────────────────────┴──────────────┘
   11 rows                                  2 columns
 ```
+
+
+
+## 5141 (A directory service object was deleted)
 
 
 
@@ -3133,6 +3289,34 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.SubjectUserSid    │            3 │
 └─────────────────────────────────────┴──────────────┘
 ```
+
+
+
+## 5145 (Network share object access)
+
+
+
+## 5152 (The Windows Filtering Platform has blocked a packet)
+
+
+
+## 5154 (The Windows Filtering Platform has permitted an application or service to listen on a port for incoming connections)
+
+
+
+## 5156 (The Windows Filtering Platform has allowed a connection)
+
+
+
+## 5157 (The Windows Filtering Platform has blocked a connection)
+
+
+
+## 5158 (The Windows Filtering Platform has permitted a bind to a local port)
+
+
+
+## 5159 (The Windows Filtering Platform has permitted an application or service to listen on a port for incoming connections)
 
 
 
@@ -3290,3 +3474,15 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 └──────────────────────────────────────────────┴──────────────┘
   11 rows                                           2 columns
 ```
+
+
+
+## 6272 (The Windows Filtering Platform has permitted an application or service to listen on a port for incoming connections)
+
+
+
+## 6273 (Network Policy Server denied access to a user)
+
+
+
+## 6416 (A new external device was recognized by the system)

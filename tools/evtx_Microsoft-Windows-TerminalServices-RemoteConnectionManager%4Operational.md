@@ -69,23 +69,23 @@ TerminalServices-RemoteConnectionManager... D SELECT Event.System.Computer, Even
 
 ## 1149 (RDP network connection established)
 ```sql
-TerminalServices-RemoteConnectionManager... D SELECT Event.UserData.EventXML.Param2, Event.UserData.EventXML.Param1, Event.UserData.EventXML.Param3, COUNT(*)
+TerminalServices-RemoteConnectionManager... D SELECT Event.System.Computer, Event.UserData.EventXML.Param2, Event.UserData.EventXML.Param1, Event.UserData.EventXML.Param3, COUNT(*)
                                               FROM read_json('C:/Users/SANSDFIR/TerminalServices-RemoteConnectionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
                                               WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
                                               AND Event.System.EventID = 1149
                                               GROUP BY ALL
                                               ORDER BY ALL;
-┌────────────┬─────────┬──────────────┬──────────────┐
-│   Param2   │ Param1  │    Param3    │ count_star() │
-│  varchar   │ varchar │   varchar    │    int64     │
-├────────────┼─────────┼──────────────┼──────────────┤
-│ shieldbase │ tdungan │ 172.16.30.20 │            1 │
-│ NULL       │ NULL    │ 172.16.30.14 │            3 │
-│ NULL       │ NULL    │ 172.16.30.20 │            6 │
-│ NULL       │ NULL    │ 172.16.30.23 │            3 │
-│ NULL       │ NULL    │ 172.16.30.3  │            4 │
-│ NULL       │ NULL    │ 172.16.30.8  │            7 │
-└────────────┴─────────┴──────────────┴──────────────┘
+┌─────────────────────┬────────────┬─────────┬──────────────┬──────────────┐
+│      Computer       │   Param2   │ Param1  │    Param3    │ count_star() │
+│       varchar       │  varchar   │ varchar │   varchar    │    int64     │
+├─────────────────────┼────────────┼─────────┼──────────────┼──────────────┤
+│ rd01.shieldbase.com │ shieldbase │ tdungan │ 172.16.30.20 │            1 │
+│ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.14 │            3 │
+│ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.20 │            6 │
+│ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.23 │            3 │
+│ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.3  │            4 │
+│ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.8  │            7 │
+└─────────────────────┴────────────┴─────────┴──────────────┴──────────────┘
 ```
 fullkey
 ```sql

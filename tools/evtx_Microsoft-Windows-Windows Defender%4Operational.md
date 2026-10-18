@@ -246,6 +246,30 @@ Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 1003 (An antimalware scan was paused)
+
+
+
+## 1004 (An antimalware scan was resumed)
+
+
+
+## 1005 (Error - An antimalware scan failed)
+
+
+
+## 1006 (The antimalware engine found malware or other potentially unwanted software)
+
+
+
+## 1008 (Error - The antimalware platform attempted to perform an action to protect your system from malware or other potentially unwanted software, but the action failed.)
+
+
+
+## 1011 (The antimalware platform deleted an item from quarantine)
+
+
+
 ## 1013 (The antimalware platform deleted history of malware and other potentially unwanted software)
 ```sql
 Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData.Timestamp,  COUNT(*)
@@ -468,6 +492,10 @@ Windows_Defender%4Operational-rd01 D SELECT je.fullkey, COUNT(*)
 
 
 
+## 1134 (Microsoft Defender Attack Surface Reduction has audited an operation)
+
+
+
 ## 1150 (Defender is up and running in a healthy state)
 ```sql
 Windows_Defender%4Operational-rd01 D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Platform version", COUNT(*)
@@ -603,6 +631,10 @@ Windows_Defender%4Operational-ftp01 D SELECT je.fullkey, COUNT(*)
 └──────────────────────────────────────────────────────────┴──────────────┘
   16 rows                                                       2 columns
 ```
+
+
+
+## 2050 (Defender uploaded a file for further analysis)
 
 
 

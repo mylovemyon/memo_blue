@@ -330,6 +330,10 @@ TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
 
 
 
+## 39 (Session (PayloadData1) has been disconnected by session (PayloadData2))
+
+
+
 ## 40 (Session (PayloadData1) has been disconnected, reason code (PayloadData2))
 ```sql
 TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.UserData.EventXML.Session, Event.UserData.EventXML.Reason, COUNT(*)
@@ -409,3 +413,7 @@ Reason
 11: The disconnection was initiated by the user disconnecting his or her session on the server or by an administrative tool on the server
 12: The disconnection was initiated by the user logging off his or her session on the server
 ```
+
+
+
+## 41 (RDP Begin session arbitration)

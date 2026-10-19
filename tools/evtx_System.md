@@ -222,7 +222,7 @@ Provider: "Microsoft Antimalware"
 memory D SELECT Event.System.Computer, Event.EventData.SupportInfo1, Event.EventData.SupportInfo2, Event.EventData.ProcessingMode, Event.EventData.ProcessingTimeInMilliseconds, Event.EventData.ErrorCode, Event.EventData.ErrorDescription, COUNT(*)
          FROM read_json('.\system-rd09.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND json_extract_string(Event.System.EventID, '$') = '1129'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-GroupPolicy' AND (Event.System.EventID->>'$' = '1129')
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────────────────┬──────────────┬──────────────┬────────────────┬──────────────────────────────┬───────────┬─────────────────────────────────────────────┬──────────────┐
@@ -238,7 +238,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd09.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '1129' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-GroupPolicy') AND (e.json->>'$.Event.System.EventID' = '1129') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌────────────────────────────────────────────────┬──────────────┐
@@ -255,12 +255,13 @@ memory D SELECT je.fullkey, COUNT(*)
 ```
 
 
+
 ## 6005 (The Event log service was started)
 ```sql
 memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
          FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND json_extract_string(Event.System.EventID, '$."#text"') = '6005'
+         AND Event.System.Provider."#attributes".Name = 'EventLog' AND (Event.System.EventID->>'$."#text"' = '6005')
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────────────────┬────────────────────────────┬──────────────┐
@@ -277,7 +278,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID."#text"' = '6005' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'EventLog') AND (e.json->>'$.Event.System.EventID."#text"' = '6005') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌──────────────────────────────┬──────────────┐
@@ -297,7 +298,7 @@ memory D SELECT je.fullkey, COUNT(*)
 memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
          FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND json_extract_string(Event.System.EventID, '$."#text"') = '6006'
+         AND Event.System.Provider."#attributes".Name = 'EventLog' AND (Event.System.EventID->>'$."#text"' = '6006')
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────────────────┬────────────────────────────┬──────────────┐
@@ -314,7 +315,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID."#text"' = '6006' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'EventLog') AND (e.json->>'$.Event.System.EventID."#text"' = '6006') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌──────────────────────────────┬──────────────┐
@@ -334,7 +335,7 @@ memory D SELECT je.fullkey, COUNT(*)
 memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
          FROM read_json('.\system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND json_extract_string(Event.System.EventID, '$."#text"') = '6008'
+         AND Event.System.Provider."#attributes".Name = 'EventLog' AND (Event.System.EventID->>'$."#text"' = '6008')
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
@@ -348,7 +349,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd05.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID."#text"' = '6008' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'EventLog') AND (e.json->>'$.Event.System.EventID."#text"' = '6008') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐
@@ -375,7 +376,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
          FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE json_extract_string(Event.System.EventID, '$."#text"') = '6011'
+         WHERE Event.System.Provider."#attributes".Name = 'EventLog' AND (Event.System.EventID->>'$."#text"' = '6011')
          GROUP BY ALL
          ORDER BY ALL;
 ┌────────────┬─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
@@ -390,7 +391,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID."#text"' = '6011' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'EventLog') AND (e.json->>'$.Event.System.EventID."#text"' = '6011') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐
@@ -412,7 +413,7 @@ memory D SELECT je.fullkey, COUNT(*)
 memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[4], Event.EventData.Data."#text"[6], replace(replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00\x00', '|'), '\x00', ''), COUNT(*)
          FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND json_extract_string(Event.System.EventID, '$."#text"') = '6013'
+         AND Event.System.Provider."#attributes".Name = 'EventLog' AND (Event.System.EventID->>'$."#text"' = '6013')
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
@@ -455,7 +456,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID."#text"' = '6013' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'EventLog') AND (e.json->>'$.Event.System.EventID."#text"' = '6013') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐

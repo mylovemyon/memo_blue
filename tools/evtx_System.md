@@ -229,6 +229,16 @@ Reason
 
 
 
+## 1 (Sleep/wake events)
+Provider: Microsoft-Windows-Power-Troubleshooter
+
+
+
+## 2 (An attempt to exploit a known vulnerability detected)
+Provider: Microsoft-Windows-Audit-CVE
+
+
+
 ## 12 (OS was started)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.StartTime, Event.EventData.BootMode, Event.EventData.BuildVersion, Event.EventData.QfeVersion, Event.EventData.ServiceVersion, Event.EventData.MajorVersion, Event.EventData.MinorVersion, COUNT(*)
@@ -270,6 +280,41 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
+## 13 (OS was shutdown)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.StopTime, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Kernel-General' AND (Event.System.EventID->>'$' = '13')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │          StopTime          │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-02 18:24:15.298357 │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 14:51:02.797474 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:18:59.196235 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:33:41.962038 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Kernel-General') AND (e.json->>'$.Event.System.EventID' = '13') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────┬──────────────┐
+│          fullkey           │ count_star() │
+│          varchar           │    int64     │
+├────────────────────────────┼──────────────┤
+│ $.Event.EventData.StopTime │           24 │
+└────────────────────────────┴──────────────┘
+```
+
+
+
 ## 26 (Application Error)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.Caption, Event.EventData.Message, COUNT(*)
@@ -302,6 +347,79 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.Message │            3 │
 └───────────────────────────┴──────────────┘
 ```
+
+
+
+## 35 (Synchronizing system time from time service)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.TimeSource, Event.EventData.TimeSourceRefId, Event.EventData.CurrentStratumNumber, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Time-Service' AND (Event.System.EventID->>'$' = '35')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬─────────────────────────────────────────────────────────┬─────────────────┬──────────────────────┬──────────────┐
+│      Computer       │                       TimeSource                        │ TimeSourceRefId │ CurrentStratumNumber │ count_star() │
+│       varchar       │                         varchar                         │      int64      │        int64         │    int64     │
+├─────────────────────┼─────────────────────────────────────────────────────────┼─────────────────┼──────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ dc01.shieldbase.com (ntp.d|0.0.0.0:123->172.16.4.4:123) │        67375276 │                    5 │            4 │
+└─────────────────────┴─────────────────────────────────────────────────────────┴─────────────────┴──────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Time-Service') AND (e.json->>'$.Event.System.EventID' = '37') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.#attributes      │           47 │
+│ $.Event.EventData.#attributes.Name │           47 │
+│ $.Event.EventData.TimeSource       │           47 │
+└────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 37 (Synchronizing system time from time service)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.TimeSource, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Time-Service' AND (Event.System.EventID->>'$' = '37')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬─────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                       TimeSource                        │ count_star() │
+│       varchar       │                         varchar                         │    int64     │
+├─────────────────────┼─────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ dc01.shieldbase.com (ntp.d|0.0.0.0:123->172.16.4.4:123) │           12 │
+└─────────────────────┴─────────────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Time-Service') AND (e.json->>'$.Event.System.EventID' = '37') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.#attributes      │           47 │
+│ $.Event.EventData.#attributes.Name │           47 │
+│ $.Event.EventData.TimeSource       │           47 │
+└────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 42 (Sleep/wake events)
+Provider: Microsoft-Windows-Kernel-Power
 
 
 
@@ -341,6 +459,11 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.UserData.LogFileCleared.SubjectUserName   │            5 │
 └───────────────────────────────────────────────────┴──────────────┘
 ```
+
+
+
+## 105 (Power source change)
+Provider: Microsoft-Windows-Kernel-Power
 
 
 

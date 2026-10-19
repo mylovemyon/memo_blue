@@ -15,27 +15,30 @@ memory D
 
 ## EventID
 ```sql
-memory D SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
+memory D SELECT Event.System.EventID, COUNT(*)
          FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json')
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬─────────┬──────────────┐
-│      Computer       │ EventID │ count_star() │
-│       varchar       │  int64  │    int64     │
-├─────────────────────┼─────────┼──────────────┤
-│ rd01.shieldbase.com │      21 │           19 │
-│ rd01.shieldbase.com │      22 │           19 │
-│ rd01.shieldbase.com │      23 │           18 │
-│ rd01.shieldbase.com │      24 │           30 │
-│ rd01.shieldbase.com │      25 │           12 │
-│ rd01.shieldbase.com │      32 │            4 │
-│ rd01.shieldbase.com │      40 │           62 │
-│ rd01.shieldbase.com │      41 │           29 │
-│ rd01.shieldbase.com │      42 │           29 │
-│ rd01.shieldbase.com │      54 │            4 │
-└─────────────────────┴─────────┴──────────────┘
-  10 rows                            3 columns
+┌─────────┬──────────────┐
+│ EventID │ count_star() │
+│  int64  │    int64     │
+├─────────┼──────────────┤
+│      17 │            2 │
+│      21 │          274 │
+│      22 │          274 │
+│      23 │          296 │
+│      24 │          514 │
+│      25 │          222 │
+│      32 │          192 │
+│      36 │           16 │
+│      39 │           26 │
+│      40 │          960 │
+│      41 │          424 │
+│      42 │          418 │
+│      54 │          192 │
+└─────────┴──────────────┘
+  13 rows      2 columns
 ```
 
 
@@ -43,7 +46,7 @@ memory D SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
 ## 21 (Remote Desktop Services: Session logon succeeded)
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 21
          GROUP BY ALL
@@ -76,7 +79,7 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '21' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -97,7 +100,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 22 (Remote Desktop Services: Shell start notification received)
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 22
          GROUP BY ALL
@@ -130,7 +133,7 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '22' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -151,7 +154,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 23 (Remote Desktop Services: Session logoff succeeded)
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, COUNT(*)
-         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 23
          GROUP BY ALL
@@ -180,7 +183,7 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '23' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -200,7 +203,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 24 (Remote Desktop Services: Session has been disconnected)
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 24
          GROUP BY ALL
@@ -235,7 +238,7 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '24' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -256,7 +259,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 25 (Remote Desktop Services: Session reconnection succeeded)
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 25
          GROUP BY ALL
@@ -275,7 +278,7 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '25' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -294,13 +297,44 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 ## 39 (Session (PayloadData1) has been disconnected by session (PayloadData2))
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.TargetSession, Event.UserData.EventXML.Source, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd04.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 39
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.TargetSession, Event.UserData.EventXML.Source;
+┌─────────────────────┬───────────────┬────────┬──────────────┐
+│      Computer       │ TargetSession │ Source │ count_star() │
+│       varchar       │     int64     │ int64  │    int64     │
+├─────────────────────┼───────────────┼────────┼──────────────┤
+│ rd04.shieldbase.com │             2 │      2 │            7 │
+└─────────────────────┴───────────────┴────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd04.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '39' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌─────────────────────────────────────────────┬──────────────┐
+│                   fullkey                   │ count_star() │
+│                   varchar                   │    int64     │
+├─────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.EventXML.#attributes       │           11 │
+│ $.Event.UserData.EventXML.#attributes.xmlns │           11 │
+│ $.Event.UserData.EventXML.Source            │           11 │
+│ $.Event.UserData.EventXML.TargetSession     │           11 │
+└─────────────────────────────────────────────┴──────────────┘
+```
 
 
 
 ## 40 (Session (PayloadData1) has been disconnected, reason code (PayloadData2))
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.Session, Event.UserData.EventXML.Reason, COUNT(*)
-         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 40
          GROUP BY ALL
@@ -347,7 +381,7 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.Session, Event.Us
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '40' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -380,3 +414,50 @@ Reason
 
 
 ## 41 (RDP Begin session arbitration)
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 41
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User;
+┌─────────────────────┬───────────┬────────────────────┬──────────────┐
+│      Computer       │ SessionID │        User        │ count_star() │
+│       varchar       │   int64   │      varchar       │    int64     │
+├─────────────────────┼───────────┼────────────────────┼──────────────┤
+│ rd01.shieldbase.com │         2 │ shieldbase\tdungan │            4 │
+│ rd01.shieldbase.com │         3 │ shieldbase\tdungan │            1 │
+│ rd01.shieldbase.com │         3 │ shieldbase\wacsvc  │            1 │
+│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │            2 │
+│ rd01.shieldbase.com │         5 │ shieldbase\tdungan │            2 │
+│ rd01.shieldbase.com │         6 │ shieldbase\tdungan │            1 │
+│ rd01.shieldbase.com │         7 │ shieldbase\tdungan │            1 │
+│ rd01.shieldbase.com │         8 │ shieldbase\tdungan │            1 │
+│ rd01.shieldbase.com │         9 │ shieldbase\tdungan │            1 │
+│ rd01.shieldbase.com │        10 │ shieldbase\tdungan │            1 │
+│ rd01.shieldbase.com │        11 │ shieldbase\tdungan │            2 │
+│ rd01.shieldbase.com │        12 │ shieldbase\wacsvc  │            1 │
+│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │            1 │
+│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │            3 │
+│ rd01.shieldbase.com │        14 │ shieldbase\wacsvc  │            5 │
+│ rd01.shieldbase.com │        15 │ shieldbase\tdungan │            2 │
+└─────────────────────┴───────────┴────────────────────┴──────────────┘
+  16 rows                                                   4 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '41' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌─────────────────────────────────────────────┬──────────────┐
+│                   fullkey                   │ count_star() │
+│                   varchar                   │    int64     │
+├─────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.EventXML.#attributes       │           82 │
+│ $.Event.UserData.EventXML.#attributes.xmlns │           82 │
+│ $.Event.UserData.EventXML.SessionID         │           82 │
+│ $.Event.UserData.EventXML.User              │           82 │
+└─────────────────────────────────────────────┴──────────────┘
+```

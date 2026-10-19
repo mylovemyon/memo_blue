@@ -212,6 +212,45 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
+## 104 (Event log cleared)
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.LogFileCleared.SubjectDomainName, Event.UserData.LogFileCleared.SubjectUserName, Event.UserData.LogFileCleared.Channel, COUNT(*)
+         FROM read_json('.\system-dev01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Eventlog' AND (Event.System.EventID->>'$' = '104')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌──────────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────┬──────────────┐
+│       Computer       │ SubjectDomainName │ SubjectUserName │                 Channel                  │ count_star() │
+│       varchar        │      varchar      │     varchar     │                 varchar                  │    int64     │
+├──────────────────────┼───────────────────┼─────────────────┼──────────────────────────────────────────┼──────────────┤
+│ dev01.shieldbase.com │ shieldbase        │ wacsvc          │ Microsoft-Windows-PowerShell/Operational │            1 │
+│ dev01.shieldbase.com │ shieldbase        │ wacsvc          │ Microsoft-Windows-Sysmon/Operational     │            1 │
+└──────────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-dev01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Eventlog') AND (e.json->>'$.Event.System.EventID' = '104') AND je.fullkey LIKE '$.Event.UserData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────────────────────────────┬──────────────┐
+│                      fullkey                      │ count_star() │
+│                      varchar                      │    int64     │
+├───────────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.LogFileCleared                   │            5 │
+│ $.Event.UserData.LogFileCleared.#attributes       │            5 │
+│ $.Event.UserData.LogFileCleared.#attributes.xmlns │            5 │
+│ $.Event.UserData.LogFileCleared.BackupPath        │            5 │
+│ $.Event.UserData.LogFileCleared.Channel           │            5 │
+│ $.Event.UserData.LogFileCleared.SubjectDomainName │            5 │
+│ $.Event.UserData.LogFileCleared.SubjectUserName   │            5 │
+└───────────────────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 1116 (Microsoft Antimalware Detection)
 Provider: "Microsoft Antimalware"
 

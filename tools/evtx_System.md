@@ -177,6 +177,99 @@ memory D WITH evtx AS (
 
 
 
+## 1 (The system time was changed)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.OldTime, Event.EventData.NewTime, Event.EventData.Reason, Event.EventData.ProcessName, Event.EventData.TimeZoneBias, Event.EventData.RealTimeIsUniversal, Event.EventData.SystemInCmosMode, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Kernel-General' AND (Event.System.EventID->>'$' = '1')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────┬────────────────────────────┬────────┬──────────────────────────────────────────────────────┬──────────────┬─────────────────────┬──────────────────┬──────────────┐
+│      Computer       │          OldTime           │          NewTime           │ Reason │                     ProcessName                      │ TimeZoneBias │ RealTimeIsUniversal │ SystemInCmosMode │ count_star() │
+│       varchar       │         timestamp          │         timestamp          │ int64  │                       varchar                        │    int64     │       boolean       │     boolean      │    int64     │
+├─────────────────────┼────────────────────────────┼────────────────────────────┼────────┼──────────────────────────────────────────────────────┼──────────────┼─────────────────────┼──────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-01 05:00:09.167503 │ 2023-01-01 05:00:09.167503 │      3 │                                                      │          300 │ true                │ false            │            1 │
+│ rd01.shieldbase.com │ 2023-01-02 18:24:07.586327 │ 2023-01-02 18:24:07.590471 │      1 │ \Device\HarddiskVolume1\Windows\System32\svchost.exe │          300 │ true                │ false            │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 14:50:54.138366 │ 2023-01-23 14:50:54.152033 │      1 │ \Device\HarddiskVolume1\Windows\System32\svchost.exe │          300 │ true                │ false            │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 14:51:51.381957 │ 2023-01-23 14:51:51.382336 │      1 │ \Device\HarddiskVolume1\Windows\System32\svchost.exe │          300 │ true                │ false            │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:18:51.681411 │ 2023-01-25 14:18:51.681409 │      1 │ \Device\HarddiskVolume1\Windows\System32\svchost.exe │          300 │ true                │ false            │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:33:34.369995 │ 2023-01-25 14:33:34.371775 │      1 │ \Device\HarddiskVolume1\Windows\System32\svchost.exe │          300 │ true                │ false            │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:39:21.612376 │ 2023-01-25 14:39:21.612623 │      1 │ \Device\HarddiskVolume1\Windows\System32\svchost.exe │          300 │ true                │ false            │            1 │
+└─────────────────────┴────────────────────────────┴────────────────────────────┴────────┴──────────────────────────────────────────────────────┴──────────────┴─────────────────────┴──────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Kernel-General') AND (e.json->>'$.Event.System.EventID' = '1') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────────────────┬──────────────┐
+│                fullkey                │ count_star() │
+│                varchar                │    int64     │
+├───────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.CmosTime            │           29 │
+│ $.Event.EventData.NewTime             │           29 │
+│ $.Event.EventData.OldTime             │           29 │
+│ $.Event.EventData.ProcessID           │           29 │
+│ $.Event.EventData.ProcessName         │           29 │
+│ $.Event.EventData.RealTimeIsUniversal │           29 │
+│ $.Event.EventData.Reason              │           29 │
+│ $.Event.EventData.SystemInCmosMode    │           29 │
+│ $.Event.EventData.TimeZoneBias        │           29 │
+└───────────────────────────────────────┴──────────────┘
+```
+Reason
+```
+1: An application or system component changed the time.
+2: System time synchronized with the hardware clock.
+3: System time adjusted to the new time zone.
+```
+
+
+
+## 12 (OS was started)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.StartTime, Event.EventData.BootMode, Event.EventData.BuildVersion, Event.EventData.QfeVersion, Event.EventData.ServiceVersion, Event.EventData.MajorVersion, Event.EventData.MinorVersion, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Kernel-General' AND (Event.System.EventID->>'$' = '12')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬───────────────────────┬──────────┬──────────────┬────────────┬────────────────┬──────────────┬──────────────┬──────────────┐
+│      Computer       │       StartTime       │ BootMode │ BuildVersion │ QfeVersion │ ServiceVersion │ MajorVersion │ MinorVersion │ count_star() │
+│       varchar       │       timestamp       │  int64   │    int64     │   int64    │     int64      │    int64     │    int64     │    int64     │
+├─────────────────────┼───────────────────────┼──────────┼──────────────┼────────────┼────────────────┼──────────────┼──────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-02 18:24:19.5 │        0 │        22000 │       1335 │              0 │           10 │            0 │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 14:51:07.5 │        0 │        22000 │       1335 │              0 │           10 │            0 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:19:03.5 │        0 │        22000 │       1335 │              0 │           10 │            0 │            1 │
+│ rd01.shieldbase.com │ 2023-01-25 14:38:25.5 │        0 │        22000 │       1335 │              0 │           10 │            0 │            1 │
+└─────────────────────┴───────────────────────┴──────────┴──────────────┴────────────┴────────────────┴──────────────┴──────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Kernel-General') AND (e.json->>'$.Event.System.EventID' = '12') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────────────┬──────────────┐
+│             fullkey              │ count_star() │
+│             varchar              │    int64     │
+├──────────────────────────────────┼──────────────┤
+│ $.Event.EventData.BootMode       │           26 │
+│ $.Event.EventData.BuildVersion   │           26 │
+│ $.Event.EventData.MajorVersion   │           26 │
+│ $.Event.EventData.MinorVersion   │           26 │
+│ $.Event.EventData.QfeVersion     │           26 │
+│ $.Event.EventData.ServiceVersion │           26 │
+│ $.Event.EventData.StartTime      │           26 │
+└──────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 26 (Application Error)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.Caption, Event.EventData.Message, COUNT(*)
@@ -290,6 +383,83 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.ProcessingTimeInMilliseconds │            3 │
 │ $.Event.EventData.SupportInfo1                 │            3 │
 │ $.Event.EventData.SupportInfo2                 │            3 │
+└────────────────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 1130 (Group Policy Script Failure)
+Provider: Microsoft-Windows-GroupPolicy
+
+
+
+## 1500 (Group Policy Settings processed successfully for COMPUTER)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.SupportInfo1, Event.EventData.SupportInfo2, Event.EventData.ProcessingMode, Event.EventData.DCName, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-GroupPolicy' AND (Event.System.EventID->>'$' = '1500')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬──────────────┬──────────────┬────────────────┬───────────────────────┬──────────────┐
+│      Computer       │ SupportInfo1 │ SupportInfo2 │ ProcessingMode │        DCName         │ count_star() │
+│       varchar       │    int64     │    int64     │     int64      │        varchar        │    int64     │
+├─────────────────────┼──────────────┼──────────────┼────────────────┼───────────────────────┼──────────────┤
+│ rd01.shieldbase.com │            1 │         4214 │              0 │ \\dc01.shieldbase.com │          360 │
+└─────────────────────┴──────────────┴──────────────┴────────────────┴───────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-GroupPolicy') AND (e.json->>'$.Event.System.EventID' = '1500') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────────────────┬──────────────┐
+│                    fullkey                     │ count_star() │
+│                    varchar                     │    int64     │
+├────────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.DCName                       │         1592 │
+│ $.Event.EventData.ProcessingMode               │         1592 │
+│ $.Event.EventData.ProcessingTimeInMilliseconds │         1592 │
+│ $.Event.EventData.SupportInfo1                 │         1592 │
+│ $.Event.EventData.SupportInfo2                 │         1592 │
+└────────────────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 1501 (Group Policy Settings processed successfully for USER)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.SupportInfo1, Event.EventData.SupportInfo2, Event.EventData.ProcessingMode, Event.EventData.DCName, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-GroupPolicy' AND (Event.System.EventID->>'$' = '1501')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬──────────────┬──────────────┬────────────────┬───────────────────────┬──────────────┐
+│      Computer       │ SupportInfo1 │ SupportInfo2 │ ProcessingMode │        DCName         │ count_star() │
+│       varchar       │    int64     │    int64     │     int64      │        varchar        │    int64     │
+├─────────────────────┼──────────────┼──────────────┼────────────────┼───────────────────────┼──────────────┤
+│ rd01.shieldbase.com │            1 │         4214 │              0 │ \\dc01.shieldbase.com │          211 │
+└─────────────────────┴──────────────┴──────────────┴────────────────┴───────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-GroupPolicy') AND (e.json->>'$.Event.System.EventID' = '1501') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────────────────┬──────────────┐
+│                    fullkey                     │ count_star() │
+│                    varchar                     │    int64     │
+├────────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.DCName                       │          961 │
+│ $.Event.EventData.ProcessingMode               │          961 │
+│ $.Event.EventData.ProcessingTimeInMilliseconds │          961 │
+│ $.Event.EventData.SupportInfo1                 │          961 │
+│ $.Event.EventData.SupportInfo2                 │          961 │
 └────────────────────────────────────────────────┴──────────────┘
 ```
 

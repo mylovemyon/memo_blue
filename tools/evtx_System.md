@@ -8,66 +8,29 @@ PS C:\Users\SANSDFIR>
 PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\system.json
 DuckDB v1.5.6 (Variegata)
 Enter ".help" for usage hints.
-system_db D
+memory D
 ```
 
-## .databases
-```sql
-system_db D .databases
-┌────────────────────┐
-│     databases      │
-│                    │
-│ system_db (memory) │
-└────────────────────┘
-```
 
-## .tables
-```sql
-system_db D .tables
- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── system_db ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── main ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               │
-│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  │
-│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid varchar, eventsourcename varchar)), eventid json, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated struct("#attributes" struct(systemtime timestamp)), eventrecordid bigint, correlation struct("#attributes" struct(activityid uuid)), execution struct("#attributes" struct(processid bigint, threadid bigint)), channel varchar, computer varchar, "security" struct("#attributes" struct(userid varchar))), eventdata map(varchar, json), userdata struct(addserviceid struct("#attributes" struct(xmlns varchar), servicename varchar, driverfilename varchar, deviceinstanceid varchar, primaryservice boolean, updateservice boolean, addservicestatus bigint), logfilecleared struct("#attributes" struct(xmlns varchar), subjectusername varchar, subjectdomainname varchar, channel varchar, backuppath json))) │
-└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            system_db                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             │
-│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  │
-│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid varchar, eventsourcename varchar)), eventid json, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated struct("#attributes" struct(systemtime timestamp)), eventrecordid bigint, correlation struct("#attributes" struct(activityid uuid)), execution struct("#attributes" struct(processid bigint, threadid bigint)), channel varchar, computer varchar, "security" struct("#attributes" struct(userid varchar))), eventdata map(varchar, json), userdata struct(addserviceid struct("#attributes" struct(xmlns varchar), servicename varchar, driverfilename varchar, deviceinstanceid varchar, primaryservice boolean, updateservice boolean, addservicestatus bigint), logfilecleared struct("#attributes" struct(xmlns varchar), subjectusername varchar, subjectdomainname varchar, channel varchar, backuppath json))) │
-└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-## DESCRIBE
-```sql
-system_db D DESCRIBE;
-┌───────────┬─────────┬───────────┬──────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────┐
-│ database  │ schema  │   name    │ column_names │                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          column_types                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          │ temporary │
-│  varchar  │ varchar │  varchar  │  varchar[]   │                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           varchar[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            │  boolean  │
-├───────────┼─────────┼───────────┼──────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┤
-│ system_db │ main    │ file      │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid VARCHAR, EventSourceName VARCHAR)), EventID JSON, "Version" BIGINT, "Level" BIGINT, Task BIGINT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execution STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" STRUCT("#attributes" STRUCT(UserID VARCHAR))), EventData MAP(VARCHAR, JSON), UserData STRUCT(AddServiceID STRUCT("#attributes" STRUCT(xmlns VARCHAR), ServiceName VARCHAR, DriverFileName VARCHAR, DeviceInstanceID VARCHAR, PrimaryService BOOLEAN, UpdateService BOOLEAN, AddServiceStatus BIGINT), LogFileCleared STRUCT("#attributes" STRUCT(xmlns VARCHAR), SubjectUserName VARCHAR, SubjectDomainName VARCHAR, Channel VARCHAR, BackupPath JSON)))'] │ false     │
-│ system_db │ main    │ system_db │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid VARCHAR, EventSourceName VARCHAR)), EventID JSON, "Version" BIGINT, "Level" BIGINT, Task BIGINT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execution STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" STRUCT("#attributes" STRUCT(UserID VARCHAR))), EventData MAP(VARCHAR, JSON), UserData STRUCT(AddServiceID STRUCT("#attributes" STRUCT(xmlns VARCHAR), ServiceName VARCHAR, DriverFileName VARCHAR, DeviceInstanceID VARCHAR, PrimaryService BOOLEAN, UpdateService BOOLEAN, AddServiceStatus BIGINT), LogFileCleared STRUCT("#attributes" STRUCT(xmlns VARCHAR), SubjectUserName VARCHAR, SubjectDomainName VARCHAR, Channel VARCHAR, BackupPath JSON)))'] │ false     │
-└───────────┴─────────┴───────────┴──────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┘
-```
 
 ## EventID
 ```sql
-system_db D WITH evtx AS (
-                SELECT Event.System.Computer AS Computer, Event.System.Provider."#attributes".Name, Event.System.TimeCreated."#attributes".SystemTime,
-                    TRY_CAST(
-                        CASE
-                            WHEN json_type(Event.System.EventID) = 'OBJECT'
-                            THEN json_extract_string(Event.System.EventID, '$."#text"')
-                            ELSE json_extract_string(Event.System.EventID, '$')
-                        END AS BIGINT
-                    ) AS EventID
-                FROM read_json('C:/Users/SANSDFIR/system.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-            )
-            SELECT Name, EventID, COUNT(*)
-            FROM evtx
-            WHERE SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-            GROUP BY ALL
-            ORDER BY EventID;
+memory D WITH evtx AS (
+             SELECT Event.System.Computer AS Computer, Event.System.Provider."#attributes".Name, Event.System.TimeCreated."#attributes".SystemTime,
+                 TRY_CAST(
+                     CASE
+                         WHEN json_type(Event.System.EventID) = 'OBJECT'
+                         THEN json_extract_string(Event.System.EventID, '$."#text"')
+                         ELSE json_extract_string(Event.System.EventID, '$')
+                     END AS BIGINT
+                 ) AS EventID
+             FROM read_json('.\system.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         )
+         SELECT Name, EventID, COUNT(*)
+         FROM evtx
+         WHERE SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         GROUP BY ALL
+         ORDER BY EventID;
 ┌────────────────────────────────────────────────┬─────────┬──────────────┐
 │                      Name                      │ EventID │ count_star() │
 │                    varchar                     │  int64  │    int64     │
@@ -216,12 +179,12 @@ system_db D WITH evtx AS (
 
 ## 26 (Application Error)
 ```sql
-system-rd05 D SELECT Event.System.Computer, Event.EventData.Caption, Event.EventData.Message, COUNT(*)
-              FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-              AND json_extract_string(Event.System.EventID, '$') = '26'
-              GROUP BY ALL
-              ORDER BY ALL;
+memory D SELECT Event.System.Computer, Event.EventData.Caption, Event.EventData.Message, COUNT(*)
+         FROM read_json('.\system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$') = '26'
+         GROUP BY ALL
+         ORDER BY ALL;
 ┌─────────────────────┬──────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                   Caption                    │                                                                              Message                                                                               │ count_star() │
 │       varchar       │                   varchar                    │                                                                              varchar                                                                               │    int64     │
@@ -233,11 +196,11 @@ system-rd05 D SELECT Event.System.Computer, Event.EventData.Caption, Event.Event
 ```
 fullkey
 ```sql
-system-rd05 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('C:/Users/SANSDFIR/system-rd05.json') AS e, json_tree(e.json) AS je
-              WHERE e.json->>'$.Event.System.EventID' = '26' AND je.fullkey LIKE '$.Event.EventData.%'
-              GROUP BY je.fullkey
-              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd05.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '26' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌───────────────────────────┬──────────────┐
 │          fullkey          │ count_star() │
 │          varchar          │    int64     │
@@ -251,12 +214,12 @@ system-rd05 D SELECT je.fullkey, COUNT(*)
 
 ## 6005 (The Event log service was started)
 ```sql
-system-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
-              FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-              AND json_extract_string(Event.System.EventID, '$."#text"') = '6005'
-              GROUP BY ALL
-              ORDER BY ALL;
+memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$."#text"') = '6005'
+         GROUP BY ALL
+         ORDER BY ALL;
 ┌─────────────────────┬────────────────────────────┬──────────────┐
 │      Computer       │         SystemTime         │ count_star() │
 │       varchar       │         timestamp          │    int64     │
@@ -269,11 +232,11 @@ system-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attribute
 ```
 fullkey
 ```sql
-system-rd01 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
-              WHERE e.json->>'$.Event.System.EventID."#text"' = '6005' AND je.fullkey LIKE '$.Event.EventData.%'
-              GROUP BY je.fullkey
-              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID."#text"' = '6005' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌──────────────────────────────┬──────────────┐
 │           fullkey            │ count_star() │
 │           varchar            │    int64     │
@@ -288,12 +251,12 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 6006 (The Event log service was stopped)
 ```sql
-system-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
-              FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-              AND json_extract_string(Event.System.EventID, '$."#text"') = '6006'
-              GROUP BY ALL
-              ORDER BY ALL;
+memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$."#text"') = '6006'
+         GROUP BY ALL
+         ORDER BY ALL;
 ┌─────────────────────┬────────────────────────────┬──────────────┐
 │      Computer       │         SystemTime         │ count_star() │
 │       varchar       │         timestamp          │    int64     │
@@ -306,11 +269,11 @@ system-rd01 D SELECT Event.System.Computer, Event.System.TimeCreated."#attribute
 ```
 fullkey
 ```sql
-system-rd01 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
-              WHERE e.json->>'$.Event.System.EventID."#text"' = '6006' AND je.fullkey LIKE '$.Event.EventData.%'
-              GROUP BY je.fullkey
-              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID."#text"' = '6006' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌──────────────────────────────┬──────────────┐
 │           fullkey            │ count_star() │
 │           varchar            │    int64     │
@@ -325,12 +288,12 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 6008 (Unexpected system shutdown)
 ```sql
-system-rd05 D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
-              FROM read_json('C:/Users/SANSDFIR/system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-              AND json_extract_string(Event.System.EventID, '$."#text"') = '6008'
-              GROUP BY ALL
-              ORDER BY ALL;
+memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
+         FROM read_json('.\system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$."#text"') = '6008'
+         GROUP BY ALL
+         ORDER BY ALL;
 ┌─────────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
 │      Computer       │ "Event".EventData."Data"."#text"[0] │ "Event".EventData."Data"."#text"[1] │ count_star() │
 │       varchar       │                json                 │                json                 │    int64     │
@@ -340,11 +303,11 @@ system-rd05 D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Eve
 ```
 fullkey
 ```sql
-system-rd05 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('C:/Users/SANSDFIR/system-rd05.json') AS e, json_tree(e.json) AS je
-              WHERE e.json->>'$.Event.System.EventID."#text"' = '6008' AND je.fullkey LIKE '$.Event.EventData.%'
-              GROUP BY je.fullkey
-              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd05.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID."#text"' = '6008' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐
 │             fullkey             │ count_star() │
 │             varchar             │    int64     │
@@ -367,11 +330,11 @@ system-rd05 D SELECT je.fullkey, COUNT(*)
 
 ## 6011 (System Name Changed)
 ```sql
-system-rd01 D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
-              FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-              WHERE json_extract_string(Event.System.EventID, '$."#text"') = '6011'
-              GROUP BY ALL
-              ORDER BY ALL;
+memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Event.EventData.Data."#text"[1], COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE json_extract_string(Event.System.EventID, '$."#text"') = '6011'
+         GROUP BY ALL
+         ORDER BY ALL;
 ┌────────────┬─────────────────────────────────────┬─────────────────────────────────────┬──────────────┐
 │  Computer  │ "Event".EventData."Data"."#text"[0] │ "Event".EventData."Data"."#text"[1] │ count_star() │
 │  varchar   │                json                 │                json                 │    int64     │
@@ -382,11 +345,11 @@ system-rd01 D SELECT Event.System.Computer, Event.EventData.Data."#text"[0], Eve
 ```
 fullkey
 ```sql
-system-rd01 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
-              WHERE e.json->>'$.Event.System.EventID."#text"' = '6011' AND je.fullkey LIKE '$.Event.EventData.%'
-              GROUP BY je.fullkey
-              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID."#text"' = '6011' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐
 │             fullkey             │ count_star() │
 │             varchar             │    int64     │
@@ -403,12 +366,12 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 6013 (System uptime)
 ```sql
-system-rd01 D SELECT Event.System.Computer, Event.EventData.Data."#text"[4], Event.EventData.Data."#text"[6], replace(replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00\x00', '|'), '\x00', ''), COUNT(*)
-              FROM read_json('C:/Users/SANSDFIR/system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-              AND json_extract_string(Event.System.EventID, '$."#text"') = '6013'
-              GROUP BY ALL
-              ORDER BY ALL;
+memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[4], Event.EventData.Data."#text"[6], replace(replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00\x00', '|'), '\x00', ''), COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$."#text"') = '6013'
+         GROUP BY ALL
+         ORDER BY ALL;
 ┌─────────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │ "Event".EventData."Data"."#text"[4] │ "Event".EventData."Data"."#text"[6] │                                        "replace"("replace"(CAST(from_hex("Event".EventData."Binary") AS VARCHAR), '\x00\x00', '|'), '\x00', '')                                         │ count_star() │
 │       varchar       │                json                 │                json                 │                                                                                         varchar                                                                                         │    int64     │
@@ -447,11 +410,11 @@ system-rd01 D SELECT Event.System.Computer, Event.EventData.Data."#text"[4], Eve
 ```
 fullkey
 ```sql
-system-rd01 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('C:/Users/SANSDFIR/system-rd01.json') AS e, json_tree(e.json) AS je
-              WHERE e.json->>'$.Event.System.EventID."#text"' = '6013' AND je.fullkey LIKE '$.Event.EventData.%'
-              GROUP BY je.fullkey
-              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID."#text"' = '6013' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐
 │             fullkey             │ count_star() │
 │             varchar             │    int64     │
@@ -479,7 +442,7 @@ system-rd01 D SELECT je.fullkey, COUNT(*)
 fullkey
 ```sql
 system-rd06 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('C:/Users/SANSDFIR/system-rd06.json') AS e, json_tree(e.json) AS je
+              FROM read_json_objects('.\system-rd06.json') AS e, json_tree(e.json) AS je
               WHERE e.json->>'$.Event.System.EventID' = '40960' AND je.fullkey LIKE '$.Event.EventData.%'
               GROUP BY je.fullkey
               ORDER BY je.fullkey;

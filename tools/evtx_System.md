@@ -5,7 +5,7 @@ PS C:\Users\SANSDFIR>
 
 ## cli
 ```powershell
-PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\system.json
+PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off"
 DuckDB v1.5.6 (Variegata)
 Enter ".help" for usage hints.
 memory D
@@ -210,6 +210,48 @@ memory D SELECT je.fullkey, COUNT(*)
 └───────────────────────────┴──────────────┘
 ```
 
+
+
+## 1116 (Microsoft Antimalware Detection)
+
+
+
+## 1129 (Absence of network connectivity)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.SupportInfo1, Event.EventData.SupportInfo2, Event.EventData.ProcessingMode, Event.EventData.ProcessingTimeInMilliseconds, Event.EventData.ErrorCode, Event.EventData.ErrorDescription, COUNT(*)
+         FROM read_json('.\system-rd09.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$') = '1129'
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬──────────────┬──────────────┬────────────────┬──────────────────────────────┬───────────┬─────────────────────────────────────────────┬──────────────┐
+│      Computer       │ SupportInfo1 │ SupportInfo2 │ ProcessingMode │ ProcessingTimeInMilliseconds │ ErrorCode │              ErrorDescription               │ count_star() │
+│       varchar       │    int64     │    int64     │     int64      │            int64             │   int64   │                   varchar                   │    int64     │
+├─────────────────────┼──────────────┼──────────────┼────────────────┼──────────────────────────────┼───────────┼─────────────────────────────────────────────┼──────────────┤
+│ rd09.shieldbase.com │            1 │         2057 │              2 │                          422 │      1222 │ The network is not present or not started.  │            1 │
+│ rd09.shieldbase.com │            1 │         2057 │              2 │                          609 │      1222 │ The network is not present or not started.  │            1 │
+│ rd09.shieldbase.com │            1 │         2057 │              2 │                         1125 │      1222 │ The network is not present or not started.  │            1 │
+└─────────────────────┴──────────────┴──────────────┴────────────────┴──────────────────────────────┴───────────┴─────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd09.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '1129' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────────────────┬──────────────┐
+│                    fullkey                     │ count_star() │
+│                    varchar                     │    int64     │
+├────────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.ErrorCode                    │            3 │
+│ $.Event.EventData.ErrorDescription             │            3 │
+│ $.Event.EventData.ProcessingMode               │            3 │
+│ $.Event.EventData.ProcessingTimeInMilliseconds │            3 │
+│ $.Event.EventData.SupportInfo1                 │            3 │
+│ $.Event.EventData.SupportInfo2                 │            3 │
+└────────────────────────────────────────────────┴──────────────┘
+```
 
 
 ## 6005 (The Event log service was started)
@@ -437,15 +479,26 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 40960 (Security authentication error)
 ```sql
-
+memory D SELECT Event.System.Computer, Event.EventData.Protocol, Event.EventData.Target, Event.EventData.Error, COUNT(*)
+         FROM read_json('.\system-rd06.json', columns = {Event: 'JSON'})
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$') = '40960'
+         GROUP BY ALL
+         ORDER BY ALL;
+┌───────────────────────┬────────────┬──────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│       Computer        │  Protocol  │              Target              │                                      Error                                      │ count_star() │
+│         json          │    json    │               json               │                                      json                                       │    int64     │
+├───────────────────────┼────────────┼──────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ "rd06.shieldbase.com" │ "Kerberos" │ "HTTP/exchange01.shieldbase.com" │ "\"Insufficient system resources exist to complete the API.\r\n (0xc000009a)\"" │            1 │
+└───────────────────────┴────────────┴──────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
-system-rd06 D SELECT je.fullkey, COUNT(*)
-              FROM read_json_objects('.\system-rd06.json') AS e, json_tree(e.json) AS je
-              WHERE e.json->>'$.Event.System.EventID' = '40960' AND je.fullkey LIKE '$.Event.EventData.%'
-              GROUP BY je.fullkey
-              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd06.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '40960' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌────────────────────────────┬──────────────┐
 │          fullkey           │ count_star() │
 │          varchar           │    int64     │
@@ -455,3 +508,10 @@ system-rd06 D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.Target   │            1 │
 └────────────────────────────┴──────────────┘
 ```
+
+
+
+## 45057 (Account disabled)
+
+
+

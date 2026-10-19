@@ -184,31 +184,38 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 1102 (Event log cleared)
 ```sql
-memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+memory D SELECT Event.System.Computer, Event.UserData.LogFileCleared.SubjectUserSid, Event.UserData.LogFileCleared.SubjectDomainName, Event.UserData.LogFileCleared.SubjectUserName, COUNT(*)
          FROM read_json('.\security-dev01.json')
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1102
          GROUP BY ALL
          ORDER BY ALL;
-┌──────────────────────┬────────────────────────────┬──────────────┐
-│       Computer       │         SystemTime         │ count_star() │
-│       varchar        │         timestamp          │    int64     │
-├──────────────────────┼────────────────────────────┼──────────────┤
-│ dev01.shieldbase.com │ 2023-01-25 14:39:34.199899 │            1 │
-└──────────────────────┴────────────────────────────┴──────────────┘
+┌──────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┐
+│       Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │ count_star() │
+│       varchar        │                    varchar                     │      varchar      │     varchar     │    int64     │
+├──────────────────────┼────────────────────────────────────────────────┼───────────────────┼─────────────────┼──────────────┤
+│ dev01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │            1 │
+└──────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────┘
 ```
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\security-dev01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '1102' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE e.json->>'$.Event.System.EventID' = '1102' AND je.fullkey LIKE '$.Event.UserData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌─────────┬──────────────┐
-│ fullkey │ count_star() │
-│ varchar │    int64     │
-└─────────┴──────────────┘
-          0 rows
+┌───────────────────────────────────────────────────┬──────────────┐
+│                      fullkey                      │ count_star() │
+│                      varchar                      │    int64     │
+├───────────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.LogFileCleared                   │            1 │
+│ $.Event.UserData.LogFileCleared.#attributes       │            1 │
+│ $.Event.UserData.LogFileCleared.#attributes.xmlns │            1 │
+│ $.Event.UserData.LogFileCleared.SubjectDomainName │            1 │
+│ $.Event.UserData.LogFileCleared.SubjectLogonId    │            1 │
+│ $.Event.UserData.LogFileCleared.SubjectUserName   │            1 │
+│ $.Event.UserData.LogFileCleared.SubjectUserSid    │            1 │
+└───────────────────────────────────────────────────┴──────────────┘
 ```
 
 

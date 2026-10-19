@@ -250,7 +250,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 4611 (A trusted logon process has been registered with the Local Security Authority)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.LogonProcessName, COUNT(*)
-         FROM read_json('.\security-rd01.json', map_inference_threshold = -1)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4611
          GROUP BY ALL
@@ -294,7 +294,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 4616 (The system time was changed)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ProcessName, Event.EventData.PreviousTime, Event.EventData.NewTime, COUNT(*)
-         FROM read_json('.\security-rd01.json', map_inference_threshold = -1)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4616
          GROUP BY ALL
@@ -338,7 +338,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 4624 (Successful logon)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.LogonType, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetOutboundDomainName, Event.EventData.TargetOutboundUserName, Event.EventData.VirtualAccount, Event.EventData.ImpersonationLevel, Event.EventData.WorkstationName, Event.EventData.IpAddress, Event.EventData.ProcessName, Event.EventData.AuthenticationPackageName, Event.EventData.LogonProcessName, COUNT(*)
-         FROM read_json('.\security-rd01.json', map_inference_threshold = -1)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4624
          GROUP BY ALL
@@ -463,7 +463,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 4625 (Failed logon)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.LogonType, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.WorkstationName, Event.EventData.IpAddress, Event.EventData.ProcessName, Event.EventData.AuthenticationPackageName, Event.EventData.LogonProcessName, Event.EventData.Status, Event.EventData.SubStatus, COUNT(*)
-         FROM read_json('.\security-rd01.json', map_inference_threshold = -1)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4625
          GROUP BY ALL
@@ -567,7 +567,7 @@ SubStatus
 ## 4634 (An account was logged off)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.LogonType, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
-         FROM read_json('.\security-rd01.json', map_inference_threshold = -1)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4634
          GROUP BY ALL
@@ -641,12 +641,12 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 4647 (User initiated logoff)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4647
-                GROUP BY ALL
-                ORDER BY Event.EventData.TargetUserSid;
+memory D SELECT Event.System.Computer, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4647
+         GROUP BY ALL
+         ORDER BY Event.EventData.TargetUserSid;
 ┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬────────────────┬──────────────┐
 │      Computer       │                 TargetUserSid                  │ TargetDomainName │ TargetUserName │ count_star() │
 │       varchar       │                    varchar                     │     varchar      │    varchar     │    int64     │
@@ -657,11 +657,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.TargetUserSid, Eve
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4647' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4647' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌────────────────────────────────────┬──────────────┐
 │              fullkey               │ count_star() │
 │              varchar               │    int64     │
@@ -677,12 +677,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4648 (A logon was attempted using explicit credentials)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetServerName, Event.EventData.TargetInfo, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4648
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName, Event.EventData.IpAddress;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TargetServerName, Event.EventData.TargetInfo, Event.EventData.ProcessName, Event.EventData.IpAddress, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4648
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName, Event.EventData.IpAddress;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────────┬────────────────┬────────────────────────┬──────────────────────────────┬───────────────────────────────────┬───────────────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │ TargetDomainName │ TargetUserName │    TargetServerName    │          TargetInfo          │            ProcessName            │         IpAddress         │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │     varchar      │    varchar     │        varchar         │           varchar            │              varchar              │          varchar          │    int64     │
@@ -732,10 +732,10 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ shieldbase       │ wacsvc         │ rd02.shieldbase.com    │ rd02.shieldbase.com          │                                   │ 172.16.6.12               │            2 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ rd04.shieldbase.com    │ cifs/rd04.shieldbase.com     │                                   │ 172.16.6.14               │            1 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ rd10.shieldbase.com    │ cifs/rd10.shieldbase.com     │                                   │ 172.16.6.20               │            1 │
-│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ shieldbase       │ wacsvc         │ wkstn01.shieldbase.com │ wkstn01.shieldbase.com       │ C:\Windows\System32\wbem\WMIC.exe │ 172.16.7.11               │            1 │
-│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ RPCSS/wkstn01.shieldbase.com │ C:\Windows\System32\svchost.exe   │ 172.16.7.11               │            1 │
-│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ cifs/wkstn01.shieldbase.com  │                                   │ 172.16.7.11               │            4 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ host/wkstn01.shieldbase.com  │ C:\Windows\System32\wbem\WMIC.exe │ 172.16.7.11               │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ shieldbase       │ wacsvc         │ wkstn01.shieldbase.com │ wkstn01.shieldbase.com       │ C:\Windows\System32\wbem\WMIC.exe │ 172.16.7.11               │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ cifs/wkstn01.shieldbase.com  │                                   │ 172.16.7.11               │            4 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ wkstn01.shieldbase.com │ RPCSS/wkstn01.shieldbase.com │ C:\Windows\System32\svchost.exe   │ 172.16.7.11               │            1 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │ shieldbase        │ tdungan         │ SHIELDBASE.COM   │ wacsvc         │ rd01                   │ cifs/rd01                    │                                   │ fe80::7e6b:763c:b405:22b4 │            1 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase        │ wacsvc          │ SHIELDBASE.COM   │ wacsvc         │ dev01.shieldbase.com   │ TERMSRV/dev01.shieldbase.com │ C:\Windows\System32\lsass.exe     │ -                         │            2 │
 └─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴──────────────────┴────────────────┴────────────────────────┴──────────────────────────────┴───────────────────────────────────┴───────────────────────────┴──────────────┘
@@ -743,11 +743,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4648' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4648' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -798,12 +798,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4672 (Administrative logon)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.PrivilegeList, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4672
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.PrivilegeList;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.PrivilegeList, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4672
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.PrivilegeList;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │                                                                                                                                                                                      PrivilegeList                                                                                                                                                                                      │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │                                                                                                                                                                                         varchar                                                                                                                                                                                         │    int64     │
@@ -851,11 +851,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4672' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4672' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -880,12 +880,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4688 (A new process has been created)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TokenElevationType, Event.EventData.MandatoryLabel, Event.EventData.ParentProcessName, Event.EventData.NewProcessName, Event.EventData.CommandLine, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4688
-                GROUP BY ALL
-                ORDER BY Event.EventData.ParentProcessName, Event.EventData.NewProcessName;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.TokenElevationType, Event.EventData.MandatoryLabel, Event.EventData.ParentProcessName, Event.EventData.NewProcessName, Event.EventData.CommandLine, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4688
+         GROUP BY ALL
+         ORDER BY Event.EventData.ParentProcessName, Event.EventData.NewProcessName;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────┬──────────────────┬────────────────┬────────────────────┬────────────────┬─────────────────────────────────┬──────────────────────────────────┬─────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │ TargetUserSid │ TargetDomainName │ TargetUserName │ TokenElevationType │ MandatoryLabel │        ParentProcessName        │          NewProcessName          │ CommandLine │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │    varchar    │     varchar      │    varchar     │      varchar       │    varchar     │             varchar             │             varchar              │   varchar   │    int64     │
@@ -903,11 +903,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4688' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4688' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌──────────────────────────────────────┬──────────────┐
 │               fullkey                │ count_star() │
 │               varchar                │    int64     │
@@ -955,12 +955,12 @@ S-1-16-20480: SECURITY_MANDATORY_PROTECTED_PROCESS_RID
 
 ## 4696 (A privileged service was called)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ProcessName, Event.EventData.TargetProcessName, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4696
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetUserSid, Event.EventData.ProcessName, Event.EventData.TargetProcessName;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ProcessName, Event.EventData.TargetProcessName, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4696
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid , Event.EventData.TargetUserSid, Event.EventData.ProcessName, Event.EventData.TargetProcessName;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────┬──────────────────┬────────────────┬─────────────┬───────────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │ TargetUserSid │ TargetDomainName │ TargetUserName │ ProcessName │ TargetProcessName │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │    varchar    │     varchar      │    varchar     │   varchar   │      varchar      │    int64     │
@@ -970,11 +970,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4696' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4696' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -999,13 +999,13 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4697 (A service was installed on the system)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ServiceAccount, Event.EventData.ServiceName, Event.EventData.ServiceFileName, Event.EventData.ServiceType, Event.EventData.ServiceStartType, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4697
-                AND Event.EventData.ServiceFileName NOT ILIKE 'C:\Windows\system32\svchost.exe%'
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ServiceFileName;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ServiceAccount, Event.EventData.ServiceName, Event.EventData.ServiceFileName, Event.EventData.ServiceType, Event.EventData.ServiceStartType, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4697
+         AND Event.EventData.ServiceFileName NOT ILIKE 'C:\Windows\system32\svchost.exe%'
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.ServiceFileName;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬────────────────┬─────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬─────────────┬──────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │ ServiceAccount │                 ServiceName                 │                                                       ServiceFileName                                                       │ ServiceType │ ServiceStartType │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │    varchar     │                   varchar                   │                                                           varchar                                                           │   varchar   │      int64       │    int64     │
@@ -1014,27 +1014,27 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ Velociraptor                                │ "C:\Program Files\Velociraptor\Velociraptor.exe"  --config "C:\Program Files\Velociraptor\/client.config.yaml" service run  │ 0x10        │                2 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ MpKsle2439143                               │ C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1FEC7FC9-D47D-4480-85E5-AE4DD6CCA988}\MpKslDrv.sys            │ 0x1         │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ MpKsld6867d33                               │ C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{A0638AC4-7F42-4619-900A-6971E7AD116E}\MpKslDrv.sys            │ 0x1         │                3 │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_378e21a  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_e7b07f1  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_29395f8  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_6c2a166  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_29395f8  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_e7b07f1  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_26aa58fe │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_1e9ef1f6 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_1e0f1442 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_1555bf7a │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_1755cd8a │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_1e0f1442 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_1f85cdd6 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_140a51a7 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_7d5e3    │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_140a51a7 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_2b14505  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_21d5806c │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_1fd1a92  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_27671121 │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_7147ed   │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_378e21a  │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_e7fae    │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_799cd    │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ CredentialEnrollmentManagerUserSvc_7147ed   │ C:\Windows\system32\CredentialEnrollmentManager.exe                                                                         │ 0xd0        │                3 │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ MpKsl80b1fd2a                               │ C:\Windows\system32\MpEngineStore\MpKslDrv.sys                                                                              │ 0x1         │                3 │            3 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ MpKsl3f390b95                               │ C:\Windows\system32\MpEngineStore\MpKslDrv.sys                                                                              │ 0x1         │                3 │            2 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ MpKsl80b1fd2a                               │ C:\Windows\system32\MpEngineStore\MpKslDrv.sys                                                                              │ 0x1         │                3 │            3 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ shieldbase        │ RD01$           │ LocalSystem    │ mnemosyne                                   │ C:\windows/Mnemosyne.sys                                                                                                    │ 0x1         │                3 │            2 │
 │ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase        │ cbarton-a       │ LocalSystem    │ F-Response Subject Service                  │ "C:\windows\subject_srv.exe" -s "172.16.5.25:5682" -l 3262 -v "F-Response Subject Service" -k "155522845"                   │ 0x10        │                2 │            1 │
 └─────────────────────┴────────────────────────────────────────────────┴───────────────────┴─────────────────┴────────────────┴─────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴─────────────┴──────────────────┴──────────────┘
@@ -1042,11 +1042,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4697' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4697' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────────┬──────────────┐
 │                 fullkey                 │ count_star() │
 │                 varchar                 │    int64     │

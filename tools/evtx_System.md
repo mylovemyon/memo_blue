@@ -277,6 +277,11 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.StartTime      │           26 │
 └──────────────────────────────────┴──────────────┘
 ```
+BootMode
+```
+0: Normal boot
+1: Safe Mode boot
+```
 
 
 
@@ -440,7 +445,7 @@ memory D SELECT Event.System.Computer, Event.UserData.LogFileCleared.SubjectDoma
 └──────────────────────┴───────────────────┴─────────────────┴──────────────────────────────────────────┴──────────────┘
 ```
 fullkey
-```
+```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-dev01.json') AS e, json_tree(e.json) AS je
          WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Eventlog') AND (e.json->>'$.Event.System.EventID' = '104') AND je.fullkey LIKE '$.Event.UserData.%'
@@ -852,6 +857,116 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
+## 20001 (Device installation)
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.InstallDeviceID.DriverProvider, Event.UserData.InstallDeviceID.DriverName, Event.UserData.InstallDeviceID.DriverVersion, Event.UserData.InstallDeviceID.DriverDescription, Event.UserData.InstallDeviceID.DeviceInstanceID, Event.UserData.InstallDeviceID.SetupClass, Event.UserData.InstallDeviceID.InstallStatus, Event.UserData.InstallDeviceID.IsDriverOEM, Event.UserData.InstallDeviceID.RebootOption, Event.UserData.InstallDeviceID.UpgradeDevice, COUNT(*)
+         FROM read_json('.\system-sql01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.Provider."#attributes".Name = 'Microsoft-Windows-UserPnp' AND (Event.System.EventID->>'$' = '20001')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────┬────────────────┬─────────────────────────────────────┬───────────────┬─────────────────────────────────┬──────────────────────────────────────────────────────────────┬──────────────────────────────────────┬───────────────┬─────────────┬──────────────┬───────────────┬──────────────┐
+│    Computer     │ DriverProvider │             DriverName              │ DriverVersion │        DriverDescription        │                       DeviceInstanceID                       │              SetupClass              │ InstallStatus │ IsDriverOEM │ RebootOption │ UpgradeDevice │ count_star() │
+│     varchar     │    varchar     │               varchar               │    varchar    │             varchar             │                           varchar                            │                 uuid                 │    varchar    │   boolean   │   boolean    │    boolean    │    int64     │
+├─────────────────┼────────────────┼─────────────────────────────────────┼───────────────┼─────────────────────────────────┼──────────────────────────────────────────────────────────────┼──────────────────────────────────────┼───────────────┼─────────────┼──────────────┼───────────────┼──────────────┤
+│ EC2AMAZ-VPL09BT │ Intel          │ vxn68x64.inf_amd64_310813dc59a156c7 │ 2.1.185.0     │ Intel(R) 82599 Virtual Function │ PCI\VEN_8086&DEV_10ED&SUBSYS_00000000&REV_01\3&267A616A&1&18 │ 4d36e972-e325-11ce-bfc1-08002be10318 │ 0x0           │ true        │ false        │ false         │            1 │
+└─────────────────┴────────────────┴─────────────────────────────────────┴───────────────┴─────────────────────────────────┴──────────────────────────────────────────────────────────────┴──────────────────────────────────────┴───────────────┴─────────────┴──────────────┴───────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-sql01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-UserPnp') AND (e.json->>'$.Event.System.EventID' = '20001') AND je.fullkey LIKE '$.Event.UserData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────────────────────┬──────────────┐
+│                      fullkey                       │ count_star() │
+│                      varchar                       │    int64     │
+├────────────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.InstallDeviceID                   │            1 │
+│ $.Event.UserData.InstallDeviceID.#attributes       │            1 │
+│ $.Event.UserData.InstallDeviceID.#attributes.xmlns │            1 │
+│ $.Event.UserData.InstallDeviceID.DeviceInstanceID  │            1 │
+│ $.Event.UserData.InstallDeviceID.DriverDescription │            1 │
+│ $.Event.UserData.InstallDeviceID.DriverName        │            1 │
+│ $.Event.UserData.InstallDeviceID.DriverProvider    │            1 │
+│ $.Event.UserData.InstallDeviceID.DriverVersion     │            1 │
+│ $.Event.UserData.InstallDeviceID.InstallStatus     │            1 │
+│ $.Event.UserData.InstallDeviceID.IsDriverOEM       │            1 │
+│ $.Event.UserData.InstallDeviceID.RebootOption      │            1 │
+│ $.Event.UserData.InstallDeviceID.SetupClass        │            1 │
+│ $.Event.UserData.InstallDeviceID.UpgradeDevice     │            1 │
+└────────────────────────────────────────────────────┴──────────────┘
+  13 rows                                                 2 columns
+```
+InstallStatus
+```
+0x0: Installation Successful
+0x00000002: File Not Found
+0x80070002: File Not Found
+0x80070003: Path Not Found
+0x80070005: Access Denied
+0x800F0233: Invalid Target
+0x8028006E: Invalid Source Path
+0x000005B3: Requires Interactive Workstation
+0x000005B4: Timeout
+0xE0000234: Driver Non-native
+0xE0000246: Device Installer Not Ready
+```
+
+
+
+## 20003 (Service installation)
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.AddServiceID.DriverFileName, Event.UserData.AddServiceID.DeviceInstanceID, Event.UserData.AddServiceID.ServiceName, Event.UserData.AddServiceID.PrimaryService, Event.UserData.AddServiceID.UpdateService, Event.UserData.AddServiceID.AddServiceStatus, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.Provider."#attributes".Name = 'Microsoft-Windows-UserPnp' AND (Event.System.EventID->>'$' = '20003')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────┬────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────┬───────────────┬────────────────┬───────────────┬──────────────────┬──────────────┐
+│    Computer     │                 DriverFileName                 │                      DeviceInstanceID                       │  ServiceName  │ PrimaryService │ UpdateService │ AddServiceStatus │ count_star() │
+│     varchar     │                    varchar                     │                           varchar                           │    varchar    │    boolean     │    boolean    │      int64       │    int64     │
+├─────────────────┼────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────┼───────────────┼────────────────┼───────────────┼──────────────────┼──────────────┤
+│ OFFDEVS-TUHMGJE │ \SystemRoot\system32\DRIVERS\parport.sys       │ ACPI\PNP0400\5&2032E665&0                                   │ Parport       │ true           │ true          │                0 │            1 │
+│ OFFDEVS-TUHMGJE │ \SystemRoot\system32\DRIVERS\serenum.sys       │ ACPI\PNP0501\1                                              │ Serenum       │ false          │ true          │                0 │            1 │
+│ OFFDEVS-TUHMGJE │ \SystemRoot\system32\DRIVERS\serenum.sys       │ ACPI\PNP0501\2                                              │ Serenum       │ false          │ true          │                0 │            1 │
+│ OFFDEVS-TUHMGJE │ \SystemRoot\system32\DRIVERS\serial.sys        │ ACPI\PNP0501\1                                              │ Serial        │ true           │ true          │                0 │            1 │
+│ OFFDEVS-TUHMGJE │ \SystemRoot\system32\DRIVERS\serial.sys        │ ACPI\PNP0501\2                                              │ Serial        │ true           │ true          │                0 │            1 │
+│ tpl-packer      │ %SystemRoot%\system32\vm3dservice.exe          │ PCI\VEN_15AD&DEV_0405&SUBSYS_040515AD&REV_00\3&61AAA01&0&78 │ VM3DService   │ false          │ false         │                0 │            1 │
+│ tpl-packer      │ \SystemRoot\system32\DRIVERS\parport.sys       │ ACPI\PNP0400\4&2C5A7332&0                                   │ Parport       │ true           │ true          │                0 │            1 │
+│ tpl-packer      │ \SystemRoot\system32\DRIVERS\vm3dmp-debug.sys  │ PCI\VEN_15AD&DEV_0405&SUBSYS_040515AD&REV_00\3&61AAA01&0&78 │ vm3dmp-debug  │ false          │ false         │                0 │            1 │
+│ tpl-packer      │ \SystemRoot\system32\DRIVERS\vm3dmp-stats.sys  │ PCI\VEN_15AD&DEV_0405&SUBSYS_040515AD&REV_00\3&61AAA01&0&78 │ vm3dmp-stats  │ false          │ false         │                0 │            1 │
+│ tpl-packer      │ \SystemRoot\system32\DRIVERS\vm3dmp.sys        │ PCI\VEN_15AD&DEV_0405&SUBSYS_040515AD&REV_00\3&61AAA01&0&78 │ vm3dmp        │ false          │ false         │                0 │            1 │
+│ tpl-packer      │ \SystemRoot\system32\DRIVERS\vm3dmp_loader.sys │ PCI\VEN_15AD&DEV_0405&SUBSYS_040515AD&REV_00\3&61AAA01&0&78 │ vm3dmp_loader │ true           │ false         │                0 │            1 │
+│ tpl-packer      │ system32\DRIVERS\xenvbd.sys                    │ XENBUS\VEN_XS0001&DEV_VBD&REV_00000001\_                    │ xenvbd        │ true           │ true          │                0 │            1 │
+└─────────────────┴────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────┴───────────────┴────────────────┴───────────────┴──────────────────┴──────────────┘
+  12 rows                                                                                                                                                                                                 8 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-UserPnp') AND (e.json->>'$.Event.System.EventID' = '20003') AND je.fullkey LIKE '$.Event.UserData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌─────────────────────────────────────────────────┬──────────────┐
+│                     fullkey                     │ count_star() │
+│                     varchar                     │    int64     │
+├─────────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.AddServiceID                   │           12 │
+│ $.Event.UserData.AddServiceID.#attributes       │           12 │
+│ $.Event.UserData.AddServiceID.#attributes.xmlns │           12 │
+│ $.Event.UserData.AddServiceID.AddServiceStatus  │           12 │
+│ $.Event.UserData.AddServiceID.DeviceInstanceID  │           12 │
+│ $.Event.UserData.AddServiceID.DriverFileName    │           12 │
+│ $.Event.UserData.AddServiceID.PrimaryService    │           12 │
+│ $.Event.UserData.AddServiceID.ServiceName       │           12 │
+│ $.Event.UserData.AddServiceID.UpdateService     │           12 │
+└─────────────────────────────────────────────────┴──────────────┘
+```
+
+
+
+
 ## 40960 (Security authentication error)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.Protocol, Event.EventData.Target, Event.EventData.Error, COUNT(*)
@@ -888,5 +1003,3 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 45057 (Account disabled)
 Provider: LsaSrv
-
-

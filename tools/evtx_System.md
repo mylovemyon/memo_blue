@@ -182,7 +182,7 @@ memory D WITH evtx AS (
 memory D SELECT Event.System.Computer, Event.EventData.Caption, Event.EventData.Message, COUNT(*)
          FROM read_json('.\system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND json_extract_string(Event.System.EventID, '$') = '26'
+         AND Event.System.Provider."#attributes".Name = 'Application Popup' AND (Event.System.EventID->>'$' = '26')
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────────────────┬──────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
@@ -198,7 +198,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd05.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '26' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Application Popup') AND (e.json->>'$.Event.System.EventID' = '26') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌───────────────────────────┬──────────────┐
@@ -213,6 +213,7 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 ## 1116 (Microsoft Antimalware Detection)
+Provider: "Microsoft Antimalware"
 
 
 
@@ -473,6 +474,47 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.Data.#text[6] │          144 │
 └─────────────────────────────────┴──────────────┘
   10 rows                              2 columns
+```
+
+
+
+## 10000 (Device driver installations begins (Device connection))
+Provider: "Microsoft-Windows-DriverFrameworks-UserMode"
+
+
+
+## 10028 (DCOM was unable to communicate with the computer)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.param1, Event.EventData.param2, Event.EventData.param3, Event.EventData.param4, replace(replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00\x00', '|'), '\x00', ''), COUNT(*)
+         FROM read_json('.\system-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE json_extract_string(Event.System.EventID, '$."#text"') = '10028'
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬─────────┬──────────┬───────────────────────────────────────────────────────────┬────────────────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │ param1  │  param2  │                          param3                           │                 param4                 │                                                                                                                                                                                             "replace"("replace"(CAST(from_hex("Event".EventData."Binary") AS VARCHAR), '\x00\x00', '|'), '\x00', '')                                                                                                                                                                                              │ count_star() │
+│       varchar       │ varchar │ varchar  │                          varchar                          │                varchar                 │                                                                                                                                                                                                                                              varchar                                                                                                                                                                                                                                              │    int64     │
+├─────────────────────┼─────────┼──────────┼───────────────────────────────────────────────────────────┼────────────────────────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ dc01.shieldbase.com │ %I      │       f4 │ C:\Windows\System32\Wbem\WMIC.exe                         │ {8BC3F05E-D86B-11D0-A075-00C04FB68820} │ <Record#1: Computer=(null);Pid=868;10/18/2022 22:46:46:343;Status=1722;Gencomp=2;Detloc=1710;Flags=0;Params=1;{Param#0:0}><Record#2: Computer=(null);Pid=868;10/18/2022 22:46:46:343;Status=1722;Gencomp=18;Detloc=1442;Flags=0;Params=1;{Param#0:%I}><Record#3: Computer=(null);Pid=868;10/18/2022 22:46:46:343;Status=1722;Gencomp=18;Detloc=322;Flags=0;Params=0;><Record#4: Computer=(null);Pid=868;10/18/2022 22:46:46:343;Status=11001;Gencomp=18;Detloc=320;Flags=0;Params=1;{Param#0:%I}> │            1 │
+│ dc01.shieldbase.com │ rd10    │     100c │ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe │ {8BC3F05E-D86B-11D0-A075-00C04FB68820} │ <Record#1: Computer=(null);Pid=888;10/2/2022 16:42:31:976;Status=1747;Gencomp=2;Detloc=701;Flags=0;Params=2;{Param#0:8}{Param#1:0}>                                                                                                                                                                                                                                                                                                                                                               │            1 │
+└─────────────────────┴─────────┴──────────┴───────────────────────────────────────────────────────────┴────────────────────────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-dc01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID."#text"' = '10028' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────┬──────────────┐
+│         fullkey          │ count_star() │
+│         varchar          │    int64     │
+├──────────────────────────┼──────────────┤
+│ $.Event.EventData.Binary │            2 │
+│ $.Event.EventData.param1 │            2 │
+│ $.Event.EventData.param2 │            2 │
+│ $.Event.EventData.param3 │            2 │
+│ $.Event.EventData.param4 │            2 │
+└──────────────────────────┴──────────────┘
 ```
 
 

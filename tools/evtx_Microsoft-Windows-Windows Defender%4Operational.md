@@ -17,7 +17,7 @@ memory D
 ```sql
 memory D SELECT Event.System.EventID, COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational.json', ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────┬──────────────┐
@@ -49,7 +49,7 @@ memory D SELECT Event.System.EventID, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1000
          GROUP BY ALL
          ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
@@ -112,7 +112,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", Event.EventData."Scan Time Hours", Event.EventData."Scan Time Minutes", Event.EventData."Scan Time Seconds", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1001
          GROUP BY ALL
          ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
@@ -176,7 +176,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1002
          GROUP BY ALL
          ORDER BY Event.EventData.SID, Event.EventData."Scan ID";
@@ -242,7 +242,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData.Timestamp,  COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1013
          GROUP BY ALL
          ORDER BY Event.EventData.SID, Event.EventData.Timestamp;
@@ -300,7 +300,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1116
          GROUP BY ALL
          ORDER BY Event.EventData."Process Name";
@@ -385,7 +385,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, Event.EventData."Remediation User", Event.EventData."Action Name", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1117
          GROUP BY ALL
          ORDER BY Event.EventData."Process Name";
@@ -469,7 +469,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Platform version", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1150
          GROUP BY ALL
          ORDER BY ALL;
@@ -505,7 +505,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Update Type", Event.EventData."Security intelligence Type", Event.EventData."Previous Engine Version", Event.EventData."Current Engine Version", Event.EventData."Previous security intelligence Version", Event.EventData."Current security intelligence Version", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-ftp01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 2000
          GROUP BY ALL
          ORDER BY Event.EventData.SID, Event.EventData."Security intelligence Type", Event.EventData."Previous security intelligence Version";
@@ -611,7 +611,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5000
          GROUP BY ALL
          ORDER BY ALL;
@@ -644,7 +644,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-wkstn01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5001
          GROUP BY ALL
          ORDER BY ALL;
@@ -677,7 +677,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Old Value", Event.EventData."New Value", COUNT(*)
          FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5007
          GROUP BY ALL
          ORDER BY ALL;

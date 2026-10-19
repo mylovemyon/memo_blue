@@ -488,7 +488,7 @@ Provider: "Microsoft-Windows-DriverFrameworks-UserMode"
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.param1, Event.EventData.param2, Event.EventData.param3, Event.EventData.param4, replace(replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00\x00', '|'), '\x00', ''), COUNT(*)
          FROM read_json('.\system-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-         WHERE json_extract_string(Event.System.EventID, '$."#text"') = '10028'
+         WHERE Event.System.Provider."#attributes".Name = 'Microsoft-Windows-DistributedCOM' AND (Event.System.EventID->>'$."#text"' = '10028')
          GROUP BY ALL
          ORDER BY ALL;
 ┌─────────────────────┬─────────┬──────────┬───────────────────────────────────────────────────────────┬────────────────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
@@ -500,10 +500,10 @@ memory D SELECT Event.System.Computer, Event.EventData.param1, Event.EventData.p
 └─────────────────────┴─────────┴──────────┴───────────────────────────────────────────────────────────┴────────────────────────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
 ```
 fullkey
-```
+```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-dc01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID."#text"' = '10028' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-DistributedCOM') AND (e.json->>'$.Event.System.EventID."#text"' = '10028') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌──────────────────────────┬──────────────┐
@@ -525,7 +525,7 @@ memory D SELECT je.fullkey, COUNT(*)
 memory D SELECT Event.System.Computer, Event.EventData.Protocol, Event.EventData.Target, Event.EventData.Error, COUNT(*)
          FROM read_json('.\system-rd06.json', columns = {Event: 'JSON'})
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND json_extract_string(Event.System.EventID, '$') = '40960'
+         AND Event.System.Provider."#attributes".Name = '"LsaSrv"' AND (Event.System.EventID->>'$' = '40960')
          GROUP BY ALL
          ORDER BY ALL;
 ┌───────────────────────┬────────────┬──────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────┬──────────────┐
@@ -539,7 +539,7 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\system-rd06.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '40960' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'LsaSrv') AND (e.json->>'$.Event.System.EventID' = '40960') AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
 ┌────────────────────────────┬──────────────┐
@@ -555,6 +555,6 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 ## 45057 (Account disabled)
-
+Provider: LsaSrv
 
 

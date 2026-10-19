@@ -8,7 +8,7 @@ PS C:\Users\SANSDFIR>
 PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off"
 DuckDB v1.5.6 (Variegata)
 Enter ".help" for usage hints.
-Windows_Defender%4Operational D
+memory D 
 ```
 
 

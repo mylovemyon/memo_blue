@@ -8,55 +8,18 @@ PS C:\Users\SANSDFIR>
 PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off" .\TerminalServices-LocalSessionManager%4Operational.json
 DuckDB v1.5.6 (Variegata)
 Enter ".help" for usage hints.
-TerminalServices-LocalSessionManager%4Op... D
+memory D
 ```
 
-## .databases
-```sql
-TerminalServices-LocalSessionManager%4Op... D　.databases
-┌────────────────────────────────────────────────────────────┐
-│                         databases                          │
-│                                                            │
-│ TerminalServices-LocalSessionManager%4Operational (memory) │
-└────────────────────────────────────────────────────────────┘
-```
 
-## .tables
-```sql
-TerminalServices-LocalSessionManager%4Op... D .tables
- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── TerminalServices-LocalSessionManager%4Operational ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── main ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                                                                                                                                                                                                                                                                                                                                                                                              file                                                                                                                                                                                                                                                                                                                                                                                                                                                              │
-│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                │
-│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid uuid)), eventid bigint, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated struct("#attributes" struct(systemtime timestamp)), eventrecordid bigint, correlation struct("#attributes" struct(activityid uuid)), execution struct("#attributes" struct(processid bigint, threadid bigint)), channel varchar, computer varchar, "security" struct("#attributes" struct(userid varchar))), userdata struct(eventxml struct("#attributes" struct(xmlns varchar), messagename varchar, "user" varchar, sessionid bigint, address varchar, targetsession bigint, "source" bigint, "session" bigint, reason bigint, param1 varchar)), eventdata struct(sessionid bigint, state bigint, statename varchar, "event" bigint, eventname varchar, errorcode varchar)) │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                                                                                                                                                                                                                                                                                                                                                                       TerminalServices-LocalSessionManager%4Operational                                                                                                                                                                                                                                                                                                                                                                                                                                        │
-│                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                │
-│ Event struct("#attributes" struct(xmlns varchar), "system" struct(provider struct("#attributes" struct("name" varchar, guid uuid)), eventid bigint, "version" bigint, "level" bigint, task bigint, opcode bigint, keywords varchar, timecreated struct("#attributes" struct(systemtime timestamp)), eventrecordid bigint, correlation struct("#attributes" struct(activityid uuid)), execution struct("#attributes" struct(processid bigint, threadid bigint)), channel varchar, computer varchar, "security" struct("#attributes" struct(userid varchar))), userdata struct(eventxml struct("#attributes" struct(xmlns varchar), messagename varchar, "user" varchar, sessionid bigint, address varchar, targetsession bigint, "source" bigint, "session" bigint, reason bigint, param1 varchar)), eventdata struct(sessionid bigint, state bigint, statename varchar, "event" bigint, eventname varchar, errorcode varchar)) │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-## DESCRIBE
-```Sql
-TerminalServices-LocalSessionManager%4Op... D DESCRIBE;
-┌───────────────────────────────────────────────────┬─────────┬───────────────────────────────────────────────────┬──────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────┐
-│                     database                      │ schema  │                       name                        │ column_names │                                                                                                                                                                                                                                                                                                                                                                                                                                                         column_types                                                                                                                                                                                                                                                                                                                                                                                                                                                         │ temporary │
-│                      varchar                      │ varchar │                      varchar                      │  varchar[]   │                                                                                                                                                                                                                                                                                                                                                                                                                                                          varchar[]                                                                                                                                                                                                                                                                                                                                                                                                                                                           │  boolean  │
-├───────────────────────────────────────────────────┼─────────┼───────────────────────────────────────────────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┤
-│ TerminalServices-LocalSessionManager%4Operational │ main    │ TerminalServices-LocalSessionManager%4Operational │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid UUID)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIGINT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execution STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" STRUCT("#attributes" STRUCT(UserID VARCHAR))), UserData STRUCT(EventXML STRUCT("#attributes" STRUCT(xmlns VARCHAR), messageName VARCHAR, "User" VARCHAR, SessionID BIGINT, Address VARCHAR, TargetSession BIGINT, "Source" BIGINT, "Session" BIGINT, Reason BIGINT, Param1 VARCHAR)), EventData STRUCT(SessionId BIGINT, State BIGINT, StateName VARCHAR, "Event" BIGINT, EventName VARCHAR, ErrorCode VARCHAR))'] │ false     │
-│ TerminalServices-LocalSessionManager%4Operational │ main    │ file                                              │ [Event]      │ ['STRUCT("#attributes" STRUCT(xmlns VARCHAR), "System" STRUCT(Provider STRUCT("#attributes" STRUCT("Name" VARCHAR, Guid UUID)), EventID BIGINT, "Version" BIGINT, "Level" BIGINT, Task BIGINT, Opcode BIGINT, Keywords VARCHAR, TimeCreated STRUCT("#attributes" STRUCT(SystemTime TIMESTAMP)), EventRecordID BIGINT, Correlation STRUCT("#attributes" STRUCT(ActivityID UUID)), Execution STRUCT("#attributes" STRUCT(ProcessID BIGINT, ThreadID BIGINT)), Channel VARCHAR, Computer VARCHAR, "Security" STRUCT("#attributes" STRUCT(UserID VARCHAR))), UserData STRUCT(EventXML STRUCT("#attributes" STRUCT(xmlns VARCHAR), messageName VARCHAR, "User" VARCHAR, SessionID BIGINT, Address VARCHAR, TargetSession BIGINT, "Source" BIGINT, "Session" BIGINT, Reason BIGINT, Param1 VARCHAR)), EventData STRUCT(SessionId BIGINT, State BIGINT, StateName VARCHAR, "Event" BIGINT, EventName VARCHAR, ErrorCode VARCHAR))'] │ false     │
-└───────────────────────────────────────────────────┴─────────┴───────────────────────────────────────────────────┴──────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┘
-```
 
 ## EventID
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
-                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                                              GROUP BY ALL
-                                              ORDER BY ALL;
+memory D SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json')
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         GROUP BY ALL
+         ORDER BY ALL;
 ┌─────────────────────┬─────────┬──────────────┐
 │      Computer       │ EventID │ count_star() │
 │       varchar       │  int64  │    int64     │
@@ -79,12 +42,12 @@ TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Even
 
 ## 21 (Remote Desktop Services: Session logon succeeded)
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                                              AND Event.System.EventID = 21
-                                              GROUP BY ALL
-                                              ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 21
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
@@ -112,11 +75,11 @@ TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Even
 ```
 fullkey
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
-                                              FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
-                                              WHERE e.json->>'$.Event.System.EventID' = '21' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
-                                              GROUP BY je.fullkey
-                                              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '21' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────┬──────────────┐
 │                   fullkey                   │ count_star() │
 │                   varchar                   │    int64     │
@@ -133,12 +96,12 @@ TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
 
 ## 22 (Remote Desktop Services: Shell start notification received)
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                                              AND Event.System.EventID = 22
-                                              GROUP BY ALL
-                                              ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 22
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
@@ -166,11 +129,11 @@ TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Even
 ```
 fullkey
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
-                                              FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
-                                              WHERE e.json->>'$.Event.System.EventID' = '22' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
-                                              GROUP BY je.fullkey
-                                              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '22' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────┬──────────────┐
 │                   fullkey                   │ count_star() │
 │                   varchar                   │    int64     │
@@ -187,12 +150,12 @@ TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
 
 ## 23 (Remote Desktop Services: Session logoff succeeded)
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, COUNT(*)
-                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                                              AND Event.System.EventID = 23
-                                              GROUP BY ALL
-                                              ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User;
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 23
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │ count_star() │
 │       varchar       │   int64   │      varchar       │    int64     │
@@ -216,11 +179,11 @@ TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Even
 ```
 fullkey
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
-                                              FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
-                                              WHERE e.json->>'$.Event.System.EventID' = '23' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
-                                              GROUP BY je.fullkey
-                                              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '23' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────┬──────────────┐
 │                   fullkey                   │ count_star() │
 │                   varchar                   │    int64     │
@@ -236,12 +199,12 @@ TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
 
 ## 24 (Remote Desktop Services: Session has been disconnected)
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                                              AND Event.System.EventID = 24
-                                              GROUP BY ALL
-                                              ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 24
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
@@ -271,11 +234,11 @@ TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Even
 ```
 fullkey
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
-                                              FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
-                                              WHERE e.json->>'$.Event.System.EventID' = '24' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
-                                              GROUP BY je.fullkey
-                                              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '24' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────┬──────────────┐
 │                   fullkey                   │ count_star() │
 │                   varchar                   │    int64     │
@@ -292,12 +255,12 @@ TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
 
 ## 25 (Remote Desktop Services: Session reconnection succeeded)
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
-                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                                              AND Event.System.EventID = 25
-                                              GROUP BY ALL
-                                              ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 25
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
@@ -311,11 +274,11 @@ TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Even
 ```
 fullkey
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
-                                              FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
-                                              WHERE e.json->>'$.Event.System.EventID' = '25' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
-                                              GROUP BY je.fullkey
-                                              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '25' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────┬──────────────┐
 │                   fullkey                   │ count_star() │
 │                   varchar                   │    int64     │
@@ -336,12 +299,12 @@ TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
 
 ## 40 (Session (PayloadData1) has been disconnected, reason code (PayloadData2))
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Event.UserData.EventXML.Session, Event.UserData.EventXML.Reason, COUNT(*)
-                                              FROM read_json('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                                              WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                                              AND Event.System.EventID = 40
-                                              GROUP BY ALL
-                                              ORDER BY Event.UserData.EventXML.Session, Event.UserData.EventXML.Reason;
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.Session, Event.UserData.EventXML.Reason, COUNT(*)
+         FROM read_json('.\TerminalServices-LocalSessionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 40
+         GROUP BY ALL
+         ORDER BY Event.UserData.EventXML.Session, Event.UserData.EventXML.Reason;
 ┌─────────────────────┬─────────┬────────────┬──────────────┐
 │      Computer       │ Session │   Reason   │ count_star() │
 │       varchar       │  int64  │   int64    │    int64     │
@@ -383,11 +346,11 @@ TerminalServices-LocalSessionManager%4Op... D SELECT Event.System.Computer, Even
 ```
 fullkey
 ```sql
-TerminalServices-LocalSessionManager%4Op... D SELECT je.fullkey, COUNT(*)
-                                              FROM read_json_objects('C:/Users/SANSDFIR/TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
-                                              WHERE e.json->>'$.Event.System.EventID' = '40' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
-                                              GROUP BY je.fullkey
-                                              ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-LocalSessionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '40' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────────────┬──────────────┐
 │                   fullkey                   │ count_star() │
 │                   varchar                   │    int64     │

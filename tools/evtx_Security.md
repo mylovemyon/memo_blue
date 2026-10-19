@@ -1370,7 +1370,7 @@ Account Logon                           {69979850-797A-11D9-BED3-505054503030}
 
 ## 4720 (A new account was created)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.UserPrincipalName, Event.EventData.PrimaryGroupId, Event.EventData.UserParameters, Event.EventData.DisplayName,  Event.EventData.HomeDirectory, Event.EventData.HomePath, Event.EventData.ScriptPath, Event.EventData.ProfilePath, Event.EventData.UserWorkstations, Event.EventData.PasswordLastSet, Event.EventData.AccountExpires, Event.EventData.LogonHours, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl,  Event.EventData.AllowedToDelegateTo, Event.EventData.SidHistory, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.UserPrincipalName, Event.EventData.PrimaryGroupId, Event.EventData.UserParameters, Event.EventData.DisplayName, Event.EventData.HomeDirectory, Event.EventData.HomePath, Event.EventData.ScriptPath, Event.EventData.ProfilePath, Event.EventData.UserWorkstations, Event.EventData.PasswordLastSet, Event.EventData.AccountExpires, Event.EventData.LogonHours, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl, Event.EventData.AllowedToDelegateTo, Event.EventData.SidHistory, COUNT(*)
          FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 4720
          GROUP BY ALL
@@ -1861,7 +1861,7 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 4738 (A user account was changed)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.UserPrincipalName, Event.EventData.PrimaryGroupId, Event.EventData.PrivilegeList, Event.EventData.UserParameters, Event.EventData.DisplayName,  Event.EventData.HomeDirectory, Event.EventData.HomePath, Event.EventData.ScriptPath, Event.EventData.ProfilePath, Event.EventData.UserWorkstations, Event.EventData.PasswordLastSet, Event.EventData.AccountExpires, Event.EventData.LogonHours, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl,  Event.EventData.AllowedToDelegateTo, Event.EventData.SidHistory, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.SamAccountName, Event.EventData.UserPrincipalName, Event.EventData.PrimaryGroupId, Event.EventData.PrivilegeList, Event.EventData.UserParameters, Event.EventData.DisplayName, Event.EventData.HomeDirectory, Event.EventData.HomePath, Event.EventData.ScriptPath, Event.EventData.ProfilePath, Event.EventData.UserWorkstations, Event.EventData.PasswordLastSet, Event.EventData.AccountExpires, Event.EventData.LogonHours, Event.EventData.OldUacValue, Event.EventData.NewUacValue, Event.EventData.UserAccountControl, Event.EventData.AllowedToDelegateTo, Event.EventData.SidHistory, COUNT(*)
          FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4738
@@ -3124,7 +3124,7 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 5142 (A network share object was added)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, COUNT(*)
          FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5142
@@ -3212,7 +3212,7 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 5144 (A network share object was deleted)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath,  COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.ShareName, Event.EventData.ShareLocalPath, COUNT(*)
          FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5144

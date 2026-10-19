@@ -1487,7 +1487,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.Eve
 ```
 fullkey
 ```sql
-smemory D SELECT je.fullkey, COUNT(*)
+memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '4724' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
@@ -1943,12 +1943,12 @@ https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/u
 
 ## 4768 (A Kerberos authentication ticket (TGT) was requested)
 ```sql
-security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.PreAuthType, Event.EventData.TicketEncryptionType, Event.EventData.TicketOptions, Event.EventData.Status, Event.EventData.IpAddress, Event.EventData.CertIssuerName, Event.EventData.CertSerialNumber, Event.EventData.CertThumbprint, COUNT(*)
-                FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID, '$') = '4768'
-                GROUP BY ALL
-                ORDER BY Event.EventData.TargetSid, Event.EventData.ServiceSid, Event.EventData.IpAddress;
+memory D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.PreAuthType, Event.EventData.TicketEncryptionType, Event.EventData.TicketOptions, Event.EventData.Status, Event.EventData.IpAddress, Event.EventData.CertIssuerName, Event.EventData.CertSerialNumber, Event.EventData.CertThumbprint, COUNT(*)
+         FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$') = '4768'
+         GROUP BY ALL
+         ORDER BY Event.EventData.TargetSid, Event.EventData.ServiceSid, Event.EventData.IpAddress;
 ┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬──────────────────────┬───────────────────────────────────────────────┬─────────────┬─────────────┬──────────────────────┬───────────────┬─────────┬────────────────────┬────────────────┬──────────────────┬────────────────┬──────────────┐
 │      Computer       │                   TargetSid                    │ TargetDomainName │    TargetUserName    │                  ServiceSid                   │ ServiceName │ PreAuthType │ TicketEncryptionType │ TicketOptions │ Status  │     IpAddress      │ CertIssuerName │ CertSerialNumber │ CertThumbprint │ count_star() │
 │       varchar       │                    varchar                     │     varchar      │       varchar        │                    varchar                    │   varchar   │   varchar   │       varchar        │    varchar    │ varchar │      varchar       │    varchar     │     varchar      │    varchar     │    int64     │
@@ -1956,41 +1956,41 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.E
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1001 │ SHIELDBASE.COM   │ DC01$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::1                │                │                  │                │           74 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1001 │ shieldbase.com   │ DC01$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::1                │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1105 │ SHIELDBASE.COM   │ Jblake               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.13 │                │                  │                │            2 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1106 │ SHIELDBASE.COM   │ bnicholson           │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.12 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1106 │ shieldbase.com   │ bnicholson           │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.12 │                │                  │                │            1 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1107 │ shieldbase.com   │ cbarton              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            3 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1106 │ SHIELDBASE.COM   │ bnicholson           │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.12 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1107 │ SHIELDBASE.COM   │ cbarton              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            6 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase       │ cbarton-a            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            1 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ SHIELDBASE.COM   │ cbarton-a            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            3 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ SHIELDBASE       │ cbarton-a            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │          310 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1107 │ shieldbase.com   │ cbarton              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase.com   │ cbarton-a            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ shieldbase       │ cbarton-a            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ SHIELDBASE       │ cbarton-a            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │          310 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1108 │ SHIELDBASE.COM   │ cbarton-a            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1109 │ SHIELDBASE.COM   │ czelman              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.13 │                │                  │                │            9 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1109 │ shieldbase.com   │ czelman              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.13 │                │                  │                │            5 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1110 │ SHIELDBASE.COM   │ dwatson              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.19 │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1110 │ shieldbase.com   │ dwatson              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.19 │                │                  │                │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1110 │ SHIELDBASE.COM   │ dwatson              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.19 │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1113 │ SHIELDBASE.COM   │ jpallen              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.12 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1115 │ shieldbase.com   │ jzoch                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.17 │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1115 │ SHIELDBASE.COM   │ jzoch                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.17 │                │                  │                │            3 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1116 │ SHIELDBASE.COM   │ kespinoza            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.16 │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1116 │ shieldbase.com   │ kespinoza            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.16 │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1116 │ SHIELDBASE.COM   │ kespinoza            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.16 │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1118 │ shieldbase.com   │ mhill                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.11 │                │                  │                │            4 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1119 │ shieldbase.com   │ nfury                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.15 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1119 │ SHIELDBASE.COM   │ nfury                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.15 │                │                  │                │            1 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1120 │ shieldbase.com   │ nromanoff            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.14 │                │                  │                │            5 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1120 │ SHIELDBASE.COM   │ nromanoff            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.14 │                │                  │                │            5 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1122 │ shieldbase.com   │ rdodson              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.15 │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1120 │ shieldbase.com   │ nromanoff            │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.14 │                │                  │                │            5 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1122 │ SHIELDBASE.COM   │ rdodson              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.15 │                │                  │                │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1122 │ shieldbase.com   │ rdodson              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.15 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1124 │ shieldbase       │ rsydow               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.9  │                │                  │                │            1 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1124 │ SHIELDBASE.COM   │ rsydow               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1124 │ shieldbase.com   │ rsydow               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │            4 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ SHIELDBASE.COM   │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::1                │                │                  │                │            3 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1124 │ SHIELDBASE.COM   │ rsydow               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase       │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::1                │                │                  │                │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ SHIELDBASE.COM   │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::1                │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ SHIELDBASE.COM   │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase       │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ SHIELDBASE.COM   │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.7  │                │                  │                │           11 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ SHIELDBASE.COM   │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.9  │                │                  │                │            6 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ SHIELDBASE.COM   │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ shieldbase       │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1125 │ SHIELDBASE.COM   │ rsydow-a             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1126 │ SHIELDBASE.COM   │ smckee               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.20 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1132 │ SHIELDBASE.COM   │ sreese               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.18 │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1132 │ shieldbase.com   │ sreese               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.18 │                │                  │                │            3 │
@@ -2009,42 +2009,42 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.E
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1140 │ shieldbase.com   │ RD05$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.15 │                │                  │                │            4 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1141 │ shieldbase.com   │ ADMIN01$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1141 │ SHIELDBASE.COM   │ ADMIN01$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.26 │                │                  │                │           40 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1142 │ SHIELDBASE.COM   │ RD08$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.18 │                │                  │                │           38 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1142 │ shieldbase.com   │ RD08$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.18 │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1142 │ SHIELDBASE.COM   │ RD08$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.18 │                │                  │                │           38 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1143 │ shieldbase.com   │ RD09$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.19 │                │                  │                │            4 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1143 │ SHIELDBASE.COM   │ RD09$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.19 │                │                  │                │           43 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1144 │ shieldbase.com   │ RD10$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.20 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1144 │ SHIELDBASE.COM   │ RD10$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.20 │                │                  │                │           41 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1145 │ shieldbase.com   │ RD06$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.16 │                │                  │                │            4 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1144 │ shieldbase.com   │ RD10$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.20 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1145 │ SHIELDBASE.COM   │ RD06$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.16 │                │                  │                │           56 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1146 │ SHIELDBASE.COM   │ RD02$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.12 │                │                  │                │           40 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1145 │ shieldbase.com   │ RD06$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.16 │                │                  │                │            4 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1146 │ shieldbase.com   │ RD02$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.12 │                │                  │                │            2 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1147 │ shieldbase.com   │ RD01$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.11 │                │                  │                │           11 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1146 │ SHIELDBASE.COM   │ RD02$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.12 │                │                  │                │           40 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1147 │ SHIELDBASE.COM   │ RD01$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.11 │                │                  │                │           41 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1148 │ SHIELDBASE.COM   │ EXCHANGE01$          │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │           79 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1147 │ shieldbase.com   │ RD01$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.11 │                │                  │                │           11 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1148 │ shieldbase.com   │ EXCHANGE01$          │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │            2 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1149 │ shieldbase.com   │ FILE01$              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.5  │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1148 │ SHIELDBASE.COM   │ EXCHANGE01$          │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │           79 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1149 │ SHIELDBASE.COM   │ FILE01$              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.5  │                │                  │                │           38 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1150 │ shieldbase.com   │ WKSTN06$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.16 │                │                  │                │            3 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1149 │ shieldbase.com   │ FILE01$              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.5  │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1150 │ SHIELDBASE.COM   │ WKSTN06$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.16 │                │                  │                │           39 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1151 │ SHIELDBASE.COM   │ WKSTN05$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.15 │                │                  │                │           39 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1150 │ shieldbase.com   │ WKSTN06$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.16 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1151 │ shieldbase.com   │ WKSTN05$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.15 │                │                  │                │            6 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1152 │ shieldbase.com   │ WKSTN04$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.14 │                │                  │                │            3 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1151 │ SHIELDBASE.COM   │ WKSTN05$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.15 │                │                  │                │           39 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1152 │ SHIELDBASE.COM   │ WKSTN04$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.14 │                │                  │                │           42 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1153 │ shieldbase.com   │ RD04$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.14 │                │                  │                │            2 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1152 │ shieldbase.com   │ WKSTN04$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.14 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1153 │ SHIELDBASE.COM   │ RD04$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.14 │                │                  │                │           37 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1154 │ SHIELDBASE.COM   │ WKSTN08$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.18 │                │                  │                │           43 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1153 │ shieldbase.com   │ RD04$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.14 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1154 │ shieldbase.com   │ WKSTN08$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.18 │                │                  │                │            6 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1154 │ SHIELDBASE.COM   │ WKSTN08$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.18 │                │                  │                │           43 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1155 │ shieldbase.com   │ WKSTN03$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.13 │                │                  │                │            4 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1155 │ SHIELDBASE.COM   │ WKSTN03$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.13 │                │                  │                │           60 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1156 │ shieldbase.com   │ WKSTN09$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.19 │                │                  │                │            4 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1156 │ SHIELDBASE.COM   │ WKSTN09$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.19 │                │                  │                │           40 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1157 │ shieldbase.com   │ WKSTN10$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.20 │                │                  │                │            8 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1157 │ SHIELDBASE.COM   │ WKSTN10$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.20 │                │                  │                │           47 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1158 │ shieldbase.com   │ WKSTN02$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.12 │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1158 │ SHIELDBASE.COM   │ WKSTN02$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.12 │                │                  │                │           50 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1159 │ shieldbase.com   │ HUNT01$              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            5 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1158 │ shieldbase.com   │ WKSTN02$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.12 │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1159 │ SHIELDBASE.COM   │ HUNT01$              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │           41 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1159 │ shieldbase.com   │ HUNT01$              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.25 │                │                  │                │            5 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1160 │ SHIELDBASE.COM   │ RD07$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.17 │                │                  │                │           39 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1160 │ shieldbase.com   │ RD07$                │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.17 │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1161 │ SHIELDBASE.COM   │ WKSTN01$             │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.7.11 │                │                  │                │           38 │
@@ -2055,20 +2055,20 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.E
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1195 │ SHIELDBASE.COM   │ HealthMailbox8d23eed │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1206 │ SHIELDBASE.COM   │ ELF01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.21 │                │                  │                │           38 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1206 │ shieldbase.com   │ ELF01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.5.21 │                │                  │                │            2 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1212 │ SHIELDBASE.COM   │ scarter              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.17 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1212 │ shieldbase.com   │ scarter              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.17 │                │                  │                │            1 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1213 │ SHIELDBASE.COM   │ slevine              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.18 │                │                  │                │            1 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1212 │ SHIELDBASE.COM   │ scarter              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.17 │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1213 │ shieldbase.com   │ slevine              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.18 │                │                  │                │            4 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1214 │ SHIELDBASE.COM   │ WAC01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.7  │                │                  │                │           39 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1213 │ SHIELDBASE.COM   │ slevine              │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.18 │                │                  │                │            1 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1214 │ shieldbase.com   │ WAC01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.7  │                │                  │                │            4 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1214 │ SHIELDBASE.COM   │ WAC01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.7  │                │                  │                │           39 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1215 │ shieldbase.com   │ SQL01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.8  │                │                  │                │            3 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1215 │ SHIELDBASE.COM   │ SQL01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.8  │                │                  │                │           39 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1216 │ SHIELDBASE.COM   │ DEV01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.9  │                │                  │                │           39 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1216 │ shieldbase.com   │ DEV01$               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.9  │                │                  │                │            2 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ SHIELDBASE.COM   │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.6  │                │                  │                │            8 │
-│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.9  │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ SHIELDBASE.COM   │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.9  │                │                  │                │            8 │
+│ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.4.9  │                │                  │                │            6 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ SHIELDBASE.COM   │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.11 │                │                  │                │           11 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.11 │                │                  │                │           14 │
 │ dc01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ shieldbase       │ wacsvc               │ S-1-5-21-2838623409-1327563992-2591358621-502 │ krbtgt      │ 2           │ 0x12                 │ 0x40810010    │ 0x0     │ ::ffff:172.16.6.18 │                │                  │                │            5 │
@@ -2082,11 +2082,11 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.E
 ```
 fullkey
 ```sql
-security-dc01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4768' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4768' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌────────────────────────────────────────┬──────────────┐
 │                fullkey                 │ count_star() │
 │                varchar                 │    int64     │
@@ -2200,13 +2200,13 @@ https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/se
 
 ## 4769 (A Kerberos service ticket was requested)
 ```sql
-security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.TicketOptions, Event.EventData.TicketEncryptionType, Event.EventData.Status, Event.EventData.IpAddress, COUNT(*)
-                FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID, '$') = '4769'
-                AND Event.EventData.TargetUserName = 'tdungan@SHIELDBASE.COM'
-                GROUP BY ALL
-                ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.IpAddress;
+memory D SELECT Event.System.Computer, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.TicketOptions, Event.EventData.TicketEncryptionType, Event.EventData.Status, Event.EventData.IpAddress, COUNT(*)
+         FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$') = '4769'
+         AND Event.EventData.TargetUserName = 'tdungan@SHIELDBASE.COM'
+         GROUP BY ALL
+         ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.IpAddress;
 ┌─────────────────────┬──────────────────┬────────────────────────┬────────────────────────────────────────────────┬─────────────┬───────────────┬──────────────────────┬─────────┬────────────────────┬──────────────┐
 │      Computer       │ TargetDomainName │     TargetUserName     │                   ServiceSid                   │ ServiceName │ TicketOptions │ TicketEncryptionType │ Status  │     IpAddress      │ count_star() │
 │       varchar       │     varchar      │        varchar         │                    varchar                     │   varchar   │    varchar    │       varchar        │ varchar │      varchar       │    int64     │
@@ -2222,11 +2222,11 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetDomainName, 
 ```
 fullkey
 ```sql
-security-dc01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4769' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4769' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌────────────────────────────────────────┬──────────────┐
 │                fullkey                 │ count_star() │
 │                varchar                 │    int64     │
@@ -2250,12 +2250,12 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 
 ## 4770 (A Kerberos service ticket was renewed)
 ```sql
-security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.TicketOptions, Event.EventData.TicketEncryptionType, Event.EventData.IpAddress, COUNT(*)
-                FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID, '$') = '4770'
-                GROUP BY ALL
-                ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.IpAddress;
+memory D SELECT Event.System.Computer, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.ServiceName, Event.EventData.TicketOptions, Event.EventData.TicketEncryptionType, Event.EventData.IpAddress, COUNT(*)
+         FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$') = '4770'
+         GROUP BY ALL
+         ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceSid, Event.EventData.IpAddress;
 ┌─────────────────────┬──────────────────┬─────────────────────────────────────┬───────────────────────────────────────────────┬─────────────┬───────────────┬──────────────────────┬────────────────────┬──────────────┐
 │      Computer       │ TargetDomainName │           TargetUserName            │                  ServiceSid                   │ ServiceName │ TicketOptions │ TicketEncryptionType │     IpAddress      │ count_star() │
 │       varchar       │     varchar      │               varchar               │                    varchar                    │   varchar   │    varchar    │       varchar        │      varchar       │    int64     │
@@ -2333,11 +2333,11 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetDomainName, 
 ```
 fullkey
 ```sql
-security-dc01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4770' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4770' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌────────────────────────────────────────┬──────────────┐
 │                fullkey                 │ count_star() │
 │                varchar                 │    int64     │
@@ -2357,12 +2357,12 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 
 ## 4771 (Kerberos pre-authentication failed)
 ```sql
-security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.PreAuthType, Event.EventData.TicketOptions, Event.EventData.Status, Event.EventData.IpAddress, Event.EventData.CertIssuerName, Event.EventData.CertSerialNumber, Event.EventData.CertThumbprint, COUNT(*)
-                FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND json_extract_string(Event.System.EventID, '$') = '4771'
-                GROUP BY ALL
-                ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.IpAddress;
+memory D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.PreAuthType, Event.EventData.TicketOptions, Event.EventData.Status, Event.EventData.IpAddress, Event.EventData.CertIssuerName, Event.EventData.CertSerialNumber, Event.EventData.CertThumbprint, COUNT(*)
+         FROM read_json('.\security-dc01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND json_extract_string(Event.System.EventID, '$') = '4771'
+         GROUP BY ALL
+         ORDER BY Event.EventData.TargetUserName, Event.EventData.ServiceName, Event.EventData.IpAddress;
 ┌─────────────────────┬────────────────────────────────────────────────┬────────────────┬───────────────────┬─────────────┬───────────────┬─────────┬────────────────────┬────────────────┬──────────────────┬────────────────┬──────────────┐
 │      Computer       │                   TargetSid                    │ TargetUserName │    ServiceName    │ PreAuthType │ TicketOptions │ Status  │     IpAddress      │ CertIssuerName │ CertSerialNumber │ CertThumbprint │ count_star() │
 │       varchar       │                    varchar                     │    varchar     │      varchar      │   varchar   │    varchar    │ varchar │      varchar       │    varchar     │     varchar      │    varchar     │    int64     │
@@ -2374,11 +2374,11 @@ security-dc01 D SELECT Event.System.Computer, Event.EventData.TargetSid, Event.E
 ```
 fullkey
 ```sql
-security-dc01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4771' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-dc01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4771' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌────────────────────────────────────┬──────────────┐
 │              fullkey               │ count_star() │
 │              varchar               │    int64     │
@@ -2418,12 +2418,12 @@ security-dc01 D SELECT je.fullkey, COUNT(*)
 
 ## 4776 (NTLM authentication request)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.Workstation, Event.EventData.TargetUserName, Event.EventData.Status, Event.EventData.PackageName, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4776
-                GROUP BY ALL
-                ORDER BY Event.EventData.TargetUserName;
+memory D SELECT Event.System.Computer, Event.EventData.Workstation, Event.EventData.TargetUserName, Event.EventData.Status, Event.EventData.PackageName, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4776
+         GROUP BY ALL
+         ORDER BY Event.EventData.TargetUserName;
 ┌─────────────────────┬─────────────┬────────────────┬────────────┬───────────────────────────────────────┬──────────────┐
 │      Computer       │ Workstation │ TargetUserName │   Status   │              PackageName              │ count_star() │
 │       varchar       │   varchar   │    varchar     │  varchar   │                varchar                │    int64     │
@@ -2433,11 +2433,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.Workstation, Event
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4776' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4776' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌──────────────────────────────────┬──────────────┐
 │             fullkey              │ count_star() │
 │             varchar              │    int64     │
@@ -2472,12 +2472,12 @@ Status
 
 ## 4778 (RDP reconnecting)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.AccountDomain, Event.EventData.AccountName, Event.EventData.ClientName, Event.EventData.ClientAddress, Event.EventData.SessionName, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4778
-                GROUP BY ALL
-                ORDER BY Event.EventData.AccountName, Event.EventData.ClientAddress;
+memory D SELECT Event.System.Computer, Event.EventData.AccountDomain, Event.EventData.AccountName, Event.EventData.ClientName, Event.EventData.ClientAddress, Event.EventData.SessionName, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4778
+         GROUP BY ALL
+         ORDER BY Event.EventData.AccountName, Event.EventData.ClientAddress;
 ┌─────────────────────┬───────────────┬─────────────┬────────────┬───────────────┬─────────────┬──────────────┐
 │      Computer       │ AccountDomain │ AccountName │ ClientName │ ClientAddress │ SessionName │ count_star() │
 │       varchar       │    varchar    │   varchar   │  varchar   │    varchar    │   varchar   │    int64     │
@@ -2491,11 +2491,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.AccountDomain, Eve
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4778' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4778' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐
 │             fullkey             │ count_star() │
 │             varchar             │    int64     │
@@ -2513,12 +2513,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4779 (RDP disconnecting)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.AccountDomain, Event.EventData.AccountName, Event.EventData.ClientName, Event.EventData.ClientAddress, Event.EventData.SessionName, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4779
-                GROUP BY ALL
-                ORDER BY Event.EventData.AccountName, Event.EventData.ClientAddress;
+memory D SELECT Event.System.Computer, Event.EventData.AccountDomain, Event.EventData.AccountName, Event.EventData.ClientName, Event.EventData.ClientAddress, Event.EventData.SessionName, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4779
+         GROUP BY ALL
+         ORDER BY Event.EventData.AccountName, Event.EventData.ClientAddress;
 ┌─────────────────────┬───────────────┬─────────────┬────────────┬───────────────┬─────────────┬──────────────┐
 │      Computer       │ AccountDomain │ AccountName │ ClientName │ ClientAddress │ SessionName │ count_star() │
 │       varchar       │    varchar    │   varchar   │  varchar   │    varchar    │   varchar   │    int64     │
@@ -2531,11 +2531,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.AccountDomain, Eve
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4779' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4779' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────┬──────────────┐
 │             fullkey             │ count_star() │
 │             varchar             │    int64     │
@@ -2553,11 +2553,11 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4781 (The name of an account was changed)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.OldTargetUserName, Event.EventData.NewTargetUserName, Event.EventData.PrivilegeList, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.EventID = 4781
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.OldTargetUserName, Event.EventData.NewTargetUserName, Event.EventData.PrivilegeList, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.EventID = 4781
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌────────────┬────────────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────┬──────────────────┬─────────────────────────────────────┬─────────────────────────────────────┬───────────────┬──────────────┐
 │  Computer  │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                  TargetSid                   │ TargetDomainName │          OldTargetUserName          │          NewTargetUserName          │ PrivilegeList │ count_star() │
 │  varchar   │    varchar     │      varchar      │     varchar     │                   varchar                    │     varchar      │               varchar               │               varchar               │    varchar    │    int64     │
@@ -2587,11 +2587,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4781' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4781' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -2616,12 +2616,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4793 (The Password Policy Checking API was called)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserName, Event.EventData.Workstation, Event.EventData.Status, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4793
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetUserName, Event.EventData.Workstation, Event.EventData.Status, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4793
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬────────────────┬─────────────┬─────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │ TargetUserName │ Workstation │ Status  │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │    varchar     │   varchar   │ varchar │    int64     │
@@ -2631,11 +2631,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4793' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4793' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -2654,12 +2654,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4797 (An attempt was made to query the existence of a blank password for an account)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.Workstation, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4797
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.Workstation, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4797
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetUserName;
 ┌─────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────────┬────────────────────┬─────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │ TargetDomainName │   TargetUserName   │ Workstation │ count_star() │
 │       varchar       │                    varchar                     │      varchar      │     varchar     │     varchar      │      varchar       │   varchar   │    int64     │
@@ -2679,11 +2679,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4797' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4797' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -2702,12 +2702,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4798 (A user's local group membership was enumerated)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4798
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.SubjectDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4798
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────────┬────────────────┬───────────────────┬─────────────────┬───────────────────────────────────────────────┬──────────────────┬────────────────────┬─────────────────────────────────────────┬──────────────┐
 │      Computer       │ SubjectUserSid │ SubjectDomainName │ SubjectUserName │                   TargetSid                   │ TargetDomainName │   TargetUserName   │            CallerProcessName            │ count_star() │
 │       varchar       │    varchar     │      varchar      │     varchar     │                    varchar                    │     varchar      │      varchar       │                 varchar                 │    int64     │
@@ -2724,19 +2724,19 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 │ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-503  │ RD01             │ DefaultAccount     │ C:\Windows\System32\CompatTelRunner.exe │            1 │
 │ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-503  │ RD01             │ DefaultAccount     │ C:\Windows\System32\svchost.exe         │           18 │
 │ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-503  │ RD01             │ DefaultAccount     │ C:\Windows\System32\wbem\WmiPrvSE.exe   │            6 │
+│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-504  │ RD01             │ WDAGUtilityAccount │ C:\Windows\System32\CompatTelRunner.exe │            1 │
 │ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-504  │ RD01             │ WDAGUtilityAccount │ C:\Windows\System32\svchost.exe         │           18 │
 │ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-504  │ RD01             │ WDAGUtilityAccount │ C:\Windows\System32\wbem\WmiPrvSE.exe   │            6 │
-│ rd01.shieldbase.com │ S-1-5-18       │ shieldbase        │ RD01$           │ S-1-5-21-2908624845-2463485410-257172065-504  │ RD01             │ WDAGUtilityAccount │ C:\Windows\System32\CompatTelRunner.exe │            1 │
 └─────────────────────┴────────────────┴───────────────────┴─────────────────┴───────────────────────────────────────────────┴──────────────────┴────────────────────┴─────────────────────────────────────────┴──────────────┘
   15 rows                                                                                                                                                                                                           9 columns
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4798' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4798' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │
@@ -2757,12 +2757,12 @@ security-rd01 D SELECT je.fullkey, COUNT(*)
 
 ## 4799 (A security-enabled local group membership was enumerated)
 ```sql
-security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.TargetDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
-                FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
-                WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
-                AND Event.System.EventID = 4799
-                GROUP BY ALL
-                ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
+memory D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Event.EventData.TargetDomainName, Event.EventData.SubjectUserName, Event.EventData.TargetSid, Event.EventData.TargetDomainName, Event.EventData.TargetUserName, Event.EventData.CallerProcessName, COUNT(*)
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime <  TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 4799
+         GROUP BY ALL
+         ORDER BY Event.EventData.SubjectUserSid, Event.EventData.TargetSid;
 ┌─────────────────────┬────────────────────────────────────────────────┬──────────────────┬─────────────────┬──────────────┬──────────────────┬─────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                 SubjectUserSid                 │ TargetDomainName │ SubjectUserName │  TargetSid   │ TargetDomainName │     TargetUserName      │                                                    CallerProcessName                                                     │ count_star() │
 │       varchar       │                    varchar                     │     varchar      │     varchar     │   varchar    │     varchar      │         varchar         │                                                         varchar                                                          │    int64     │
@@ -2771,8 +2771,8 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 │ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\SrTasks.exe                                                                                          │          150 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\svchost.exe                                                                                          │           57 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\CompatTelRunner.exe                                                                                  │            1 │
-│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\services.exe                                                                                         │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\consent.exe                                                                                          │            4 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\services.exe                                                                                         │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-544 │ Builtin          │ Administrators          │ C:\Windows\System32\SearchIndexer.exe                                                                                    │            6 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                   │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{8CA2A3C8-C01F-485B-8EDB-4C85DAAF8640}\EDGEMITMP_206C7.tmp\setup.exe │            1 │
 │ rd01.shieldbase.com │ S-1-5-18                                       │ Builtin          │ RD01$           │ S-1-5-32-545 │ Builtin          │ Users                   │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{BC9BFFFC-52C5-4D1D-8C5F-3D0DC621C3F4}\EDGEMITMP_AB5AB.tmp\setup.exe │            1 │
@@ -2799,11 +2799,11 @@ security-rd01 D SELECT Event.System.Computer, Event.EventData.SubjectUserSid, Ev
 ```
 fullkey
 ```sql
-security-rd01 D SELECT je.fullkey, COUNT(*)
-                FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-                WHERE e.json->>'$.Event.System.EventID' = '4799' AND je.fullkey LIKE '$.Event.EventData.%'
-                GROUP BY je.fullkey
-                ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '4799' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
 ┌─────────────────────────────────────┬──────────────┐
 │               fullkey               │ count_star() │
 │               varchar               │    int64     │

@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f Windows Firewall With Advanced Security%4Firewall.json C:\Windows\System32\winevt\Logs\Microsoft-Windows-Windows Firewall With Advanced Security%4Firewall.evtx
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f "Windows Firewall With Advanced Security%4Firewall.json" "C:\Windows\System32\winevt\Logs\Microsoft-Windows-Windows Firewall With Advanced Security%4Firewall.evtx"
 PS C:\Users\SANSDFIR>
 ```
 

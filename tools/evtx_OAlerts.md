@@ -1,0 +1,33 @@
+```powershell
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f security.json C:\Windows\System32\winevt\Logs\Security.evtx
+PS C:\Users\SANSDFIR>
+```
+
+## cli
+```powershell
+PS C:\Users\SANSDFIR> .\duckdb.exe -cmd ".maxrows 10000" -cmd ".pager off"
+DuckDB v1.5.6 (Variegata)
+Enter ".help" for usage hints.
+memory D
+```
+
+
+
+## EventID
+```sql
+memory D SELECT Event.System.EventID, COUNT(*)
+         FROM read_json('.\OAlerts.json', sample_size = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────────────────────────────────────────────────┬──────────────┐
+│                             EventID                             │ count_star() │
+│ struct("#attributes" struct(qualifiers bigint), "#text" bigint) │    int64     │
+├─────────────────────────────────────────────────────────────────┼──────────────┤
+│ {'#attributes': {'Qualifiers': 0}, '#text': 300}                │           35 │
+└─────────────────────────────────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 300

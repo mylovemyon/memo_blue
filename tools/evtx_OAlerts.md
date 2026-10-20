@@ -32,7 +32,7 @@ memory D SELECT Event.System.EventID."#text", COUNT(*)
 
 ## 300 (OAlerts 300 event)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[1], Event.EventData.Data."#text"[2], Event.EventData.Data."#text"[3], Event.EventData.Data."#text"[4], Event.EventData.Data."#text"[5],  COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.Data."#text"[1], Event.EventData.Data."#text"[2], Event.EventData.Data."#text"[3], Event.EventData.Data."#text"[4], Event.EventData.Data."#text"[5], COUNT(*)
          FROM read_json('.\OAlerts.json')
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID."#text" = 300

@@ -19,24 +19,24 @@ memory D
 
 ## 6 (Creating WSMan Session)
 ```sql
-memory D SELECT Event.EventData.connection, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.connection, COUNT(*)
          FROM read_json('.\WinRM%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 6
          GROUP BY ALL
          ORDER BY ALL;
-┌──────────────────────────────────────────────────────────┬──────────────┐
-│                        connection                        │ count_star() │
-│                         varchar                          │    int64     │
-├──────────────────────────────────────────────────────────┼──────────────┤
-│ dc01.shieldbase.com/wsman?PSVersion=5.1.22000.1335       │           16 │
-│ dev01.shieldbase.com/wsman?PSVersion=5.1.22000.1335      │           16 │
-│ exchange01.shieldbase.com/wsman?PSVersion=5.1.22000.1335 │           16 │
-│ file01.shieldbase.com/wsman?PSVersion=5.1.22000.1335     │           16 │
-│ proxy01.shieldbase.com/wsman?PSVersion=5.1.22000.1335    │           16 │
-│ sql01.shieldbase.com/wsman?PSVersion=5.1.22000.1335      │           16 │
-│ wac01.shieldbase.com/wsman?PSVersion=5.1.22000.1335      │           16 │
-└──────────────────────────────────────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                        connection                        │ count_star() │
+│       varchar       │                         varchar                          │    int64     │
+├─────────────────────┼──────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ dc01.shieldbase.com/wsman?PSVersion=5.1.22000.1335       │           16 │
+│ rd01.shieldbase.com │ dev01.shieldbase.com/wsman?PSVersion=5.1.22000.1335      │           16 │
+│ rd01.shieldbase.com │ exchange01.shieldbase.com/wsman?PSVersion=5.1.22000.1335 │           16 │
+│ rd01.shieldbase.com │ file01.shieldbase.com/wsman?PSVersion=5.1.22000.1335     │           16 │
+│ rd01.shieldbase.com │ proxy01.shieldbase.com/wsman?PSVersion=5.1.22000.1335    │           16 │
+│ rd01.shieldbase.com │ sql01.shieldbase.com/wsman?PSVersion=5.1.22000.1335      │           16 │
+│ rd01.shieldbase.com │ wac01.shieldbase.com/wsman?PSVersion=5.1.22000.1335      │           16 │
+└─────────────────────┴──────────────────────────────────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -57,20 +57,20 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 91 (Creating WSMan shell on server with ResourceUri)
 ```sql
-memory D SELECT Event.EventData.resourceUri, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.resourceUri, COUNT(*)
          FROM read_json('.\WinRM%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 91
          GROUP BY ALL
          ORDER BY ALL;
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
-│                                               resourceUri                                                │ count_star() │
-│                                                 varchar                                                  │    int64     │
-├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
-│ http://schemas.microsoft.com/powershell/Microsoft.PowerShell (shieldbase\rsydow-a clientIP: 172.16.4.4)  │            5 │
-│ http://schemas.microsoft.com/powershell/Microsoft.PowerShell (shieldbase\rsydow-a clientIP: 172.16.4.7)  │            8 │
-│ http://schemas.microsoft.com/powershell/Microsoft.PowerShell (shieldbase\rsydow-a clientIP: 172.16.6.18) │           16 │
-└──────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                                               resourceUri                                                │ count_star() │
+│       varchar       │                                                 varchar                                                  │    int64     │
+├─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ http://schemas.microsoft.com/powershell/Microsoft.PowerShell (shieldbase\rsydow-a clientIP: 172.16.4.4)  │            5 │
+│ rd01.shieldbase.com │ http://schemas.microsoft.com/powershell/Microsoft.PowerShell (shieldbase\rsydow-a clientIP: 172.16.4.7)  │            8 │
+│ rd01.shieldbase.com │ http://schemas.microsoft.com/powershell/Microsoft.PowerShell (shieldbase\rsydow-a clientIP: 172.16.6.18) │           16 │
+└─────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql

@@ -20,7 +20,7 @@ memory D
 ## 6 (Creating WSMan Session)
 ```sql
 memory D SELECT Event.EventData.connection, COUNT(*)
-         FROM read_json('.\WinRM%4Operational-rd01.json', sample_size = -1, ignore_errors = true)
+         FROM read_json('.\WinRM%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 6
          GROUP BY ALL
@@ -58,7 +58,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 91 (Creating WSMan shell on server with ResourceUri)
 ```sql
 memory D SELECT Event.EventData.resourceUri, COUNT(*)
-         FROM read_json('.\WinRM%4Operational-rd01.json', sample_size = -1, ignore_errors = true)
+         FROM read_json('.\WinRM%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 91
          GROUP BY ALL
@@ -86,3 +86,7 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.resourceUri │           29 │
 └───────────────────────────────┴──────────────┘
 ```
+
+
+
+## 169 (WinRM Authentication)

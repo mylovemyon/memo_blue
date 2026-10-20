@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f Windows_Defender%4Operational-rd01.json "C:\Windows\System32\winevt\logs\Microsoft-Windows-Windows Defender%4Operational.evtx"
+PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f "Windows Defender%4Operational-rd01.json" "C:\Windows\System32\winevt\logs\Microsoft-Windows-Windows Defender%4Operational.evtx"
 PS C:\Users\SANSDFIR>
 ```
 
@@ -16,7 +16,7 @@ memory D
 ## EventID
 ```sql
 memory D SELECT Event.System.EventID, COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational.json', ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational.json', ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          GROUP BY ALL
          ORDER BY ALL;
@@ -48,7 +48,7 @@ memory D SELECT Event.System.EventID, COUNT(*)
 ## 1000 (An antimalware scan started)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1000
          GROUP BY ALL
@@ -83,7 +83,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Doma
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '1000' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -111,7 +111,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 1001 (An antimalware scan finished)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", Event.EventData."Scan Time Hours", Event.EventData."Scan Time Minutes", Event.EventData."Scan Time Seconds", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1001
          GROUP BY ALL
@@ -145,7 +145,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Doma
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '1001' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -175,7 +175,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 1002 (Warning - An antimalware scan was stopped before it finished)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Scan ID", Event.EventData."Scan Type", Event.EventData."Scan Parameters", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1002
          GROUP BY ALL
@@ -190,7 +190,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Doma
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '1002' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -241,7 +241,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 1013 (The antimalware platform deleted history of malware and other potentially unwanted software)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData.Timestamp, COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1013
          GROUP BY ALL
@@ -273,7 +273,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Doma
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '1013' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -299,7 +299,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 1116 (Detection - The antimalware platform detected malware or other potentially unwanted software)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1116
          GROUP BY ALL
@@ -325,7 +325,7 @@ memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.Eve
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '1116' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -384,7 +384,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 1117 (Detection - The antimalware platform performed an action to protect your system from malware or other potentially unwanted software)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Detection User", Event.EventData."Process Name", Event.EventData.Path, Event.EventData."Threat Name", Event.EventData.FWLink, Event.EventData."Remediation User", Event.EventData."Action Name", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1117
          GROUP BY ALL
@@ -405,7 +405,7 @@ memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.Eve
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '1117' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -468,7 +468,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 1150 (Defender is up and running in a healthy state)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Platform version", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1150
          GROUP BY ALL
@@ -483,7 +483,7 @@ memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.Eve
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '1150' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -504,7 +504,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 2000 (The antimalware definitions updated successfully)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Domain, Event.EventData.User, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Update Type", Event.EventData."Security intelligence Type", Event.EventData."Previous Engine Version", Event.EventData."Current Engine Version", Event.EventData."Previous security intelligence Version", Event.EventData."Current security intelligence Version", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-ftp01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-ftp01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 2000
          GROUP BY ALL
@@ -573,7 +573,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SID, Event.EventData.Doma
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-ftp01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-ftp01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '2000' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -610,7 +610,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 5000 (Real-time Protection was enabled)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5000
          GROUP BY ALL
@@ -625,7 +625,7 @@ memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.Eve
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '5000' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -643,7 +643,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 5001 (Real-time Protection was disabled)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-wkstn01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-wkstn01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5001
          GROUP BY ALL
@@ -658,7 +658,7 @@ memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.Eve
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-wkstn01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-wkstn01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '5001' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
@@ -676,7 +676,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 5007 (The antimalware platform configuration changed)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.EventData."Product Version", Event.EventData."Old Value", Event.EventData."New Value", COUNT(*)
-         FROM read_json('.\Windows_Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         FROM read_json('.\Windows Defender%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5007
          GROUP BY ALL
@@ -695,7 +695,7 @@ memory D SELECT Event.System.Computer, Event.EventData."Product Name", Event.Eve
 fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
-         FROM read_json_objects('.\Windows_Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         FROM read_json_objects('.\Windows Defender%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '5007' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;

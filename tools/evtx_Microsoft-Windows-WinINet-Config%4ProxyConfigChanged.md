@@ -32,18 +32,18 @@ memory D SELECT Event.System.EventID, COUNT(*)
 
 ## 5600 (Proxy configuration changed)
 ```sql
-memory D SELECT Event.EventData.pwszProxy, Event.EventData.pwszProxyBypass, Event.EventData.fAutoDetect, Event.EventData.pwszAutoConfigUrl, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.pwszProxy, Event.EventData.pwszProxyBypass, Event.EventData.fAutoDetect, Event.EventData.pwszAutoConfigUrl, COUNT(*)
          FROM read_json('.\WinINet-Config%4ProxyConfigChanged-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5600
          GROUP BY ALL
          ORDER BY ALL;
-┌──────────────────┬───────────────────────────┬─────────────┬───────────────────┬──────────────┐
-│    pwszProxy     │      pwszProxyBypass      │ fAutoDetect │ pwszAutoConfigUrl │ count_star() │
-│     varchar      │          varchar          │   boolean   │      varchar      │    int64     │
-├──────────────────┼───────────────────────────┼─────────────┼───────────────────┼──────────────┤
-│ 172.16.4.10:8080 │ 172.16.*;*.shieldbase.com │ false       │                   │            1 │
-└──────────────────┴───────────────────────────┴─────────────┴───────────────────┴──────────────┘
+┌─────────────────────┬──────────────────┬───────────────────────────┬─────────────┬───────────────────┬──────────────┐
+│      Computer       │    pwszProxy     │      pwszProxyBypass      │ fAutoDetect │ pwszAutoConfigUrl │ count_star() │
+│       varchar       │     varchar      │          varchar          │   boolean   │      varchar      │    int64     │
+├─────────────────────┼──────────────────┼───────────────────────────┼─────────────┼───────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 172.16.4.10:8080 │ 172.16.*;*.shieldbase.com │ false       │                   │            1 │
+└─────────────────────┴──────────────────┴───────────────────────────┴─────────────┴───────────────────┴──────────────┘
 ```
 fullkey
 ```sql

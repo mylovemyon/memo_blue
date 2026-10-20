@@ -151,7 +151,7 @@ memory D SELECT Event.System.EventID, COUNT(*)
 ## 1100 (The event logging service has shut down)
 ```sql
 memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
-         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1))
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1100
          GROUP BY ALL
@@ -185,7 +185,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 1102 (Event log cleared)
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.LogFileCleared.SubjectUserSid, Event.UserData.LogFileCleared.SubjectDomainName, Event.UserData.LogFileCleared.SubjectUserName, COUNT(*)
-         FROM read_json('.\security-dev01.json', sample_size = -1, map_inference_threshold = -1))
+         FROM read_json('.\security-dev01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1102
          GROUP BY ALL
@@ -223,7 +223,7 @@ memory D SELECT je.fullkey, COUNT(*)
 ## 4608 (Windows is starting up)
 ```sql
 memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
-         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1))
+         FROM read_json('.\security-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4608
          GROUP BY ALL

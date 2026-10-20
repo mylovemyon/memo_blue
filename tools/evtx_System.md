@@ -816,6 +816,101 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
+## 7001 (User logon)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.UserSid, Event.EventData.TSId, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Winlogon' AND (Event.System.EventID->>'$' = '7001')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────────────────────────┬───────┬──────────────┐
+│      Computer       │                    UserSid                     │ TSId  │ count_star() │
+│       varchar       │                    varchar                     │ int64 │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     2 │            4 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     4 │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     5 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     6 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     7 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     8 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     9 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    10 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    11 │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    13 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    14 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │     3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │    12 │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴───────┴──────────────┘
+  14 rows                                                                           4 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Winlogon') AND (e.json->>'$.Event.System.EventID' = '7001') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────┬──────────────┐
+│          fullkey          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ $.Event.EventData.TSId    │           46 │
+│ $.Event.EventData.UserSid │           46 │
+└───────────────────────────┴──────────────┘
+```
+
+
+
+## 7002 (User logoff)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.UserSid, Event.EventData.TSId, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Microsoft-Windows-Winlogon' AND (Event.System.EventID->>'$' = '7002')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────────────────────────┬───────┬──────────────┐
+│      Computer       │                    UserSid                     │ TSId  │ count_star() │
+│       varchar       │                    varchar                     │ int64 │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼───────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     2 │            3 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     4 │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     5 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     6 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     7 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     8 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │     9 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    10 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    11 │            2 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    13 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1136 │    14 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │     3 │            1 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │    12 │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴───────┴──────────────┘
+  14 rows                                                                           4 columnsf
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Microsoft-Windows-Winlogon') AND (e.json->>'$.Event.System.EventID' = '7002') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────┬──────────────┐
+│          fullkey          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ $.Event.EventData.TSId    │           45 │
+│ $.Event.EventData.UserSid │           45 │
+└───────────────────────────┴──────────────┘
+```
+
+
+
+
 ## 10000 (Device driver installations begins (Device connection))
 Provider: "Microsoft-Windows-DriverFrameworks-UserMode"
 

@@ -96,7 +96,7 @@ Origin
 
 ## 2004 (A rule has been added to the Windows Defender Firewall exception list)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.Origin, Event.EventData.Profiles,  Event.EventData.RuleName, Event.EventData.EmbeddedContext, Event.EventData.ServiceName, Event.EventData.RuleStatus, Event.EventData.Active, Event.EventData.Action, Event.EventData.ApplicationPath, Event.EventData.Direction, Event.EventData.Protocol, Event.EventData.EdgeTraversal, Event.EventData.LocalAddresses, Event.EventData.LocalPorts, Event.EventData.LocalOnlyMapped, Event.EventData.LooseSourceMapped,  Event.EventData.RemoteAddresses, Event.EventData.RemotePorts, Event.EventData.RemoteMachineAuthorizationList, Event.EventData.RemoteUserAuthorizationList, Event.EventData.SecurityOptions, Event.EventData.SchemaVersion, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.Origin, Event.EventData.Profiles, Event.EventData.RuleName, Event.EventData.EmbeddedContext, Event.EventData.ServiceName, Event.EventData.RuleStatus, Event.EventData.Active, Event.EventData.Action, Event.EventData.ApplicationPath, Event.EventData.Direction, Event.EventData.Protocol, Event.EventData.EdgeTraversal, Event.EventData.LocalAddresses, Event.EventData.LocalPorts, Event.EventData.LocalOnlyMapped, Event.EventData.LooseSourceMapped, Event.EventData.RemoteAddresses, Event.EventData.RemotePorts, Event.EventData.RemoteMachineAuthorizationList, Event.EventData.RemoteUserAuthorizationList, Event.EventData.SecurityOptions, Event.EventData.SchemaVersion, COUNT(*)
          FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2004 AND Event.EventData.ModifyingApplication != 'C:\Windows\System32\svchost.exe'
          GROUP BY ALL
@@ -205,7 +205,7 @@ EdgeTraversal
 
 ## 2005 (A rule has been modified in the Windows Defender Firewall exception list)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.Origin, Event.EventData.Profiles,  Event.EventData.RuleName, Event.EventData.EmbeddedContext, Event.EventData.ServiceName, Event.EventData.RuleStatus, Event.EventData.Active, Event.EventData.Action, Event.EventData.ApplicationPath, Event.EventData.Direction, Event.EventData.Protocol, Event.EventData.EdgeTraversal, Event.EventData.LocalAddresses, Event.EventData.LocalPorts, Event.EventData.LocalOnlyMapped, Event.EventData.LooseSourceMapped,  Event.EventData.RemoteAddresses, Event.EventData.RemotePorts, Event.EventData.RemoteMachineAuthorizationList, Event.EventData.RemoteUserAuthorizationList, Event.EventData.SecurityOptions, Event.EventData.SchemaVersion, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.Origin, Event.EventData.Profiles, Event.EventData.RuleName, Event.EventData.EmbeddedContext, Event.EventData.ServiceName, Event.EventData.RuleStatus, Event.EventData.Active, Event.EventData.Action, Event.EventData.ApplicationPath, Event.EventData.Direction, Event.EventData.Protocol, Event.EventData.EdgeTraversal, Event.EventData.LocalAddresses, Event.EventData.LocalPorts, Event.EventData.LocalOnlyMapped, Event.EventData.LooseSourceMapped, Event.EventData.RemoteAddresses, Event.EventData.RemotePorts, Event.EventData.RemoteMachineAuthorizationList, Event.EventData.RemoteUserAuthorizationList, Event.EventData.SecurityOptions, Event.EventData.SchemaVersion, COUNT(*)
          FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2005 AND Event.EventData.ModifyingApplication != 'C:\Windows\System32\svchost.exe'
          GROUP BY ALL
@@ -282,4 +282,68 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.ServiceName                    │           44 │
 └──────────────────────────────────────────────────┴──────────────┘
   26 rows                                               2 columns
+```
+
+
+
+## 2006 (A rule has been deleted in the Windows Defender Firewall exception list)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.RuleName, COUNT(*)
+         FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.EventID = 2006 AND Event.EventData.ModifyingApplication != 'C:\Windows\System32\svchost.exe'
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                 ModifyingUser                  │                                                   ModifyingApplication                                                   │                    RuleName                     │ count_star() │
+│       varchar       │                    varchar                     │                                                         varchar                                                          │                     varchar                     │    int64     │
+├─────────────────────┼────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Google\Update\Install\{41CDD59B-CD2F-4EDC-8FEC-9FFF8F3C703D}\CR_90DB7.tmp\setup.exe               │ a7ac87e5-4adc-46eb-aa8a-47ab98564be3            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Google\Update\Install\{7695D1E1-A0C3-42C2-862E-F3C7F9599813}\CR_E71CE.tmp\setup.exe               │ a47da877-bd85-4824-8d56-f915b4bc734e            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Google\Update\Install\{ACF119E5-F8E1-496F-A243-C732B207ABAE}\CR_DEB4E.tmp\setup.exe               │ a1eab683-c1ea-4890-806f-273a23f6e743            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Google\Update\Install\{B58C4622-4AAA-4E78-8427-5DEC7067AA3B}\CR_C565E.tmp\setup.exe               │ b9f18c82-cbfa-4ee3-9290-439ef0f02fe0            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Google\Update\Install\{C372E401-65DD-4359-8E4B-C90512C68972}\CR_1C2DA.tmp\setup.exe               │ 5e40fcb3-5626-497d-b20b-1be6d9a1d394            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Google\Update\Install\{CB02AA55-0460-49D9-8CEF-27D3C7BE5F45}\CR_CB314.tmp\setup.exe               │ 7087f051-cf6b-4ead-a8ef-00724d2bfef0            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Google\Update\Install\{DC1DFAB2-30C7-4411-BCF5-074C52CD2714}\CR_6ECA0.tmp\setup.exe               │ ccc487c5-96e1-4ae9-b4c9-3681cacd4842            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{045C6AB5-32E9-44A6-9B91-435E1129234E}\EDGEMITMP_A37AF.tmp\setup.exe │ 47e26b1d-c16d-421e-ace6-e35f6adad1da            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{045C6AB5-32E9-44A6-9B91-435E1129234E}\EDGEMITMP_A37AF.tmp\setup.exe │ 8a1bf8aa-9d22-43d9-a385-7d9e330fa35f            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{22B5026D-75BC-47A1-86CE-339A587518F8}\EDGEMITMP_22B8E.tmp\setup.exe │ 7ad044db-0757-4d88-a466-565eb3402d77            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{22B5026D-75BC-47A1-86CE-339A587518F8}\EDGEMITMP_22B8E.tmp\setup.exe │ 86195205-be81-49d7-adf9-2785135fb117            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{37E5D75C-0E76-46F8-B1E8-AEA373614BA8}\EDGEMITMP_AEE5C.tmp\setup.exe │ 2642393e-65af-4427-9496-c52ec2919d5a            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{579E7A28-8A37-4A0F-94DB-52BEBE5DFD1B}\EDGEMITMP_3C790.tmp\setup.exe │ 68419c48-2c9d-4efd-b56a-250f35ac2ea2            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{8CA2A3C8-C01F-485B-8EDB-4C85DAAF8640}\EDGEMITMP_206C7.tmp\setup.exe │ 70317d78-3353-461e-84f9-9f43ca41ca82            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{8CA2A3C8-C01F-485B-8EDB-4C85DAAF8640}\EDGEMITMP_206C7.tmp\setup.exe │ a2ce0ab2-2dec-477d-97fe-e1f99df83c5a            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{9C76AC20-6B7A-4EA3-9D25-57281F85054A}\EDGEMITMP_2759B.tmp\setup.exe │ c67d0959-af11-44b2-a509-a6374485ffa9            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{AA52E9A3-22CE-4870-AB89-70A5307E6450}\EDGEMITMP_FA2CB.tmp\setup.exe │ 1bf81a35-1b5a-412b-8d73-0029e6ecab07            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{AA52E9A3-22CE-4870-AB89-70A5307E6450}\EDGEMITMP_FA2CB.tmp\setup.exe │ 770c2977-4cb2-43f7-a9dd-4e35bae01af6            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{BA0DC1F6-CE4B-4329-9726-DCF1F53A103B}\EDGEMITMP_D606F.tmp\setup.exe │ 8ae01def-3b47-465f-b252-e9564ee6118a            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{BC9BFFFC-52C5-4D1D-8C5F-3D0DC621C3F4}\EDGEMITMP_AB5AB.tmp\setup.exe │ 828d2cc5-df5d-4cd0-a38a-922a97e0a51b            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{BC9BFFFC-52C5-4D1D-8C5F-3D0DC621C3F4}\EDGEMITMP_AB5AB.tmp\setup.exe │ e2036a6d-b234-4d3e-9b0e-bb69cdd0620f            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{E3D38F6B-DAFD-472D-A5F2-1CE5810826F6}\EDGEMITMP_CEC31.tmp\setup.exe │ 419ca05d-0b19-4c56-a80c-27128274f1fe            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{E3D38F6B-DAFD-472D-A5F2-1CE5810826F6}\EDGEMITMP_CEC31.tmp\setup.exe │ b86f780e-9eaf-4dbd-aebf-b62c34fc0994            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{F8061227-13F3-41D6-962C-28193BE93E36}\EDGEMITMP_99DD7.tmp\setup.exe │ 3cd8ccb5-22dd-418f-88cd-d45c5a1a5a54            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Program Files (x86)\Microsoft\EdgeUpdate\Install\{F8061227-13F3-41D6-962C-28193BE93E36}\EDGEMITMP_99DD7.tmp\setup.exe │ 9289ed77-8d4e-4130-a831-8f6e5d690d3e            │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2210.6-0\MsMpEng.exe                                             │ Inbound service restriction rule for WinDefend  │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2210.6-0\MsMpEng.exe                                             │ Outbound service restriction rule for WinDefend │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2210.6-0\MsMpEng.exe                                             │ WinDefend Outbound for TCP                      │            1 │
+│ rd01.shieldbase.com │ S-1-5-18                                       │ C:\Windows\subject_srv.exe                                                                                               │ F-Response LM.SUB.EXA                           │            4 │
+│ rd01.shieldbase.com │ S-1-5-21-2838623409-1327563992-2591358621-1220 │ C:\Program Files (x86)\Microsoft\EdgeWebView\Application\109.0.1518.61\Installer\setup.exe                               │ d2e61915-c19e-4b54-bbf7-9e67ad1ddbd4            │            1 │
+└─────────────────────┴────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────────────┴──────────────┘
+  30 rows                                                                                                                                                                                                                                                5 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Windows Firewall With Advanced Security%4Firewall-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '2006' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────────┬──────────────┐
+│                fullkey                 │ count_star() │
+│                varchar                 │    int64     │
+├────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.ModifyingApplication │          264 │
+│ $.Event.EventData.ModifyingUser        │          264 │
+│ $.Event.EventData.RuleId               │          264 │
+│ $.Event.EventData.RuleName             │          264 │
+└────────────────────────────────────────┴──────────────┘
 ```

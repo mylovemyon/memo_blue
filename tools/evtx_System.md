@@ -472,6 +472,46 @@ Provider: Microsoft-Windows-Kernel-Power
 
 
 
+## 1074 (A user initiated a system restart)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.param2, Event.EventData.param7, Event.EventData.param1, Event.EventData.param5, Event.EventData.param3, Event.EventData.param4, Event.EventData.param6, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'User32' AND (Event.System.EventID->>'$."#text"' = '1074')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬─────────┬────────────────────┬──────────────────────────────────────────────┬───────────┬───────────────────┬─────────┬─────────┬──────────────┐
+│      Computer       │ param2  │       param7       │                    param1                    │  param5   │      param3       │ param4  │ param6  │ count_star() │
+│       varchar       │ varchar │      varchar       │                   varchar                    │  varchar  │      varchar      │ varchar │ varchar │    int64     │
+├─────────────────────┼─────────┼────────────────────┼──────────────────────────────────────────────┼───────────┼───────────────────┼─────────┼─────────┼──────────────┤
+│ rd01.shieldbase.com │ RD01    │ shieldbase\tdungan │ C:\Windows\Explorer.EXE (RD01)               │ restart   │ Other (Unplanned) │ 0x0     │         │            1 │
+│ rd01.shieldbase.com │ RD01    │ shieldbase\tdungan │ C:\Windows\System32\RuntimeBroker.exe (RD01) │ power off │ Other (Unplanned) │ 0x0     │         │            1 │
+│ rd01.shieldbase.com │ RD01    │ shieldbase\tdungan │ C:\Windows\System32\RuntimeBroker.exe (RD01) │ restart   │ Other (Unplanned) │ 0x0     │         │            2 │
+└─────────────────────┴─────────┴────────────────────┴──────────────────────────────────────────────┴───────────┴───────────────────┴─────────┴─────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'User32') AND (e.json->>'$.Event.System.EventID."#text"' = '1074') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────┬──────────────┐
+│         fullkey          │ count_star() │
+│         varchar          │    int64     │
+├──────────────────────────┼──────────────┤
+│ $.Event.EventData.param1 │           25 │
+│ $.Event.EventData.param2 │           25 │
+│ $.Event.EventData.param3 │           25 │
+│ $.Event.EventData.param4 │           25 │
+│ $.Event.EventData.param5 │           25 │
+│ $.Event.EventData.param6 │           25 │
+│ $.Event.EventData.param7 │           25 │
+└──────────────────────────┴──────────────┘
+```
+
+
+
 ## 1116 (Microsoft Antimalware Detection)
 Provider: "Microsoft Antimalware"
 
@@ -906,6 +946,402 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.TSId    │           45 │
 │ $.Event.EventData.UserSid │           45 │
 └───────────────────────────┴──────────────┘
+```
+
+
+
+## 7031 (Service crashed unexpectedly)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.param1, Event.EventData.param2, Event.EventData.param3, Event.EventData.param4, Event.EventData.param5, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Service Control Manager' AND (Event.System.EventID->>'$."#text"' = '7031')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬───────────────────────────────────┬─────────┬─────────┬─────────┬─────────────────────┬──────────────┐
+│      Computer       │              param1               │ param2  │ param3  │ param4  │       param5        │ count_star() │
+│       varchar       │              varchar              │ varchar │ varchar │ varchar │       varchar       │    int64     │
+├─────────────────────┼───────────────────────────────────┼─────────┼─────────┼─────────┼─────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ System Event Notification Service │ 1       │ 120000  │ 1       │ Restart the service │            1 │
+└─────────────────────┴───────────────────────────────────┴─────────┴─────────┴─────────┴─────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Service Control Manager') AND (e.json->>'$.Event.System.EventID."#text"' = '7031') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────┬──────────────┐
+│         fullkey          │ count_star() │
+│         varchar          │    int64     │
+├──────────────────────────┼──────────────┤
+│ $.Event.EventData.Binary │            4 │
+│ $.Event.EventData.param1 │            4 │
+│ $.Event.EventData.param2 │            4 │
+│ $.Event.EventData.param3 │            4 │
+│ $.Event.EventData.param4 │            4 │
+│ $.Event.EventData.param5 │            4 │
+└──────────────────────────┴──────────────┘
+```
+
+
+
+## 7034 (Service crashed unexpectedly)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.param1, Event.EventData.param2, COUNT(*)
+         FROM read_json('.\system-rd05.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Service Control Manager' AND (Event.System.EventID->>'$."#text"' = '7034')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬──────────────────────────────────────────┬─────────┬──────────────┐
+│      Computer       │                  param1                  │ param2  │ count_star() │
+│       varchar       │                 varchar                  │ varchar │    int64     │
+├─────────────────────┼──────────────────────────────────────────┼─────────┼──────────────┤
+│ rd05.shieldbase.com │ Connected User Experiences and Telemetry │ 3       │            1 │
+└─────────────────────┴──────────────────────────────────────────┴─────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd05.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Service Control Manager') AND (e.json->>'$.Event.System.EventID."#text"' = '7034') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────┬──────────────┐
+│         fullkey          │ count_star() │
+│         varchar          │    int64     │
+├──────────────────────────┼──────────────┤
+│ $.Event.EventData.Binary │            1 │
+│ $.Event.EventData.param1 │            1 │
+│ $.Event.EventData.param2 │            1 │
+└──────────────────────────┴──────────────┘
+```
+
+
+
+## 7035 (Service sent a Start/Stop control)
+Provider: Service Control Manager
+
+
+
+## 7036 (Service started or stopped)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.param1, Event.EventData.param2, replace(CAST(from_hex(Event.EventData.Binary) AS VARCHAR), '\x00', ''), COUNT(*)
+         FROM read_json('.\system-dc01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Service Control Manager' AND (Event.System.EventID->>'$."#text"' = '7036')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬──────────────────────────────────────────────────┬─────────┬──────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                      param1                      │ param2  │ "replace"(CAST(from_hex("Event".EventData."Binary") AS VARCHAR), '\x00', '') │ count_star() │
+│       varchar       │                     varchar                      │ varchar │                                   varchar                                    │    int64     │
+├─────────────────────┼──────────────────────────────────────────────────┼─────────┼──────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ dc01.shieldbase.com │ ADWS                                             │ running │ ADWS/4                                                                       │            4 │
+│ dc01.shieldbase.com │ AWS Lite Guest Agent                             │ stopped │ AWSLiteAgent/1                                                               │            4 │
+│ dc01.shieldbase.com │ AWSLiteAgent                                     │ running │ AWSLiteAgent/4                                                               │            4 │
+│ dc01.shieldbase.com │ Active Directory Domain Services                 │ stopped │ NTDS/1                                                                       │            3 │
+│ dc01.shieldbase.com │ Active Directory Web Services                    │ stopped │ ADWS/1                                                                       │            4 │
+│ dc01.shieldbase.com │ Amazon EC2Launch                                 │ running │ Amazon EC2Launch/4                                                           │            4 │
+│ dc01.shieldbase.com │ Amazon EC2Launch                                 │ stopped │ Amazon EC2Launch/1                                                           │            4 │
+│ dc01.shieldbase.com │ AmazonSSMAgent                                   │ running │ AmazonSSMAgent/4                                                             │            4 │
+│ dc01.shieldbase.com │ AppX Deployment Service (AppXSVC)                │ running │ AppXSvc/4                                                                    │          187 │
+│ dc01.shieldbase.com │ AppX Deployment Service (AppXSVC)                │ stopped │ AppXSvc/1                                                                    │          187 │
+│ dc01.shieldbase.com │ Application Information                          │ running │ Appinfo/4                                                                    │            4 │
+│ dc01.shieldbase.com │ BFE                                              │ running │ BFE/4                                                                        │            4 │
+│ dc01.shieldbase.com │ Background Intelligent Transfer Service          │ running │ BITS/4                                                                       │           27 │
+│ dc01.shieldbase.com │ Background Intelligent Transfer Service          │ stopped │ BITS/1                                                                       │           27 │
+│ dc01.shieldbase.com │ BrokerInfrastructure                             │ running │ BrokerInfrastructure/4                                                       │            4 │
+│ dc01.shieldbase.com │ CNG Key Isolation                                │ running │ KeyIso/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Capability Access Manager Service                │ running │ camsvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Capability Access Manager Service                │ stopped │ camsvc/1                                                                     │            4 │
+│ dc01.shieldbase.com │ CertPropSvc                                      │ running │ CertPropSvc/4                                                                │            4 │
+│ dc01.shieldbase.com │ Certificate Propagation                          │ stopped │ CertPropSvc/1                                                                │            4 │
+│ dc01.shieldbase.com │ Client License Service (ClipSVC)                 │ running │ ClipSVC/4                                                                    │           30 │
+│ dc01.shieldbase.com │ Client License Service (ClipSVC)                 │ stopped │ ClipSVC/1                                                                    │           30 │
+│ dc01.shieldbase.com │ Clipboard User Service_1d51b9                    │ running │ cbdhsvc_1d51b9/4                                                             │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_1d51b9                    │ stopped │ cbdhsvc_1d51b9/1                                                             │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_25a11f                    │ running │ cbdhsvc_25a11f/4                                                             │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_25a11f                    │ stopped │ cbdhsvc_25a11f/1                                                             │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_3da776c                   │ running │ cbdhsvc_3da776c/4                                                            │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_3da776c                   │ stopped │ cbdhsvc_3da776c/1                                                            │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_43970d4                   │ running │ cbdhsvc_43970d4/4                                                            │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_43970d4                   │ stopped │ cbdhsvc_43970d4/1                                                            │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_8623a                     │ running │ cbdhsvc_8623a/4                                                              │            1 │
+│ dc01.shieldbase.com │ Clipboard User Service_8623a                     │ stopped │ cbdhsvc_8623a/1                                                              │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform Service               │ running │ CDPSvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_1d51b9   │ running │ CDPUserSvc_1d51b9/4                                                          │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_1d51b9   │ stopped │ CDPUserSvc_1d51b9/1                                                          │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_25a11f   │ running │ CDPUserSvc_25a11f/4                                                          │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_25a11f   │ stopped │ CDPUserSvc_25a11f/1                                                          │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_3da776c  │ running │ CDPUserSvc_3da776c/4                                                         │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_3da776c  │ stopped │ CDPUserSvc_3da776c/1                                                         │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_43970d4  │ running │ CDPUserSvc_43970d4/4                                                         │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_43970d4  │ stopped │ CDPUserSvc_43970d4/1                                                         │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_8623a    │ running │ CDPUserSvc_8623a/4                                                           │            1 │
+│ dc01.shieldbase.com │ Connected Devices Platform User Service_8623a    │ stopped │ CDPUserSvc_8623a/1                                                           │            1 │
+│ dc01.shieldbase.com │ CoreMessagingRegistrar                           │ running │ CoreMessagingRegistrar/4                                                     │            4 │
+│ dc01.shieldbase.com │ CryptSvc                                         │ running │ CryptSvc/4                                                                   │            4 │
+│ dc01.shieldbase.com │ Cryptographic Services                           │ stopped │ CryptSvc/1                                                                   │            3 │
+│ dc01.shieldbase.com │ DFS Replication                                  │ stopped │ DFSR/1                                                                       │            3 │
+│ dc01.shieldbase.com │ DFSR                                             │ running │ DFSR/4                                                                       │            4 │
+│ dc01.shieldbase.com │ DHCP Client                                      │ stopped │ Dhcp/1                                                                       │            4 │
+│ dc01.shieldbase.com │ DNS                                              │ running │ DNS/4                                                                        │            1 │
+│ dc01.shieldbase.com │ DNS Server                                       │ running │ DNS/4                                                                        │            3 │
+│ dc01.shieldbase.com │ DNS Server                                       │ stopped │ DNS/1                                                                        │            4 │
+│ dc01.shieldbase.com │ Data Sharing Service                             │ running │ DsSvc/4                                                                      │            2 │
+│ dc01.shieldbase.com │ Data Sharing Service                             │ stopped │ DsSvc/1                                                                      │            3 │
+│ dc01.shieldbase.com │ DcomLaunch                                       │ running │ DcomLaunch/4                                                                 │            4 │
+│ dc01.shieldbase.com │ Delivery Optimization                            │ running │ DoSvc/4                                                                      │          130 │
+│ dc01.shieldbase.com │ Delivery Optimization                            │ stopped │ DoSvc/1                                                                      │          130 │
+│ dc01.shieldbase.com │ Device Setup Manager                             │ running │ DsmSvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Device Setup Manager                             │ stopped │ DsmSvc/1                                                                     │            8 │
+│ dc01.shieldbase.com │ Dfs                                              │ running │ Dfs/4                                                                        │            4 │
+│ dc01.shieldbase.com │ Dhcp                                             │ running │ Dhcp/4                                                                       │            4 │
+│ dc01.shieldbase.com │ Diagnostic Policy Service                        │ running │ DPS/4                                                                        │            4 │
+│ dc01.shieldbase.com │ Diagnostic Policy Service                        │ stopped │ DPS/1                                                                        │            3 │
+│ dc01.shieldbase.com │ Diagnostic System Host                           │ running │ WdiSystemHost/4                                                              │            5 │
+│ dc01.shieldbase.com │ Diagnostic System Host                           │ stopped │ WdiSystemHost/1                                                              │            5 │
+│ dc01.shieldbase.com │ Display Policy Service                           │ running │ DispBrokerDesktopSvc/4                                                       │            4 │
+│ dc01.shieldbase.com │ Distributed Transaction Coordinator              │ running │ MSDTC/4                                                                      │            4 │
+│ dc01.shieldbase.com │ Distributed Transaction Coordinator              │ stopped │ MSDTC/1                                                                      │            4 │
+│ dc01.shieldbase.com │ Dnscache                                         │ running │ Dnscache/4                                                                   │            4 │
+│ dc01.shieldbase.com │ DsmSvc                                           │ running │ DsmSvc/4                                                                     │            3 │
+│ dc01.shieldbase.com │ EFS                                              │ running │ EFS/4                                                                        │            4 │
+│ dc01.shieldbase.com │ EventLog                                         │ running │ EventLog/4                                                                   │            4 │
+│ dc01.shieldbase.com │ EventSystem                                      │ running │ EventSystem/4                                                                │            4 │
+│ dc01.shieldbase.com │ F-Response Subject Service                       │ running │ F-Response Subject Service/4                                                 │            2 │
+│ dc01.shieldbase.com │ F-Response Subject Service                       │ stopped │ F-Response Subject Service/1                                                 │            2 │
+│ dc01.shieldbase.com │ FontCache                                        │ running │ FontCache/4                                                                  │            4 │
+│ dc01.shieldbase.com │ Function Discovery Provider Host                 │ running │ fdPHost/4                                                                    │            1 │
+│ dc01.shieldbase.com │ Function Discovery Provider Host                 │ stopped │ fdPHost/1                                                                    │            1 │
+│ dc01.shieldbase.com │ Group Policy Client                              │ stopped │ gpsvc/1                                                                      │            4 │
+│ dc01.shieldbase.com │ IKE and AuthIP IPsec Keying Modules              │ stopped │ IKEEXT/1                                                                     │            4 │
+│ dc01.shieldbase.com │ IKEEXT                                           │ running │ IKEEXT/4                                                                     │            4 │
+│ dc01.shieldbase.com │ IPsec Policy Agent                               │ stopped │ PolicyAgent/1                                                                │            4 │
+│ dc01.shieldbase.com │ Intersite Messaging                              │ stopped │ IsmServ/1                                                                    │            4 │
+│ dc01.shieldbase.com │ IsmServ                                          │ running │ IsmServ/4                                                                    │            4 │
+│ dc01.shieldbase.com │ Kdc                                              │ running │ Kdc/4                                                                        │            4 │
+│ dc01.shieldbase.com │ LSM                                              │ running │ LSM/4                                                                        │            4 │
+│ dc01.shieldbase.com │ LanmanServer                                     │ running │ LanmanServer/4                                                               │            4 │
+│ dc01.shieldbase.com │ LanmanWorkstation                                │ running │ LanmanWorkstation/4                                                          │            4 │
+│ dc01.shieldbase.com │ Microsoft Account Sign-in Assistant              │ running │ wlidsvc/4                                                                    │           84 │
+│ dc01.shieldbase.com │ Microsoft Account Sign-in Assistant              │ stopped │ wlidsvc/1                                                                    │           82 │
+│ dc01.shieldbase.com │ Microsoft Defender Antivirus Service             │ stopped │ WinDefend/1                                                                  │            3 │
+│ dc01.shieldbase.com │ Microsoft Edge Update Service (edgeupdate)       │ running │ edgeupdate/4                                                                 │           92 │
+│ dc01.shieldbase.com │ Microsoft Edge Update Service (edgeupdate)       │ stopped │ edgeupdate/1                                                                 │           92 │
+│ dc01.shieldbase.com │ Microsoft Software Shadow Copy Provider          │ running │ swprv/4                                                                      │           45 │
+│ dc01.shieldbase.com │ Microsoft Software Shadow Copy Provider          │ stopped │ swprv/1                                                                      │           45 │
+│ dc01.shieldbase.com │ NTDS                                             │ running │ NTDS/4                                                                       │            4 │
+│ dc01.shieldbase.com │ NcaSvc                                           │ stopped │ NcaSvc/1                                                                     │            4 │
+│ dc01.shieldbase.com │ NcbService                                       │ running │ NcbService/4                                                                 │            4 │
+│ dc01.shieldbase.com │ Netlogon                                         │ running │ Netlogon/4                                                                   │            4 │
+│ dc01.shieldbase.com │ Network Connectivity Assistant                   │ stopped │ NcaSvc/1                                                                     │            7 │
+│ dc01.shieldbase.com │ Network Setup Service                            │ running │ NetSetupSvc/4                                                                │         3233 │
+│ dc01.shieldbase.com │ Network Setup Service                            │ stopped │ NetSetupSvc/1                                                                │         3233 │
+│ dc01.shieldbase.com │ NlaSvc                                           │ running │ NlaSvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Optimize drives                                  │ running │ defragsvc/4                                                                  │            4 │
+│ dc01.shieldbase.com │ Optimize drives                                  │ stopped │ defragsvc/1                                                                  │            4 │
+│ dc01.shieldbase.com │ Plug and Play                                    │ stopped │ PlugPlay/1                                                                   │            4 │
+│ dc01.shieldbase.com │ PlugPlay                                         │ running │ PlugPlay/4                                                                   │            4 │
+│ dc01.shieldbase.com │ PolicyAgent                                      │ running │ PolicyAgent/4                                                                │            4 │
+│ dc01.shieldbase.com │ Portable Device Enumerator Service               │ running │ WPDBusEnum/4                                                                 │            8 │
+│ dc01.shieldbase.com │ Portable Device Enumerator Service               │ stopped │ WPDBusEnum/1                                                                 │           12 │
+│ dc01.shieldbase.com │ Power                                            │ running │ Power/4                                                                      │            4 │
+│ dc01.shieldbase.com │ ProfSvc                                          │ running │ ProfSvc/4                                                                    │            4 │
+│ dc01.shieldbase.com │ Program Compatibility Assistant Service          │ running │ PcaSvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Program Compatibility Assistant Service          │ stopped │ PcaSvc/1                                                                     │            4 │
+│ dc01.shieldbase.com │ RasMan                                           │ running │ RasMan/4                                                                     │            1 │
+│ dc01.shieldbase.com │ Remote Access Connection Manager                 │ running │ RasMan/4                                                                     │            1 │
+│ dc01.shieldbase.com │ Remote Desktop Services UserMode Port Redirector │ stopped │ UmRdpService/1                                                               │            3 │
+│ dc01.shieldbase.com │ Remote Registry                                  │ running │ RemoteRegistry/4                                                             │            2 │
+│ dc01.shieldbase.com │ Remote Registry                                  │ stopped │ RemoteRegistry/1                                                             │            6 │
+│ dc01.shieldbase.com │ RemoteRegistry                                   │ running │ RemoteRegistry/4                                                             │            4 │
+│ dc01.shieldbase.com │ RpcEptMapper                                     │ running │ RpcEptMapper/4                                                               │            4 │
+│ dc01.shieldbase.com │ RpcSs                                            │ running │ RpcSs/4                                                                      │            4 │
+│ dc01.shieldbase.com │ SENS                                             │ running │ SENS/4                                                                       │            4 │
+│ dc01.shieldbase.com │ SamSs                                            │ running │ SamSs/4                                                                      │            4 │
+│ dc01.shieldbase.com │ Schedule                                         │ running │ Schedule/4                                                                   │            4 │
+│ dc01.shieldbase.com │ Secure Socket Tunneling Protocol Service         │ running │ SstpSvc/4                                                                    │            1 │
+│ dc01.shieldbase.com │ Secure Socket Tunneling Protocol Service         │ stopped │ SstpSvc/1                                                                    │            1 │
+│ dc01.shieldbase.com │ SessionEnv                                       │ running │ SessionEnv/4                                                                 │            4 │
+│ dc01.shieldbase.com │ ShellHWDetection                                 │ running │ ShellHWDetection/4                                                           │            4 │
+│ dc01.shieldbase.com │ Software Protection                              │ running │ sppsvc/4                                                                     │            9 │
+│ dc01.shieldbase.com │ Software Protection                              │ stopped │ sppsvc/1                                                                     │            8 │
+│ dc01.shieldbase.com │ Spooler                                          │ running │ Spooler/4                                                                    │            4 │
+│ dc01.shieldbase.com │ SstpSvc                                          │ running │ SstpSvc/4                                                                    │            1 │
+│ dc01.shieldbase.com │ State Repository Service                         │ running │ StateRepository/4                                                            │            7 │
+│ dc01.shieldbase.com │ State Repository Service                         │ stopped │ StateRepository/1                                                            │           11 │
+│ dc01.shieldbase.com │ StateRepository                                  │ running │ StateRepository/4                                                            │            4 │
+│ dc01.shieldbase.com │ Storage Service                                  │ running │ StorSvc/4                                                                    │            4 │
+│ dc01.shieldbase.com │ SysMain                                          │ running │ SysMain/4                                                                    │            4 │
+│ dc01.shieldbase.com │ SysMain                                          │ stopped │ SysMain/1                                                                    │            4 │
+│ dc01.shieldbase.com │ SystemEventsBroker                               │ running │ SystemEventsBroker/4                                                         │            4 │
+│ dc01.shieldbase.com │ Task Scheduler                                   │ stopped │ Schedule/1                                                                   │            3 │
+│ dc01.shieldbase.com │ TermService                                      │ running │ TermService/4                                                                │            4 │
+│ dc01.shieldbase.com │ Themes                                           │ running │ Themes/4                                                                     │            4 │
+│ dc01.shieldbase.com │ TimeBrokerSvc                                    │ running │ TimeBrokerSvc/4                                                              │            4 │
+│ dc01.shieldbase.com │ Touch Keyboard and Handwriting Panel Service     │ running │ TabletInputService/4                                                         │            3 │
+│ dc01.shieldbase.com │ UmRdpService                                     │ running │ UmRdpService/4                                                               │            4 │
+│ dc01.shieldbase.com │ Update Orchestrator Service                      │ running │ UsoSvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Update Orchestrator Service                      │ stopped │ UsoSvc/1                                                                     │            3 │
+│ dc01.shieldbase.com │ User Access Logging Service                      │ running │ UALSVC/4                                                                     │            4 │
+│ dc01.shieldbase.com │ User Access Logging Service                      │ stopped │ UALSVC/1                                                                     │            4 │
+│ dc01.shieldbase.com │ User Profile Service                             │ stopped │ ProfSvc/1                                                                    │            4 │
+│ dc01.shieldbase.com │ UserManager                                      │ running │ UserManager/4                                                                │            4 │
+│ dc01.shieldbase.com │ Velociraptor Service                             │ running │ Velociraptor/4                                                               │            3 │
+│ dc01.shieldbase.com │ Velociraptor Service                             │ stopped │ Velociraptor/1                                                               │            2 │
+│ dc01.shieldbase.com │ Virtual Disk                                     │ stopped │ vds/1                                                                        │            3 │
+│ dc01.shieldbase.com │ Volume Shadow Copy                               │ running │ VSS/4                                                                        │           46 │
+│ dc01.shieldbase.com │ Volume Shadow Copy                               │ stopped │ VSS/1                                                                        │           46 │
+│ dc01.shieldbase.com │ W32Time                                          │ running │ W32Time/4                                                                    │            1 │
+│ dc01.shieldbase.com │ WPDBusEnum                                       │ running │ WPDBusEnum/4                                                                 │            4 │
+│ dc01.shieldbase.com │ Wcmsvc                                           │ running │ Wcmsvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ Web Account Manager                              │ running │ TokenBroker/4                                                                │            3 │
+│ dc01.shieldbase.com │ WinDefend                                        │ running │ WinDefend/4                                                                  │            4 │
+│ dc01.shieldbase.com │ WinHTTP Web Proxy Auto-Discovery Service         │ stopped │ WinHttpAutoProxySvc/1                                                        │            4 │
+│ dc01.shieldbase.com │ WinHttpAutoProxySvc                              │ running │ WinHttpAutoProxySvc/4                                                        │            4 │
+│ dc01.shieldbase.com │ WinRM                                            │ running │ WinRM/4                                                                      │            4 │
+│ dc01.shieldbase.com │ Windows Connection Manager                       │ stopped │ Wcmsvc/1                                                                     │            4 │
+│ dc01.shieldbase.com │ Windows Event Log                                │ stopped │ EventLog/1                                                                   │            3 │
+│ dc01.shieldbase.com │ Windows Font Cache Service                       │ stopped │ FontCache/1                                                                  │            4 │
+│ dc01.shieldbase.com │ Windows Installer                                │ running │ msiserver/4                                                                  │            5 │
+│ dc01.shieldbase.com │ Windows Installer                                │ stopped │ msiserver/1                                                                  │            5 │
+│ dc01.shieldbase.com │ Windows License Manager Service                  │ running │ LicenseManager/4                                                             │            2 │
+│ dc01.shieldbase.com │ Windows Management Instrumentation               │ stopped │ Winmgmt/1                                                                    │            4 │
+│ dc01.shieldbase.com │ Windows Modules Installer                        │ running │ TrustedInstaller/4                                                           │          149 │
+│ dc01.shieldbase.com │ Windows Modules Installer                        │ stopped │ TrustedInstaller/1                                                           │          149 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_1d51b9   │ running │ WpnUserService_1d51b9/4                                                      │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_1d51b9   │ stopped │ WpnUserService_1d51b9/1                                                      │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_25a11f   │ running │ WpnUserService_25a11f/4                                                      │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_25a11f   │ stopped │ WpnUserService_25a11f/1                                                      │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_3da776c  │ running │ WpnUserService_3da776c/4                                                     │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_3da776c  │ stopped │ WpnUserService_3da776c/1                                                     │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_43970d4  │ running │ WpnUserService_43970d4/4                                                     │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_43970d4  │ stopped │ WpnUserService_43970d4/1                                                     │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_8623a    │ running │ WpnUserService_8623a/4                                                       │            1 │
+│ dc01.shieldbase.com │ Windows Push Notifications User Service_8623a    │ stopped │ WpnUserService_8623a/1                                                       │            1 │
+│ dc01.shieldbase.com │ Windows Remote Management (WS-Management)        │ stopped │ WinRM/1                                                                      │            3 │
+│ dc01.shieldbase.com │ Windows Security Service                         │ running │ SecurityHealthService/4                                                      │            1 │
+│ dc01.shieldbase.com │ Windows Security Service                         │ stopped │ SecurityHealthService/1                                                      │            1 │
+│ dc01.shieldbase.com │ Windows Time                                     │ running │ W32Time/4                                                                    │            3 │
+│ dc01.shieldbase.com │ Windows Time                                     │ stopped │ W32Time/1                                                                    │            4 │
+│ dc01.shieldbase.com │ Windows Update                                   │ running │ wuauserv/4                                                                   │           90 │
+│ dc01.shieldbase.com │ Windows Update                                   │ stopped │ wuauserv/1                                                                   │           90 │
+│ dc01.shieldbase.com │ Windows Update Medic Service                     │ running │ WaaSMedicSvc/4                                                               │          163 │
+│ dc01.shieldbase.com │ Windows Update Medic Service                     │ stopped │ WaaSMedicSvc/1                                                               │          163 │
+│ dc01.shieldbase.com │ Winmgmt                                          │ running │ Winmgmt/4                                                                    │            4 │
+│ dc01.shieldbase.com │ WpnService                                       │ running │ WpnService/4                                                                 │            4 │
+│ dc01.shieldbase.com │ gpsvc                                            │ running │ gpsvc/4                                                                      │            4 │
+│ dc01.shieldbase.com │ iphlpsvc                                         │ running │ iphlpsvc/4                                                                   │            4 │
+│ dc01.shieldbase.com │ lmhosts                                          │ running │ lmhosts/4                                                                    │            4 │
+│ dc01.shieldbase.com │ mpssvc                                           │ running │ mpssvc/4                                                                     │            4 │
+│ dc01.shieldbase.com │ netprofm                                         │ running │ netprofm/4                                                                   │            4 │
+│ dc01.shieldbase.com │ nsi                                              │ running │ nsi/4                                                                        │            4 │
+│ dc01.shieldbase.com │ vds                                              │ running │ vds/4                                                                        │            4 │
+│ dc01.shieldbase.com │ windows_exporter                                 │ running │ windows_exporter/4                                                           │            4 │
+│ dc01.shieldbase.com │ windows_exporter                                 │ stopped │ windows_exporter/1                                                           │            3 │
+│ dc01.shieldbase.com │ wmiApSrv                                         │ running │ wmiApSrv/4                                                                   │            4 │
+└─────────────────────┴──────────────────────────────────────────────────┴─────────┴──────────────────────────────────────────────────────────────────────────────┴──────────────┘
+  205 rows                                                                                                                                                             5 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-dc01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Service Control Manager') AND (e.json->>'$.Event.System.EventID."#text"' = '7036') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────┬──────────────┐
+│         fullkey          │ count_star() │
+│         varchar          │    int64     │
+├──────────────────────────┼──────────────┤
+│ $.Event.EventData.Binary │        43836 │
+│ $.Event.EventData.param1 │        43836 │
+│ $.Event.EventData.param2 │        43836 │
+└──────────────────────────┴──────────────┘
+```
+
+
+
+## 7040 (Start type of a service has changed)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.param4, Event.EventData.param1, Event.EventData.param2, Event.EventData.param3, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Service Control Manager' AND (Event.System.EventID->>'$."#text"' = '7040')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────┬──────────────────────────────────────────────┬──────────────┬──────────────┬──────────────┐
+│      Computer       │       param4       │                    param1                    │    param2    │    param3    │ count_star() │
+│       varchar       │      varchar       │                   varchar                    │   varchar    │   varchar    │    int64     │
+├─────────────────────┼────────────────────┼──────────────────────────────────────────────┼──────────────┼──────────────┼──────────────┤
+│ rd01.shieldbase.com │ BITS               │ Background Intelligent Transfer Service      │ auto start   │ demand start │            1 │
+│ rd01.shieldbase.com │ BITS               │ Background Intelligent Transfer Service      │ demand start │ auto start   │            1 │
+│ rd01.shieldbase.com │ TabletInputService │ Touch Keyboard and Handwriting Panel Service │ auto start   │ demand start │            3 │
+│ rd01.shieldbase.com │ TabletInputService │ Touch Keyboard and Handwriting Panel Service │ demand start │ auto start   │            3 │
+└─────────────────────┴────────────────────┴──────────────────────────────────────────────┴──────────────┴──────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Service Control Manager') AND (e.json->>'$.Event.System.EventID."#text"' = '7040') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────┬──────────────┐
+│         fullkey          │ count_star() │
+│         varchar          │    int64     │
+├──────────────────────────┼──────────────┤
+│ $.Event.EventData.param1 │         2130 │
+│ $.Event.EventData.param2 │         2130 │
+│ $.Event.EventData.param3 │         2130 │
+│ $.Event.EventData.param4 │         2130 │
+└──────────────────────────┴──────────────┘
+```
+
+
+
+## 7045 (A new service was installed in the system)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.ServiceName, Event.EventData.ImagePath, Event.EventData.ServiceType, Event.EventData.StartType, Event.EventData.AccountName, COUNT(*)
+         FROM read_json('.\system-rd01.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.Provider."#attributes".Name = 'Service Control Manager' AND (Event.System.EventID->>'$."#text"' = '7045')
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────────────┬──────────────┬─────────────┬──────────────┐
+│      Computer       │        ServiceName         │                                                          ImagePath                                                          │    ServiceType     │  StartType   │ AccountName │ count_star() │
+│       varchar       │          varchar           │                                                           varchar                                                           │      varchar       │   varchar    │   varchar   │    int64     │
+├─────────────────────┼────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┼──────────────┼─────────────┼──────────────┤
+│ rd01.shieldbase.com │ Ec2Config                  │ "C:\Program Files\Amazon\Ec2ConfigService\Ec2Config.exe"                                                                    │ user mode service  │ auto start   │ LocalSystem │            1 │
+│ rd01.shieldbase.com │ F-Response Subject Service │ "C:\windows\subject_srv.exe" -s "172.16.5.25:5682" -l 3262 -v "F-Response Subject Service" -k "155522845"                   │ user mode service  │ auto start   │ LocalSystem │            1 │
+│ rd01.shieldbase.com │ MpKsl3f390b95              │ C:\Windows\system32\MpEngineStore\MpKslDrv.sys                                                                              │ kernel mode driver │ demand start │             │            2 │
+│ rd01.shieldbase.com │ MpKsl80b1fd2a              │ C:\Windows\system32\MpEngineStore\MpKslDrv.sys                                                                              │ kernel mode driver │ demand start │             │            3 │
+│ rd01.shieldbase.com │ MpKsld6867d33              │ C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{A0638AC4-7F42-4619-900A-6971E7AD116E}\MpKslDrv.sys            │ kernel mode driver │ demand start │             │            1 │
+│ rd01.shieldbase.com │ MpKsle2439143              │ C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{1FEC7FC9-D47D-4480-85E5-AE4DD6CCA988}\MpKslDrv.sys            │ kernel mode driver │ demand start │             │            1 │
+│ rd01.shieldbase.com │ Velociraptor Service       │ "C:\Program Files\Velociraptor\Velociraptor.exe"  --config "C:\Program Files\Velociraptor\/client.config.yaml" service run  │ user mode service  │ auto start   │ LocalSystem │            1 │
+│ rd01.shieldbase.com │ mnemosyne                  │ C:\windows/Mnemosyne.sys                                                                                                    │ kernel mode driver │ demand start │             │            2 │
+└─────────────────────┴────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────────────┴──────────────┴─────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\system-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE (e.json->>'$.Event.System.Provider."#attributes".Name' = 'Service Control Manager') AND (e.json->>'$.Event.System.EventID."#text"' = '7045') AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────────┬──────────────┐
+│            fullkey            │ count_star() │
+│            varchar            │    int64     │
+├───────────────────────────────┼──────────────┤
+│ $.Event.EventData.AccountName │          141 │
+│ $.Event.EventData.ImagePath   │          141 │
+│ $.Event.EventData.ServiceName │          141 │
+│ $.Event.EventData.ServiceType │          141 │
+│ $.Event.EventData.StartType   │          141 │
+└───────────────────────────────┴──────────────┘
 ```
 
 

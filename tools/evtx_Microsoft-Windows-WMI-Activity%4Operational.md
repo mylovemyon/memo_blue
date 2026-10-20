@@ -328,3 +328,83 @@ ResultCode
 0x80044030: WBEMMOF_E_ERROR_INVALID_INCLUDE_FILE - A file included in the MOF by the preprocessor command include is not valid.
 0x80044031: WBEMMOF_E_INVALID_DELETECLASS_SYNTAX - The syntax for the preprocessor commands pragma deleteinstance or pragma deleteclass is not valid.
 ```
+
+
+
+## 5860 (WMI Registration of Temporary Event Consumer)
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.Operation_TemporaryEssStarted.ClientMachine, Event.UserData.Operation_TemporaryEssStarted.User, Event.UserData.Operation_TemporaryEssStarted.NamespaceName, Event.UserData.Operation_TemporaryEssStarted.Query, Event.UserData.Operation_TemporaryEssStarted.PossibleCause, COUNT(*)
+         FROM read_json('.\WMI-Activity%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 5860
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬───────────────┬────────────────────────────┬─────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────┬──────────────┐
+│      Computer       │ ClientMachine │            User            │    NamespaceName    │                                                                                 Query                                                                                 │ PossibleCause │ count_star() │
+│       varchar       │    varchar    │          varchar           │       varchar       │                                                                                varchar                                                                                │    varchar    │    int64     │
+├─────────────────────┼───────────────┼────────────────────────────┼─────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────┼──────────────┤
+│ rd01.shieldbase.com │ RD01          │ NT AUTHORITY\LOCAL SERVICE │ ROOT\SecurityCenter │ SELECT * FROM __InstanceOperationEvent WHERE TargetInstance ISA 'AntiVirusProduct' OR TargetInstance ISA 'FirewallProduct' OR TargetInstance ISA 'AntiSpywareProduct' │ Temporary     │            4 │
+│ rd01.shieldbase.com │ RD01          │ NT AUTHORITY\SYSTEM        │ ROOT\CIMV2          │ SELECT * FROM Win32_ProcessStartTrace WHERE ProcessName = 'wsmprovhost.exe'                                                                                           │ Temporary     │            5 │
+│ rd01.shieldbase.com │ RD01          │ NT AUTHORITY\SYSTEM        │ root\CIMV2          │ select * from __InstanceCreationEvent within 3 where TargetInstance ISA 'Win32_LogicalDisk'                                                                           │ Temporary     │            4 │
+└─────────────────────┴───────────────┴────────────────────────────┴─────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\WMI-Activity%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '5860' AND je.fullkey LIKE '$.Event.UserData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────────────────────────────────────────────┬──────────────┐
+│                             fullkey                              │ count_star() │
+│                             varchar                              │    int64     │
+├──────────────────────────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.Operation_TemporaryEssStarted                   │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.#attributes       │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.#attributes.xmlns │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.ClientMachine     │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.NamespaceName     │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.PossibleCause     │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.Processid         │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.Query             │         1005 │
+│ $.Event.UserData.Operation_TemporaryEssStarted.User              │         1005 │
+└──────────────────────────────────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 5861 (WMI Registration of Permanent Event Consumer)
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.Operation_ESStoConsumerBinding.ESS, Event.UserData.Operation_ESStoConsumerBinding.Namespace, Event.UserData.Operation_ESStoConsumerBinding.CONSUMER, Event.UserData.Operation_ESStoConsumerBinding.PossibleCause, COUNT(*)
+         FROM read_json('.\WMI-Activity%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 5861
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬──────────────────────┬───────────────────────┬──────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │         ESS          │       Namespace       │                     CONSUMER                     │                                                                                                                                                                                                                                                                            PossibleCause                                                                                                                                                                                                                                                                             │ count_star() │
+│       varchar       │       varchar        │        varchar        │                     varchar                      │                                                                                                                                                                                                                                                                               varchar                                                                                                                                                                                                                                                                                │    int64     │
+├─────────────────────┼──────────────────────┼───────────────────────┼──────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ SCM Event Log Filter │ //./root/subscription │ NTEventLogEventConsumer="SCM Event Log Consumer" │ Binding EventFilter: \ninstance of __EventFilter\n{\n\tCreatorSID = {1, 2, 0, 0, 0, 0, 0, 5, 32, 0, 0, 0, 32, 2, 0, 0};\n\tEventNamespace = "root\\cimv2";\n\tName = "SCM Event Log Filter";\n\tQuery = "select * from MSFT_SCMEventLogEvent";\n\tQueryLanguage = "WQL";\n};\nPerm. Consumer: \ninstance of NTEventLogEventConsumer\n{\n\tCategory = 0;\n\tCreatorSID = {1, 2, 0, 0, 0, 0, 0, 5, 32, 0, 0, 0, 32, 2, 0, 0};\n\tEventType = 1;\n\tName = "SCM Event Log Consumer";\n\tNameOfUserSIDProperty = "sid";\n\tSourceName = "Service Control Manager";\n};\n │            4 │
+└─────────────────────┴──────────────────────┴───────────────────────┴──────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\WMI-Activity%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '5861' AND je.fullkey LIKE '$.Event.UserData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────────────────────────────────────────────┬──────────────┐
+│                              fullkey                              │ count_star() │
+│                              varchar                              │    int64     │
+├───────────────────────────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.Operation_ESStoConsumerBinding                   │           15 │
+│ $.Event.UserData.Operation_ESStoConsumerBinding.#attributes       │           15 │
+│ $.Event.UserData.Operation_ESStoConsumerBinding.#attributes.xmlns │           15 │
+│ $.Event.UserData.Operation_ESStoConsumerBinding.CONSUMER          │           15 │
+│ $.Event.UserData.Operation_ESStoConsumerBinding.ESS               │           15 │
+│ $.Event.UserData.Operation_ESStoConsumerBinding.Namespace         │           15 │
+│ $.Event.UserData.Operation_ESStoConsumerBinding.PossibleCause     │           15 │
+└───────────────────────────────────────────────────────────────────┴──────────────┘
+```

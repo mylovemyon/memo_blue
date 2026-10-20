@@ -77,11 +77,11 @@ memory D SELECT je.fullkey, COUNT(*)
 ```
 Profiles
 ```
-0: NET_FW_PROFILE2_CURRENT
-1: NET_FW_PROFILE2_DOMAIN
-2: NET_FW_PROFILE2_PRIVATE
-4: NET_FW_PROFILE2_PUBLIC
-2147483647: NET_FW_PROFILE2_ALL
+0: CURRENT
+1: DOMAIN
+2: PRIVATE
+4: PUBLIC
+2147483647: ALL
 ```
 Origin
 ```
@@ -189,8 +189,10 @@ Direction
 ```
 Protocol
 ```
+1: ICMPv4
 6: TCP
 17: UDP
+58: ICMPv6
 256: All
 ```
 EdgeTraversal
@@ -346,4 +348,53 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.RuleId               │          264 │
 │ $.Event.EventData.RuleName             │          264 │
 └────────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 2011 (Windows Firewall unable to notify user of blocked application)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ApplicationPath, Event.EventData.IPVersion, Event.EventData.Protocol, Event.EventData.ReasonCode, COUNT(*)
+         FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd09.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.EventID = 2011
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬───────────────┬──────────────────────────────────────────────────┬───────────┬──────────┬────────────┬──────────────┐
+│      Computer       │ ModifyingUser │                 ApplicationPath                  │ IPVersion │ Protocol │ ReasonCode │ count_star() │
+│       varchar       │    varchar    │                     varchar                      │   int64   │  int64   │   int64    │    int64     │
+├─────────────────────┼───────────────┼──────────────────────────────────────────────────┼───────────┼──────────┼────────────┼──────────────┤
+│ rd09.shieldbase.com │ S-1-5-18      │ C:\program files (x86)\anydeskmsi\anydeskmsi.exe │         0 │        6 │          1 │            1 │
+└─────────────────────┴───────────────┴──────────────────────────────────────────────────┴───────────┴──────────┴────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Windows Firewall With Advanced Security%4Firewall-rd09.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '2011' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────────────┬──────────────┐
+│              fullkey              │ count_star() │
+│              varchar              │    int64     │
+├───────────────────────────────────┼──────────────┤
+│ $.Event.EventData.ApplicationPath │            1 │
+│ $.Event.EventData.IPVersion       │            1 │
+│ $.Event.EventData.ModifyingUser   │            1 │
+│ $.Event.EventData.Port            │            1 │
+│ $.Event.EventData.ProcessId       │            1 │
+│ $.Event.EventData.Protocol        │            1 │
+│ $.Event.EventData.ReasonCode      │            1 │
+└───────────────────────────────────┴──────────────┘
+```
+ReasonCode
+```
+1: The application is a system service
+2: The application is non interactive
+4: The firewall is off and the application is allowed
+8: The image is block listed
+16: The session is inactive
+32: An unknown error occurred
+64: Inbound notifications are not enabled
+128: All Inbound connections are disallowed
+0xc0: All Inbound connections are disallowed, Inbound notifications are not enabled
 ```

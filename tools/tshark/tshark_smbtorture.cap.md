@@ -138,6 +138,9 @@ Index  NT Transaction Sub-Commands Calls    Min SRT    Max SRT    Avg SRT    Sum
 ## smb.cmd
 ### 0x00
 ```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x00" -T fields -e frame.time_utc -e smb.cmd -e smb.path -e smb.dir_name -e smb.uid -e smb.mid -e smb.flags.response -e smb.nt_status -e ip.src -e ip.dst -E header=y -E separator=","  -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x00.csv
+```
+```sql
 memory D SELECT timezone('UTC', "frame.time_utc") AS time_utc, "smb.path", "smb.dir_name", "smb.uid", "smb.mid", "smb.flags.response", hex("smb.nt_status"), "ip.src", "ip.dst", COUNT(*)
          FROM read_csv_auto('0x00.csv')
          GROUP BY ALL

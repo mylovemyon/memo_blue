@@ -59,7 +59,7 @@ Following is a listing of all [SMB](760f8b7f-9a8a-4f0c-a044-1501a83a933b#gt_09db
 
 **Earliest dialect:** Earliest known dialect in which this command appears.
 
-    - | NT LAN Manager name and pre-NT LAN Manager name | Code | Description | Status | Earliest dialect |
+| NT LAN Manager name and pre-NT LAN Manager name | Code | Description | Status | Earliest dialect |
 | --- | --- | --- | --- | --- |
 | SMB\_COM\_CREATE\_DIRECTORY (section [2.2.4.1](e6e870ad-7037-4b79-ac54-4a42a1ba4561))<br><br>SMBmkdir | 0x00 | Create a new directory. | D | CORE |
 | SMB\_COM\_DELETE\_DIRECTORY (section [2.2.4.2](0bca354c-42d9-46b7-a0ae-d8c6870242ca))<br><br>SMBrmdir | 0x01 | Delete an empty directory. | C | CORE |

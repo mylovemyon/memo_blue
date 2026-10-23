@@ -24,7 +24,7 @@ memory D SELECT Event.System.Computer, Event.EventData.connection, COUNT(*)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 6
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.connection;
 ┌─────────────────────┬──────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                        connection                        │ count_star() │
 │       varchar       │                         varchar                          │    int64     │
@@ -62,7 +62,7 @@ memory D SELECT Event.System.Computer, Event.EventData.resourceUri, COUNT(*)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 91
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.resourceUri;
 ┌─────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                                               resourceUri                                                │ count_star() │
 │       varchar       │                                                 varchar                                                  │    int64     │

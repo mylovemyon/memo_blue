@@ -45,18 +45,18 @@ memory D SELECT Event.System.EventID, COUNT(*)
 
 ## 1024 (RDP Client is trying to connect to the server)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.CustomLevel, Event.EventData.Name, Event.EventData.Value, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.EventData.CustomLevel, Event.EventData.Name, Event.EventData.Value, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1024
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬─────────────┬─────────────┬────────────────────────┬──────────────┐
-│      Computer       │ CustomLevel │    Name     │         Value          │ count_star() │
-│       varchar       │   varchar   │   varchar   │          json          │    int64     │
-├─────────────────────┼─────────────┼─────────────┼────────────────────────┼──────────────┤
-│ rd01.shieldbase.com │ Info        │ Server Name │ "dev01.shieldbase.com" │            1 │
-└─────────────────────┴─────────────┴─────────────┴────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┬──────────────┐
+│      Computer       │              ActivityID              │ CustomLevel │    Name     │         Value          │ count_star() │
+│       varchar       │                 uuid                 │   varchar   │   varchar   │          json          │    int64     │
+├─────────────────────┼──────────────────────────────────────┼─────────────┼─────────────┼────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 71508a01-e8b4-4652-818f-7401bd240000 │ Info        │ Server Name │ "dev01.shieldbase.com" │            1 │
+└─────────────────────┴──────────────────────────────────────┴─────────────┴─────────────┴────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -79,18 +79,18 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 1025 (RDP ClientActiveX has connected to the server)
 ```sql
-memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1025
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬────────────────────────────┬──────────────┐
-│      Computer       │         SystemTime         │ count_star() │
-│       varchar       │         timestamp          │    int64     │
-├─────────────────────┼────────────────────────────┼──────────────┤
-│ rd01.shieldbase.com │ 2023-01-18 14:55:12.464633 │            1 │
-└─────────────────────┴────────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │              ActivityID              │         SystemTime         │ count_star() │
+│       varchar       │                 uuid                 │         timestamp          │    int64     │
+├─────────────────────┼──────────────────────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 71508a01-e8b4-4652-818f-7401bd240000 │ 2023-01-18 14:55:12.464633 │            1 │
+└─────────────────────┴──────────────────────────────────────┴────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -110,18 +110,18 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 1026 (RDP ClientActiveX has been disconnected)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.CustomLevel, Event.EventData.Name, Event.EventData.Value, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.EventData.CustomLevel, Event.EventData.Name, Event.EventData.Value, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1026
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬─────────────┬───────────────────┬───────┬──────────────┐
-│      Computer       │ CustomLevel │       Name        │ Value │ count_star() │
-│       varchar       │   varchar   │      varchar      │ json  │    int64     │
-├─────────────────────┼─────────────┼───────────────────┼───────┼──────────────┤
-│ rd01.shieldbase.com │ Info        │ Disconnect Reason │ 1     │            1 │
-└─────────────────────┴─────────────┴───────────────────┴───────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────┬─────────────┬───────────────────┬───────┬──────────────┐
+│      Computer       │              ActivityID              │ CustomLevel │       Name        │ Value │ count_star() │
+│       varchar       │                 uuid                 │   varchar   │      varchar      │ json  │    int64     │
+├─────────────────────┼──────────────────────────────────────┼─────────────┼───────────────────┼───────┼──────────────┤
+│ rd01.shieldbase.com │ 71508a01-e8b4-4652-818f-7401bd240000 │ Info        │ Disconnect Reason │ 1     │            1 │
+└─────────────────────┴──────────────────────────────────────┴─────────────┴───────────────────┴───────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -282,18 +282,20 @@ Value
 
 ## 1027 (RDP Connected to domain)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.DomainName, Event.EventData.SessionId, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.EventData.DomainName, Event.EventData.SessionId, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-admin01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1027
          GROUP BY ALL
          ORDER BY ALL;
-┌────────────────────────┬────────────┬───────────┬──────────────┐
-│        Computer        │ DomainName │ SessionId │ count_star() │
-│        varchar         │  varchar   │   int64   │    int64     │
-├────────────────────────┼────────────┼───────────┼──────────────┤
-│ admin01.shieldbase.com │ FTP01      │         2 │            3 │
-└────────────────────────┴────────────┴───────────┴──────────────┘
+┌────────────────────────┬──────────────────────────────────────┬────────────┬───────────┬──────────────┐
+│        Computer        │              ActivityID              │ DomainName │ SessionId │ count_star() │
+│        varchar         │                 uuid                 │  varchar   │   int64   │    int64     │
+├────────────────────────┼──────────────────────────────────────┼────────────┼───────────┼──────────────┤
+│ admin01.shieldbase.com │ 4b2d8225-9f63-4e00-ad23-9690af540000 │ FTP01      │         2 │            1 │
+│ admin01.shieldbase.com │ bc45f4e2-b83b-416e-bacc-201597970000 │ FTP01      │         2 │            1 │
+│ admin01.shieldbase.com │ cea3e57a-00c8-4a04-8c26-daeabc520000 │ FTP01      │         2 │            1 │
+└────────────────────────┴──────────────────────────────────────┴────────────┴───────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -315,18 +317,18 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 1029 (RDP (outgoing connection))
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.TraceMessage, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.EventData.TraceMessage, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1029
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬───────────────────────────────────────────────┬──────────────┐
-│      Computer       │                 TraceMessage                  │ count_star() │
-│       varchar       │                    varchar                    │    int64     │
-├─────────────────────┼───────────────────────────────────────────────┼──────────────┤
-│ rd01.shieldbase.com │ 3NcrCxsEhoWqZ5rdovJIqosX6g6saOsXV2TvJplFSXM=- │            1 │
-└─────────────────────┴───────────────────────────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────┬───────────────────────────────────────────────┬──────────────┐
+│      Computer       │              ActivityID              │                 TraceMessage                  │ count_star() │
+│       varchar       │                 uuid                 │                    varchar                    │    int64     │
+├─────────────────────┼──────────────────────────────────────┼───────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 71508a01-e8b4-4652-818f-7401bd240000 │ 3NcrCxsEhoWqZ5rdovJIqosX6g6saOsXV2TvJplFSXM=- │            1 │
+└─────────────────────┴──────────────────────────────────────┴───────────────────────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -352,18 +354,18 @@ sansforensics@SANS-SIFT:~$ printf 'wacsvc' | iconv -f UTF-8 -t UTF-16LE | sha256
 
 ## 1102 (RDP client has initiated a multi-transport connection to the server)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.CustomLevel, Event.EventData.Name, Event.EventData.Value, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.EventData.CustomLevel, Event.EventData.Name, Event.EventData.Value, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1102
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬─────────────┬───────────────┬──────────────┬──────────────┐
-│      Computer       │ CustomLevel │     Name      │    Value     │ count_star() │
-│       varchar       │   varchar   │    varchar    │     json     │    int64     │
-├─────────────────────┼─────────────┼───────────────┼──────────────┼──────────────┤
-│ rd01.shieldbase.com │ Info        │ ServerAddress │ "172.16.4.9" │            1 │
-└─────────────────────┴─────────────┴───────────────┴──────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────┬─────────────┬───────────────┬──────────────┬──────────────┐
+│      Computer       │              ActivityID              │ CustomLevel │     Name      │    Value     │ count_star() │
+│       varchar       │                 uuid                 │   varchar   │    varchar    │     json     │    int64     │
+├─────────────────────┼──────────────────────────────────────┼─────────────┼───────────────┼──────────────┼──────────────┤
+│ rd01.shieldbase.com │ 71508a01-e8b4-4652-818f-7401bd240000 │ Info        │ ServerAddress │ "172.16.4.9" │            1 │
+└─────────────────────┴──────────────────────────────────────┴─────────────┴───────────────┴──────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -386,18 +388,18 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 1103 (The RDP client has established a multi-transport connection to the server)
 ```sql
-memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1103
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬────────────────────────────┬──────────────┐
-│      Computer       │         SystemTime         │ count_star() │
-│       varchar       │         timestamp          │    int64     │
-├─────────────────────┼────────────────────────────┼──────────────┤
-│ rd01.shieldbase.com │ 2023-01-18 14:55:12.408926 │            1 │
-└─────────────────────┴────────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │              ActivityID              │         SystemTime         │ count_star() │
+│       varchar       │                 uuid                 │         timestamp          │    int64     │
+├─────────────────────┼──────────────────────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 71508a01-e8b4-4652-818f-7401bd240000 │ 2023-01-18 14:55:12.408926 │            1 │
+└─────────────────────┴──────────────────────────────────────┴────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -417,18 +419,18 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 1105 (RDP the multi-transport connection has been disconnected)
 ```sql
-memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".ActivityID, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
          FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1105
          GROUP BY ALL
          ORDER BY ALL;
-┌─────────────────────┬────────────────────────────┬──────────────┐
-│      Computer       │         SystemTime         │ count_star() │
-│       varchar       │         timestamp          │    int64     │
-├─────────────────────┼────────────────────────────┼──────────────┤
-│ rd01.shieldbase.com │ 2023-01-19 17:48:00.573082 │            1 │
-└─────────────────────┴────────────────────────────┴──────────────┘
+┌─────────────────────┬──────────────────────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │              ActivityID              │         SystemTime         │ count_star() │
+│       varchar       │                 uuid                 │         timestamp          │    int64     │
+├─────────────────────┼──────────────────────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 71508a01-e8b4-4652-818f-7401bd240000 │ 2023-01-19 17:48:00.573082 │            1 │
+└─────────────────────┴──────────────────────────────────────┴────────────────────────────┴──────────────┘
 ```
 fullkey
 ```sql

@@ -347,3 +347,99 @@ TraceMessage
 sansforensics@SANS-SIFT:~$ printf 'wacsvc' | iconv -f UTF-8 -t UTF-16LE | sha256sum | cut -d ' ' -f 1 | xxd -r -p | base64
 3NcrCxsEhoWqZ5rdovJIqosX6g6saOsXV2TvJplFSXM=
 ```
+
+
+
+## 1102 (RDP client has initiated a multi-transport connection to the server)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.CustomLevel, Event.EventData.Name, Event.EventData.Value, COUNT(*)
+         FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 1102
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬─────────────┬───────────────┬──────────────┬──────────────┐
+│      Computer       │ CustomLevel │     Name      │    Value     │ count_star() │
+│       varchar       │   varchar   │    varchar    │     json     │    int64     │
+├─────────────────────┼─────────────┼───────────────┼──────────────┼──────────────┤
+│ rd01.shieldbase.com │ Info        │ ServerAddress │ "172.16.4.9" │            1 │
+└─────────────────────┴─────────────┴───────────────┴──────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '1102' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────────┬──────────────┐
+│            fullkey            │ count_star() │
+│            varchar            │    int64     │
+├───────────────────────────────┼──────────────┤
+│ $.Event.EventData.CustomLevel │            1 │
+│ $.Event.EventData.Name        │            1 │
+│ $.Event.EventData.Value       │            1 │
+└───────────────────────────────┴──────────────┘
+```
+
+
+
+## 1103 (The RDP client has established a multi-transport connection to the server)
+```sql
+memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+         FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 1103
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │         SystemTime         │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-18 14:55:12.408926 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '1103' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌─────────┬──────────────┐
+│ fullkey │ count_star() │
+│ varchar │    int64     │
+└─────────┴──────────────┘
+          0 rows
+```
+
+
+
+## 1105 (RDP the multi-transport connection has been disconnected)
+```sql
+memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+         FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 1105
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │         SystemTime         │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-19 17:48:00.573082 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '1105' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌─────────┬──────────────┐
+│ fullkey │ count_star() │
+│ varchar │    int64     │
+└─────────┴──────────────┘
+          0 rows
+```

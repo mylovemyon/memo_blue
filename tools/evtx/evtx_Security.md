@@ -155,7 +155,7 @@ memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".Sy
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1100
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.TimeCreated."#attributes".SystemTime;
 ┌─────────────────────┬────────────────────────────┬──────────────┐
 │      Computer       │         SystemTime         │ count_star() │
 │       varchar       │         timestamp          │    int64     │
@@ -189,7 +189,7 @@ memory D SELECT Event.System.Computer, Event.UserData.LogFileCleared.SubjectUser
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1102
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.UserData.LogFileCleared.SubjectUserSid;
 ┌──────────────────────┬────────────────────────────────────────────────┬───────────────────┬─────────────────┬──────────────┐
 │       Computer       │                 SubjectUserSid                 │ SubjectDomainName │ SubjectUserName │ count_star() │
 │       varchar        │                    varchar                     │      varchar      │     varchar     │    int64     │
@@ -227,7 +227,7 @@ memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".Sy
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4608
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.TimeCreated."#attributes".SystemTime;
 ┌─────────────────────┬────────────────────────────┬──────────────┐
 │      Computer       │         SystemTime         │ count_star() │
 │       varchar       │         timestamp          │    int64     │
@@ -2920,7 +2920,7 @@ memory D SELECT Event.System.Computer, Event.EventData.ObjectClass, Event.EventD
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND (Event.System.EventID->>'$' = '5136')
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.ObjectClass, Event.EventData.AttributeLDAPDisplayName;
 ┌─────────────────────┬──────────────────────┬────────────────────────────────┬──────────────┐
 │      Computer       │     ObjectClass      │    AttributeLDAPDisplayName    │ count_star() │
 │       varchar       │       varchar        │            varchar             │    int64     │

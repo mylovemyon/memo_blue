@@ -41,7 +41,7 @@ memory D SELECT Event.System.Computer, Event.UserData.Operation_StartedOperation
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5857
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.UserData.Operation_StartedOperational.HostProcess, Event.UserData.Operation_StartedOperational.ProviderName;
 ┌─────────────────────┬──────────────┬───────────────────────────────────┬─────────────────────────────────────────────┬─────────┬──────────────┐
 │      Computer       │ HostProcess  │           ProviderName            │                ProviderPath                 │  Code   │ count_star() │
 │       varchar       │   varchar    │              varchar              │                   varchar                   │ varchar │    int64     │
@@ -100,7 +100,7 @@ memory D SELECT Event.System.Computer, Event.UserData.Operation_ClientFailure.Cl
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5858 AND Event.UserData.Operation_ClientFailure.User != 'NT AUTHORITY\SYSTEM'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.UserData.Operation_ClientFailure.User, Event.UserData.Operation_ClientFailure.Operation, Event.UserData.Operation_ClientFailure.ResultCode;
 ┌─────────────────────┬───────────────┬──────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────┬───────────┬───────────────┬──────────────┐
 │      Computer       │ ClientMachine │             User             │                                                   Operation                                                    │ ResultCode │ Component │ PossibleCause │ count_star() │
 │       varchar       │    varchar    │           varchar            │                                                    varchar                                                     │  varchar   │  varchar  │    varchar    │    int64     │
@@ -338,7 +338,7 @@ memory D SELECT Event.System.Computer, Event.UserData.Operation_TemporaryEssStar
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5860
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.UserData.Operation_TemporaryEssStarted.User, Event.UserData.Operation_TemporaryEssStarted.NamespaceName, Event.UserData.Operation_TemporaryEssStarted.Query;
 ┌─────────────────────┬───────────────┬────────────────────────────┬─────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────┬──────────────┐
 │      Computer       │ ClientMachine │            User            │    NamespaceName    │                                                                                 Query                                                                                 │ PossibleCause │ count_star() │
 │       varchar       │    varchar    │          varchar           │       varchar       │                                                                                varchar                                                                                │    varchar    │    int64     │
@@ -380,7 +380,7 @@ memory D SELECT Event.System.Computer, Event.UserData.Operation_ESStoConsumerBin
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5861
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.UserData.Operation_ESStoConsumerBinding.ESS, Event.UserData.Operation_ESStoConsumerBinding.Namespace, Event.UserData.Operation_ESStoConsumerBinding.CONSUMER;
 ┌─────────────────────┬──────────────────────┬───────────────────────┬──────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │         ESS          │       Namespace       │                     CONSUMER                     │                                                                                                                                                                                                                                                                            PossibleCause                                                                                                                                                                                                                                                                             │ count_star() │
 │       varchar       │       varchar        │        varchar        │                     varchar                      │                                                                                                                                                                                                                                                                               varchar                                                                                                                                                                                                                                                                                │    int64     │

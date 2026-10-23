@@ -310,3 +310,40 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.SessionId  │           14 │
 └──────────────────────────────┴──────────────┘
 ```
+
+
+
+## 1029 (RDP (outgoing connection))
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.TraceMessage, COUNT(*)
+         FROM read_json('.\TerminalServices-RDPClient%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 1029
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬───────────────────────────────────────────────┬──────────────┐
+│      Computer       │                 TraceMessage                  │ count_star() │
+│       varchar       │                    varchar                    │    int64     │
+├─────────────────────┼───────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 3NcrCxsEhoWqZ5rdovJIqosX6g6saOsXV2TvJplFSXM=- │            1 │
+└─────────────────────┴───────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '1029' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────┬──────────────┐
+│            fullkey             │ count_star() │
+│            varchar             │    int64     │
+├────────────────────────────────┼──────────────┤
+│ $.Event.EventData.TraceMessage │            1 │
+└────────────────────────────────┴──────────────┘
+```
+TraceMessage
+```sh
+sansforensics@SANS-SIFT:~$ printf 'wacsvc' | iconv -f UTF-8 -t UTF-16LE | sha256sum | cut -d ' ' -f 1 | xxd -r -p | base64
+3NcrCxsEhoWqZ5rdovJIqosX6g6saOsXV2TvJplFSXM=
+```

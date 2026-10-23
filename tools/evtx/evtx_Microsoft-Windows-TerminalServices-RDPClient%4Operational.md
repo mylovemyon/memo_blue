@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-RDPClient%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-RDPClient%4Operational.evtx
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-RDPClient%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-RDPClient%4Operational.evtx
 PS C:\Users\SANSDFIR>
 ```
 

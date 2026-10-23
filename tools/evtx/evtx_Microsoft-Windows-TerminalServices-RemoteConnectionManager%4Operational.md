@@ -35,6 +35,40 @@ memory D SELECT Event.System.Computer, Event.System.EventID, COUNT(*)
 
 
 
+## 261 (RDP Listener received a connection)
+```sql
+memory D SELECT Event.System.Computer, Event.UserData.EventXML.listenerName, COUNT(*)
+         FROM read_json('.\TerminalServices-RemoteConnectionManager%4Operational.json', columns = {Event: 'JSON'})
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 261
+         GROUP BY ALL
+         ORDER BY ALL;
+┌───────────────────────┬──────────────┬──────────────┐
+│       Computer        │ listenerName │ count_star() │
+│         json          │     json     │    int64     │
+├───────────────────────┼──────────────┼──────────────┤
+│ "rd01.shieldbase.com" │ "RDP-Tcp"    │           84 │
+└───────────────────────┴──────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-RemoteConnectionManager%4Operational.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '261' AND je.fullkey LIKE '$.Event.UserData.EventXML.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌─────────────────────────────────────────────┬──────────────┐
+│                   fullkey                   │ count_star() │
+│                   varchar                   │    int64     │
+├─────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.EventXML.#attributes       │          211 │
+│ $.Event.UserData.EventXML.#attributes.xmlns │          211 │
+│ $.Event.UserData.EventXML.listenerName      │          211 │
+└─────────────────────────────────────────────┴──────────────┘
+```
+
+
+
 ## 1149 (RDP network connection established)
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.Param2, Event.UserData.EventXML.Param1, Event.UserData.EventXML.Param3, COUNT(*)

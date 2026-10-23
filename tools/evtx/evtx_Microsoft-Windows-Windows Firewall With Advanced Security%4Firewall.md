@@ -359,7 +359,7 @@ memory D SELECT je.fullkey, COUNT(*)
 
 ## 2011 (Windows Firewall unable to notify user of blocked application)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ApplicationPath, Event.EventData.IPVersion, Event.EventData.Protocol, Event.EventData.ReasonCode, COUNT(*)
+memory D SELECT Event.EventData.ModifyingUser, Event.EventData.ApplicationPath, Event.EventData.IPVersion, Event.EventData.Protocol, Event.EventData.ReasonCode, COUNT(*)
          FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd09.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2011
          GROUP BY ALL

@@ -41,7 +41,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SubscriberName, Event.Eve
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 811
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.SubscriberName, Event.EventData.Event;
 ┌─────────────────────┬────────────────┬───────┬──────────────┐
 │      Computer       │ SubscriberName │ Event │ count_star() │
 │       varchar       │    varchar     │ int64 │    int64     │
@@ -114,7 +114,7 @@ memory D SELECT Event.System.Computer, Event.EventData.SubscriberName, Event.Eve
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 812
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.SubscriberName, Event.EventData.Event;
 ┌─────────────────────┬────────────────┬───────┬──────────────┐
 │      Computer       │ SubscriberName │ Event │ count_star() │
 │       varchar       │    varchar     │ int64 │    int64     │

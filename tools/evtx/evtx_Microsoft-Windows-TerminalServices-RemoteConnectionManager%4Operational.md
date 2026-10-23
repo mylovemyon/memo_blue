@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-RemoteConnectionManager%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-RemoteConnectionManager%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx
 PS C:\Users\SANSDFIR>
 ```
 
@@ -69,7 +69,7 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
-## 1149 (RDP network connection established)
+## 1149 (RDP network connection established) 
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.Param2, Event.UserData.EventXML.Param1, Event.UserData.EventXML.Param3, COUNT(*)
          FROM read_json('.\TerminalServices-RemoteConnectionManager%4Operational.json', sample_size = -1, map_inference_threshold = -1, ignore_errors = true)
@@ -81,8 +81,8 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.Param2, Event.Use
 │      Computer       │   Param2   │ Param1  │    Param3    │ count_star() │
 │       varchar       │  varchar   │ varchar │   varchar    │    int64     │
 ├─────────────────────┼────────────┼─────────┼──────────────┼──────────────┤
-│ rd01.shieldbase.com │ shieldbase │ tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.14 │            3 │
+│ rd01.shieldbase.com │ shieldbase │ tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.20 │            6 │
 │ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.23 │            3 │
 │ rd01.shieldbase.com │ NULL       │ NULL    │ 172.16.30.3  │            4 │

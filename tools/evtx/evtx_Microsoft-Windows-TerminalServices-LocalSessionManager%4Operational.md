@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR>  .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-LocalSessionManager%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f TerminalServices-LocalSessionManager%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx
 PS C:\Users\SANSDFIR>
 ```
 
@@ -50,29 +50,29 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 21
          GROUP BY ALL
-         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+         ORDER BY Event.UserData.EventXML.Address, Event.UserData.EventXML.User, Event.UserData.EventXML.SessionID;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
 ├─────────────────────┼───────────┼────────────────────┼──────────────┼──────────────┤
 │ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.14 │            1 │
 │ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.23 │            2 │
 │ rd01.shieldbase.com │         3 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         3 │ shieldbase\wacsvc  │ 172.16.4.9   │            1 │
 │ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         5 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │         6 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
+│ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
+│ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.23 │            2 │
+│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
+│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
+│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         7 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         8 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         9 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │        10 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
-│ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
+│ rd01.shieldbase.com │         3 │ shieldbase\wacsvc  │ 172.16.4.9   │            1 │
 │ rd01.shieldbase.com │        12 │ shieldbase\wacsvc  │ 172.16.6.18  │            1 │
-│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
-│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
 └─────────────────────┴───────────┴────────────────────┴──────────────┴──────────────┘
   18 rows                                                                  5 columns
 ```
@@ -104,29 +104,29 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 22
          GROUP BY ALL
-         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+         ORDER BY Event.UserData.EventXML.Address, Event.UserData.EventXML.User, Event.UserData.EventXML.SessionID;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
 ├─────────────────────┼───────────┼────────────────────┼──────────────┼──────────────┤
 │ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.14 │            1 │
 │ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.23 │            2 │
 │ rd01.shieldbase.com │         3 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         3 │ shieldbase\wacsvc  │ 172.16.4.9   │            1 │
 │ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         5 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │         6 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
+│ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
+│ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.23 │            2 │
+│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
+│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
+│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         7 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         8 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         9 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │        10 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
-│ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
+│ rd01.shieldbase.com │         3 │ shieldbase\wacsvc  │ 172.16.4.9   │            1 │
 │ rd01.shieldbase.com │        12 │ shieldbase\wacsvc  │ 172.16.6.18  │            1 │
-│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
-│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
 └─────────────────────┴───────────┴────────────────────┴──────────────┴──────────────┘
   18 rows                                                                  5 columns
 ```
@@ -207,31 +207,31 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 24
          GROUP BY ALL
-         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+         ORDER BY Event.UserData.EventXML.Address, Event.UserData.EventXML.User, Event.UserData.EventXML.SessionID;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
 ├─────────────────────┼───────────┼────────────────────┼──────────────┼──────────────┤
 │ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.14 │            1 │
+│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.14 │            2 │
 │ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.23 │            1 │
 │ rd01.shieldbase.com │         3 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         3 │ shieldbase\wacsvc  │ 172.16.4.9   │            1 │
 │ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
-│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.23 │            1 │
-│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.8  │            2 │
 │ rd01.shieldbase.com │         5 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │         6 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
+│ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
+│ rd01.shieldbase.com │         2 │ shieldbase\tdungan │ 172.16.30.23 │            1 │
+│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.23 │            1 │
+│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            2 │
+│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
+│ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.8  │            2 │
 │ rd01.shieldbase.com │         7 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         8 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │         9 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │        10 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
-│ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.20 │            1 │
 │ rd01.shieldbase.com │        11 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
+│ rd01.shieldbase.com │         3 │ shieldbase\wacsvc  │ 172.16.4.9   │            1 │
 │ rd01.shieldbase.com │        12 │ shieldbase\wacsvc  │ 172.16.6.18  │            8 │
-│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            2 │
-│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.14 │            2 │
-│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
 └─────────────────────┴───────────┴────────────────────┴──────────────┴──────────────┘
   20 rows                                                                  5 columns
 ```
@@ -256,23 +256,23 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
-## 25 (Remote Desktop Services: Session reconnection succeeded)
+## 25 (Remote Desktop Services: Session reconnection succeeded) 
 ```sql
 memory D SELECT Event.System.Computer, Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address, COUNT(*)
          FROM read_json('.\TerminalServices-LocalSessionManager%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 25
          GROUP BY ALL
-         ORDER BY Event.UserData.EventXML.SessionID, Event.UserData.EventXML.User, Event.UserData.EventXML.Address;
+         ORDER BY Event.UserData.EventXML.Address, Event.UserData.EventXML.User, Event.UserData.EventXML.SessionID;
 ┌─────────────────────┬───────────┬────────────────────┬──────────────┬──────────────┐
 │      Computer       │ SessionID │        User        │   Address    │ count_star() │
 │       varchar       │   int64   │      varchar       │   varchar    │    int64     │
 ├─────────────────────┼───────────┼────────────────────┼──────────────┼──────────────┤
+│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.14 │            2 │
 │ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.23 │            1 │
+│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
 │ rd01.shieldbase.com │         4 │ shieldbase\tdungan │ 172.16.30.8  │            1 │
 │ rd01.shieldbase.com │        12 │ shieldbase\wacsvc  │ 172.16.6.18  │            7 │
-│ rd01.shieldbase.com │        13 │ shieldbase\tdungan │ 172.16.30.3  │            1 │
-│ rd01.shieldbase.com │        14 │ shieldbase\tdungan │ 172.16.30.14 │            2 │
 └─────────────────────┴───────────┴────────────────────┴──────────────┴──────────────┘
 ```
 fullkey

@@ -46,7 +46,7 @@ memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.Even
          FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd06.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2003
          GROUP BY ALL
-         ORDER BY Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.SettingValueString;
+         ORDER BY Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.Profiles,  Event.EventData.SettingValueString;
 ┌──────────┬───────────────┬───────────────────────────────────────┬────────┬──────────┬─────────────┬──────────────┬────────────────────┬──────────────────┬──────────────┐
 │ Computer │ ModifyingUser │         ModifyingApplication          │ Origin │ Profiles │ SettingType │ SettingValue │ SettingValueString │ SettingValueSize │ count_star() │
 │ varchar  │    varchar    │                varchar                │ int64  │  int64   │    int64    │   varchar    │      varchar       │      int64       │    int64     │

@@ -36,7 +36,7 @@ memory D SELECT Event.System.EventID, COUNT(*)
 
 ## 811 (User activity)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.SubscriberName, Event.EventData.Event,COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.SubscriberName, Event.EventData.Event, COUNT(*)
          FROM read_json('.\Winlogon%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 811
@@ -99,17 +99,17 @@ Event
 5: System unlock
 6: Screensaver start
 7: Screensaver stop
-8	セッション切断・休止状態への移行
-9	切断されたセッションの再開
-12	ログオン関連の通知
-13	ログオフ関連の通知
+8: セッション切断・休止状態への移行
+9: 切断されたセッションの再開
+12: ログオン関連の通知
+13: ログオフ関連の通知
 ```
 
 
 
 ## 812 (User activity)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.SubscriberName, Event.EventData.Event,COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.SubscriberName, Event.EventData.Event, COUNT(*)
          FROM read_json('.\Winlogon%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 812

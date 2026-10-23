@@ -40,7 +40,7 @@ memory D SELECT Event.System.Computer, Event.EventData.ModuleName, to_timestamp(
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 4
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.ModuleName;
 ┌─────────────────────┬───────────────────────────────────┬───────────────────────────────┬────────────────────┬──────────────┐
 │      Computer       │            ModuleName             │           StartTime           │ CrashTimeFromStart │ count_star() │
 │       varchar       │              varchar              │   timestamp with time zone    │       int64        │    int64     │

@@ -46,7 +46,7 @@ memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.Even
          FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd06.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2003
          GROUP BY ALL
-         ORDER BY Event.EventData.ModifyingUser, Event.EventData.SettingValueString;
+         ORDER BY Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.SettingValueString;
 ┌──────────┬───────────────┬───────────────────────────────────────┬────────┬──────────┬─────────────┬──────────────┬────────────────────┬──────────────────┬──────────────┐
 │ Computer │ ModifyingUser │         ModifyingApplication          │ Origin │ Profiles │ SettingType │ SettingValue │ SettingValueString │ SettingValueSize │ count_star() │
 │ varchar  │    varchar    │                varchar                │ int64  │  int64   │    int64    │   varchar    │      varchar       │      int64       │    int64     │
@@ -299,7 +299,7 @@ memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.Even
          FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2006 AND Event.EventData.ModifyingApplication != 'C:\Windows\System32\svchost.exe'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Computer, Event.EventData.ModifyingUser, Event.EventData.ModifyingApplication, Event.EventData.RuleName;
 ┌─────────────────────┬────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────┬──────────────┐
 │      Computer       │                 ModifyingUser                  │                                                   ModifyingApplication                                                   │                    RuleName                     │ count_star() │
 │       varchar       │                    varchar                     │                                                         varchar                                                          │                     varchar                     │    int64     │
@@ -363,7 +363,7 @@ memory D SELECT Event.System.Computer, Event.EventData.ModifyingUser, Event.Even
          FROM read_json('.\Windows Firewall With Advanced Security%4Firewall-rd09.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2011
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.ModifyingUser, Event.EventData.ApplicationPath, Event.EventData.ReasonCode;
 ┌─────────────────────┬───────────────┬──────────────────────────────────────────────────┬───────────┬──────────┬────────────┬──────────────┐
 │      Computer       │ ModifyingUser │                 ApplicationPath                  │ IPVersion │ Protocol │ ReasonCode │ count_star() │
 │       varchar       │    varchar    │                     varchar                      │   int64   │  int64   │   int64    │    int64     │

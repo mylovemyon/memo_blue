@@ -76,7 +76,7 @@ memory D SELECT Event.System.Computer, Event.UserData.EventXML.Param2, Event.Use
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1149
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.UserData.EventXML.Param3;
 ┌─────────────────────┬────────────┬─────────┬──────────────┬──────────────┐
 │      Computer       │   Param2   │ Param1  │    Param3    │ count_star() │
 │       varchar       │  varchar   │ varchar │   varchar    │    int64     │

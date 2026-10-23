@@ -103,3 +103,11 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.VirtualDisk   │            1 │
 └─────────────────────────────────┴──────────────┘
 ```
+
+
+
+## 50 (Performing Create VHD)
+
+
+
+## 51 (Successfully performed Create VHD)

@@ -45,7 +45,7 @@ memory D SELECT Event.System.Computer, Event.EventData.VhdFileName, Event.EventD
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.VhdFileName;
 ┌─────────────────────┬───────────────────────────────────────────────────────────────┬────────────────────┬───────────────┬──────────────┐
 │      Computer       │                          VhdFileName                          │    VirtualDisk     │ VhdDiskNumber │ count_star() │
 │       varchar       │                            varchar                            │      varchar       │     int64     │    int64     │
@@ -79,7 +79,7 @@ memory D SELECT Event.System.Computer, Event.EventData.VhdFileName, Event.EventD
          FROM read_json('.\VHDMP-Operational.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.EventID = 2
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.VhdFileName;
 ┌───────────────────────────┬─────────────────────────────────┬────────────────────┬───────────────┬──────────────┐
 │         Computer          │           VhdFileName           │    VirtualDisk     │ VhdDiskNumber │ count_star() │
 │          varchar          │             varchar             │      varchar       │     int64     │    int64     │

@@ -37,7 +37,7 @@ memory D SELECT Event.System.Computer, Event.EventData.pwszProxy, Event.EventDat
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 5600
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.pwszProxy;
 ┌─────────────────────┬──────────────────┬───────────────────────────┬─────────────┬───────────────────┬──────────────┐
 │      Computer       │    pwszProxy     │      pwszProxyBypass      │ fAutoDetect │ pwszAutoConfigUrl │ count_star() │
 │       varchar       │     varchar      │          varchar          │   boolean   │      varchar      │    int64     │

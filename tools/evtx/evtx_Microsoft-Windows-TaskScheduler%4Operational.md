@@ -241,3 +241,141 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.TaskName         │        12691 │
 └────────────────────────────────────┴──────────────┘
 ```
+
+
+
+## 140 (Scheduled Task updated)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.UserName, Event.EventData.TaskName, COUNT(*)
+         FROM read_json('.\TaskScheduler%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 140
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬─────────────────────┬─────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │      UserName       │                                    TaskName                                     │ count_star() │
+│       varchar       │       varchar       │                                     varchar                                     │    int64     │
+├─────────────────────┼─────────────────────┼─────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ NT AUTHORITY\SYSTEM │ \Microsoft\Windows\WindowsUpdate\Scheduled Start                                │          225 │
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \Install Office 2019                                                            │          369 │
+│ rd01.shieldbase.com │ S-1-5-18            │ \Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser     │           25 │
+│ rd01.shieldbase.com │ S-1-5-18            │ \Microsoft\Windows\UpdateOrchestrator\Schedule Scan                             │          143 │
+│ rd01.shieldbase.com │ S-1-5-20            │ \Microsoft\Windows\GroupPolicy\{3E0A038B-D834-4930-9981-E89C9BFF83AA}           │          369 │
+│ rd01.shieldbase.com │ S-1-5-20            │ \Microsoft\Windows\GroupPolicy\{A7719E0F-10DB-4640-AD8C-490CC6AD5202}           │          230 │
+│ rd01.shieldbase.com │ SYSTEM              │ \Microsoft\Windows\.NET Framework\.NET Framework NGEN v4.0.30319                │           29 │
+│ rd01.shieldbase.com │ SYSTEM              │ \Microsoft\Windows\.NET Framework\.NET Framework NGEN v4.0.30319 64             │           29 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \Ec2ConfigMonitorTask                                                           │            1 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \MicrosoftEdgeUpdateTaskMachineCore                                             │            1 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \MicrosoftEdgeUpdateTaskMachineUA                                               │            1 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \Microsoft\Windows\Application Experience\PcaPatchDbTask                        │            4 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \Microsoft\Windows\Device Information\Device                                    │           50 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \Microsoft\Windows\InstallService\SmartRetry                                    │            1 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \Microsoft\Windows\PushToInstall\Registration                                   │           25 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \Microsoft\Windows\UpdateOrchestrator\Schedule Scan                             │          143 │
+│ rd01.shieldbase.com │ shieldbase\RD01$    │ \Microsoft\Windows\WwanSvc\OobeDiscovery                                        │            8 │
+│ rd01.shieldbase.com │ shieldbase\tdungan  │ \OneDrive Reporting Task-S-1-5-21-2838623409-1327563992-2591358621-1136         │            3 │
+│ rd01.shieldbase.com │ shieldbase\tdungan  │ \OneDrive Standalone Update Task-S-1-5-21-2838623409-1327563992-2591358621-1136 │            3 │
+│ rd01.shieldbase.com │ shieldbase\tdungan  │ \User_Feed_Synchronization-{C2E4AA97-7B3E-4506-BA8B-5497B41F2A4C}               │           23 │
+│ rd01.shieldbase.com │ shieldbase\wacsvc   │ \OneDrive Reporting Task-S-1-5-21-2838623409-1327563992-2591358621-1220         │            3 │
+│ rd01.shieldbase.com │ shieldbase\wacsvc   │ \OneDrive Standalone Update Task-S-1-5-21-2838623409-1327563992-2591358621-1220 │            4 │
+└─────────────────────┴─────────────────────┴─────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+  22 rows                                                                                                                          4 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TaskScheduler%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '140' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.#attributes      │         5507 │
+│ $.Event.EventData.#attributes.Name │         5507 │
+│ $.Event.EventData.TaskName         │         5507 │
+│ $.Event.EventData.UserName         │         5507 │
+└────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 141 (Scheduled Task deleted)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.UserName, Event.EventData.TaskName, COUNT(*)
+         FROM read_json('.\TaskScheduler%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 141
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬─────────────────────┬─────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │      UserName       │                                    TaskName                                     │ count_star() │
+│       varchar       │       varchar       │                                     varchar                                     │    int64     │
+├─────────────────────┼─────────────────────┼─────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \Microsoft\Office\Office Automatic Updates 2.0                                  │            1 │
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \Microsoft\Office\Office ClickToRun Service Monitor                             │            1 │
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \Microsoft\Office\OfficeBackgroundTaskHandlerLogon                              │            1 │
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \Microsoft\Office\OfficeBackgroundTaskHandlerRegistration                       │            1 │
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \Microsoft\Office\OfficeTelemetryAgentFallBack2016                              │            1 │
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \Microsoft\Office\OfficeTelemetryAgentLogOn2016                                 │            1 │
+│ rd01.shieldbase.com │ NT AUTHORITY\System │ \srl user maintenance                                                           │            1 │
+│ rd01.shieldbase.com │ shieldbase\tdungan  │ \OneDrive Standalone Update Task-S-1-5-21-2838623409-1327563992-2591358621-1136 │            3 │
+│ rd01.shieldbase.com │ shieldbase\wacsvc   │ \OneDrive Standalone Update Task-S-1-5-21-2838623409-1327563992-2591358621-1220 │            3 │
+└─────────────────────┴─────────────────────┴─────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TaskScheduler%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '141' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.#attributes      │           33 │
+│ $.Event.EventData.#attributes.Name │           33 │
+│ $.Event.EventData.TaskName         │           33 │
+│ $.Event.EventData.UserName         │           33 │
+└────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 200 (Scheduled Task executed)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.TaskName, Event.EventData.ActionName, COUNT(*)
+         FROM read_json('.\TaskScheduler%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 200 AND Event.EventData.TaskName LIKE '\SRL%'
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬───────────────────────┬───────────────────────────────────┬──────────────┐
+│      Computer       │       TaskName        │            ActionName             │ count_star() │
+│       varchar       │        varchar        │              varchar              │    int64     │
+├─────────────────────┼───────────────────────┼───────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ \SRL Update Service   │ C:\Windows\System32\STUN.exe      │            4 │
+│ rd01.shieldbase.com │ \SRL User Maintenance │ C:\Windows\System32\SRLUpdate.exe │            4 │
+└─────────────────────┴───────────────────────┴───────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TaskScheduler%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '200' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.#attributes      │        13485 │
+│ $.Event.EventData.#attributes.Name │        13485 │
+│ $.Event.EventData.ActionName       │        13485 │
+│ $.Event.EventData.EnginePID        │        13485 │
+│ $.Event.EventData.TaskInstanceId   │        13485 │
+│ $.Event.EventData.TaskName         │        13485 │
+└────────────────────────────────────┴──────────────┘
+```

@@ -50,7 +50,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1024
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌─────────────────────┬──────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┬──────────────┐
 │      Computer       │              ActivityID              │ CustomLevel │    Name     │         Value          │ count_star() │
 │       varchar       │                 uuid                 │   varchar   │   varchar   │          json          │    int64     │
@@ -84,7 +84,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1025
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌─────────────────────┬──────────────────────────────────────┬────────────────────────────┬──────────────┐
 │      Computer       │              ActivityID              │         SystemTime         │ count_star() │
 │       varchar       │                 uuid                 │         timestamp          │    int64     │
@@ -115,7 +115,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1026
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌─────────────────────┬──────────────────────────────────────┬─────────────┬───────────────────┬───────┬──────────────┐
 │      Computer       │              ActivityID              │ CustomLevel │       Name        │ Value │ count_star() │
 │       varchar       │                 uuid                 │   varchar   │      varchar      │ json  │    int64     │
@@ -287,7 +287,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1027
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌────────────────────────┬──────────────────────────────────────┬────────────┬───────────┬──────────────┐
 │        Computer        │              ActivityID              │ DomainName │ SessionId │ count_star() │
 │        varchar         │                 uuid                 │  varchar   │   int64   │    int64     │
@@ -322,7 +322,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1029
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌─────────────────────┬──────────────────────────────────────┬───────────────────────────────────────────────┬──────────────┐
 │      Computer       │              ActivityID              │                 TraceMessage                  │ count_star() │
 │       varchar       │                 uuid                 │                    varchar                    │    int64     │
@@ -359,7 +359,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1102
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌─────────────────────┬──────────────────────────────────────┬─────────────┬───────────────┬──────────────┬──────────────┐
 │      Computer       │              ActivityID              │ CustomLevel │     Name      │    Value     │ count_star() │
 │       varchar       │                 uuid                 │   varchar   │    varchar    │     json     │    int64     │
@@ -393,7 +393,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1103
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌─────────────────────┬──────────────────────────────────────┬────────────────────────────┬──────────────┐
 │      Computer       │              ActivityID              │         SystemTime         │ count_star() │
 │       varchar       │                 uuid                 │         timestamp          │    int64     │
@@ -424,7 +424,7 @@ memory D SELECT Event.System.Computer, Event.System.Correlation."#attributes".Ac
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 1105
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.System.Correlation."#attributes".ActivityID;
 ┌─────────────────────┬──────────────────────────────────────┬────────────────────────────┬──────────────┐
 │      Computer       │              ActivityID              │         SystemTime         │ count_star() │
 │       varchar       │                 uuid                 │         timestamp          │    int64     │

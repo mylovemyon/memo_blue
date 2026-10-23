@@ -277,3 +277,36 @@ Value
 50331727: Your trial period for Azure RemoteApp has expired
 50331728: You no longer have access to Azure RemoteApp
 ```
+
+
+
+## 1027 (RDP Connected to domain)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.DomainName, Event.EventData.SessionId, COUNT(*)
+         FROM read_json('.\TerminalServices-RDPClient%4Operational-admin01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 1027
+         GROUP BY ALL
+         ORDER BY ALL;
+┌────────────────────────┬────────────┬───────────┬──────────────┐
+│        Computer        │ DomainName │ SessionId │ count_star() │
+│        varchar         │  varchar   │   int64   │    int64     │
+├────────────────────────┼────────────┼───────────┼──────────────┤
+│ admin01.shieldbase.com │ FTP01      │         2 │            3 │
+└────────────────────────┴────────────┴───────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-admin01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '1027' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌──────────────────────────────┬──────────────┐
+│           fullkey            │ count_star() │
+│           varchar            │    int64     │
+├──────────────────────────────┼──────────────┤
+│ $.Event.EventData.DomainName │           14 │
+│ $.Event.EventData.SessionId  │           14 │
+└──────────────────────────────┴──────────────┘
+```

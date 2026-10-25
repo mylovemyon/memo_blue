@@ -292,6 +292,21 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
+## 9709 (Executing From RunKey As Job)
+
+
+
+## 9710 (Finished Executing From RunKey As Job)
+
+
+
+## 9711 (Executing from startup menu)
+
+
+
+## 9712 (Finished executing from startup menu)
+
+
 
 ## 28115 (Shortcut creation log after program installation)
 ```sql

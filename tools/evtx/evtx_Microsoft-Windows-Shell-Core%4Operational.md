@@ -54,6 +54,83 @@ memory D SELECT Event.System.EventID, COUNT(*)
 ```
 
 
+
+## 9701 (RunOnceEx commands started)
+
+
+
+## 9702 (RunOnceEx commands finished)
+
+
+
+## 9703 (RunOnce commands started)
+```sql
+memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+         FROM read_json('.\Shell-Core%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 9703
+         GROUP BY ALL
+         ORDER BY Event.System.TimeCreated."#attributes".SystemTime;
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │         SystemTime         │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-17 14:43:27.78511  │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 20:53:10.939479 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '9703' AND je.fullkey LIKE '$.Event.EventData%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────┬──────────────┐
+│      fullkey      │ count_star() │
+│      varchar      │    int64     │
+├───────────────────┼──────────────┤
+│ $.Event.EventData │            2 │
+└───────────────────┴──────────────┘
+```
+
+
+
+## 9704 (RunOnce commands finished)
+```sql
+memory D SELECT Event.System.Computer, Event.System.TimeCreated."#attributes".SystemTime, COUNT(*)
+         FROM read_json('.\Shell-Core%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 9704
+         GROUP BY ALL
+         ORDER BY Event.System.TimeCreated."#attributes".SystemTime;
+┌─────────────────────┬────────────────────────────┬──────────────┐
+│      Computer       │         SystemTime         │ count_star() │
+│       varchar       │         timestamp          │    int64     │
+├─────────────────────┼────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 2023-01-17 14:43:30.560519 │            1 │
+│ rd01.shieldbase.com │ 2023-01-23 20:53:12.239097 │            1 │
+└─────────────────────┴────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '9704' AND je.fullkey LIKE '$.Event.EventData%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────┬──────────────┐
+│      fullkey      │ count_star() │
+│      varchar      │    int64     │
+├───────────────────┼──────────────┤
+│ $.Event.EventData │            2 │
+└───────────────────┴──────────────┘
+```
+
+
+
+
+
 ## 28115 (Shortcut creation log after program installation)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.Name, Event.EventData.AppID, COUNT(*)
@@ -130,9 +207,17 @@ memory D SELECT Event.System.Computer, Event.EventData.Name, Event.EventData.App
 ```
 fullkey
 ```sql
-SELECT je.fullkey
-FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
-WHERE e.json->>'$.Event.System.EventID' = '28115' AND je.fullkey LIKE '$.Event.EventData.%'
-GROUP BY je.fullkey
-ORDER BY je.fullkey;
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '28115' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌─────────────────────────┬──────────────┐
+│         fullkey         │ count_star() │
+│         varchar         │    int64     │
+├─────────────────────────┼──────────────┤
+│ $.Event.EventData.AppID │           67 │
+│ $.Event.EventData.Flags │           67 │
+│ $.Event.EventData.Name  │           67 │
+└─────────────────────────┴──────────────┘
 ```

@@ -170,14 +170,17 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '1100' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE e.json->>'$.Event.System.EventID' = '1100' AND je.fullkey LIKE '$.Event.UserData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌─────────┬──────────────┐
-│ fullkey │ count_star() │
-│ varchar │    int64     │
-└─────────┴──────────────┘
-          0 rows
+┌────────────────────────────────────────────────────┬──────────────┐
+│                      fullkey                       │ count_star() │
+│                      varchar                       │    int64     │
+├────────────────────────────────────────────────────┼──────────────┤
+│ $.Event.UserData.ServiceShutdown                   │           24 │
+│ $.Event.UserData.ServiceShutdown.#attributes       │           24 │
+│ $.Event.UserData.ServiceShutdown.#attributes.xmlns │           24 │
+└────────────────────────────────────────────────────┴──────────────┘
 ```
 
 
@@ -242,14 +245,15 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\security-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '4608' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE e.json->>'$.Event.System.EventID' = '4608' AND je.fullkey LIKE '$.Event.EventData%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌─────────┬──────────────┐
-│ fullkey │ count_star() │
-│ varchar │    int64     │
-└─────────┴──────────────┘
-          0 rows
+┌───────────────────┬──────────────┐
+│      fullkey      │ count_star() │
+│      varchar      │    int64     │
+├───────────────────┼──────────────┤
+│ $.Event.EventData │           23 │
+└───────────────────┴──────────────┘
 ```
 
 

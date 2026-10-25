@@ -43,7 +43,7 @@ memory D SELECT Event.System.EventID, COUNT(*)
 
 
 
-## 30805 (SMB Client: the client lost its session to the server")
+## 30805 (SMB Client: the client lost its session to the server)
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.ServerName, Event.EventData.Address, hex(Event.EventData.Status), COUNT(*)
          FROM read_json('.\SmbClient%4Connectivity-rd01.json', sample_size = -1, map_inference_threshold = -1)

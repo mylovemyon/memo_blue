@@ -37,7 +37,7 @@ memory D SELECT Event.System.Computer, Event.EventData.DeviceNumber, Event.Event
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 207
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.DriveModel;
 ┌─────────────────────┬──────────────┬──────────────────────────────────────┬────────────────────────────────┬───────────────────┬────────────────────────────┬──────────────────────────────────────┬──────────────┐
 │      Computer       │ DeviceNumber │               DriveId                │          DriveSerial           │ DriveManufacturer │         DriveModel         │                PoolId                │ count_star() │
 │       varchar       │    int64     │                 uuid                 │            varchar             │      varchar      │          varchar           │                 uuid                 │    int64     │

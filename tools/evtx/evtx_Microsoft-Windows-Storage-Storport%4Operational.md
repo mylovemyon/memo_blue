@@ -40,7 +40,7 @@ memory D SELECT Event.System.EventID, COUNT(*)
 
 ## 504 (Error summary for Storport Device)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.LUN, Event.EventData.ProductId, Event.EventData.VendorId, Event.EventData.SerialNumber, Event.EventData.AdapterSerialNumber,  Event.EventData.BusType, Event.EventData.PortNumber, Event.EventData.MiniportName,Event.EventData.LastError_Command, Event.EventData.LastError_SrbStatus, Event.EventData.LastError_ScsiStatus, Event.EventData.LastError_SenseKey, Event.EventData.LastError_AddSense, Event.EventData.LastError_AddSenseQ, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.LUN, Event.EventData.ProductId, Event.EventData.VendorId, Event.EventData.SerialNumber, Event.EventData.AdapterSerialNumber, Event.EventData.BusType, Event.EventData.PortNumber, Event.EventData.MiniportName,Event.EventData.LastError_Command, Event.EventData.LastError_SrbStatus, Event.EventData.LastError_ScsiStatus, Event.EventData.LastError_SenseKey, Event.EventData.LastError_AddSense, Event.EventData.LastError_AddSenseQ, COUNT(*)
          FROM read_json('.\Storage-Storport%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 504
@@ -126,3 +126,117 @@ BusType
 18: This value is reserved for system use.
 ```
 https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/support/windows-server/backup-and-storage/event-id-51-information.md#the-scsi-request-block-srb-parameters
+
+
+
+## 505 (Performance summary for Storport Device)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.LUN, Event.EventData.ProductId, Event.EventData.VendorId, Event.EventData.SerialNumber, Event.EventData.AdapterSerialNumber,  Event.EventData.BusType, Event.EventData.PortNumber, Event.EventData.MiniportName,Event.EventData.BootDevice, Event.EventData.TotalReadBytes, Event.EventData.TotalWriteBytes, COUNT(*)
+         FROM read_json('.\Storage-Storport%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 505
+         GROUP BY ALL
+         ORDER BY Event.EventData.ProductId
+         LIMIT 10;
+┌─────────────────────┬───────┬──────────────────┬──────────┬────────────────────────────────┬───────────────────────────┬─────────┬────────────┬──────────────┬────────────┬────────────────┬─────────────────┬──────────────┐
+│      Computer       │  LUN  │    ProductId     │ VendorId │          SerialNumber          │    AdapterSerialNumber    │ BusType │ PortNumber │ MiniportName │ BootDevice │ TotalReadBytes │ TotalWriteBytes │ count_star() │
+│       varchar       │ int64 │     varchar      │ varchar  │            varchar             │          varchar          │  int64  │   int64    │   varchar    │  boolean   │     int64      │      int64      │    int64     │
+├─────────────────────┼───────┼──────────────────┼──────────┼────────────────────────────────┼───────────────────────────┼─────────┼────────────┼──────────────┼────────────┼────────────────┼─────────────────┼──────────────┤
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │        3112960 │        78878208 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │       12417536 │        50131456 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │        2824704 │        47547392 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │       12312576 │        51334144 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │     6641184768 │      1497723904 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │       18423296 │        68982784 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │        3386880 │        73186304 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │        6248448 │        46208512 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │         640000 │        57193472 │            1 │
+│ rd01.shieldbase.com │     0 │ Amazon Elastic B │ NVMe     │ vol03d970c2168bf631f_00000001. │ vol03d970c2168bf631f_0000 │      17 │          0 │ stornvme     │ true       │       64496128 │        78620160 │            1 │
+└─────────────────────┴───────┴──────────────────┴──────────┴────────────────────────────────┴───────────────────────────┴─────────┴────────────┴──────────────┴────────────┴────────────────┴─────────────────┴──────────────┘
+  10 rows                                                                                                                                                                                                          13 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey
+         FROM read_json_objects('.\Storage-Storport%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '505' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────────────────────────────────┐
+│                            fullkey                             │
+│                            varchar                             │
+├────────────────────────────────────────────────────────────────┤
+│ $.Event.EventData.AdapterGuid                                  │
+│ $.Event.EventData.AdapterSerialNumber                          │
+│ $.Event.EventData.BootDevice                                   │
+│ $.Event.EventData.BucketIoFailed1                              │
+│ $.Event.EventData.BucketIoFailed10                             │
+│ $.Event.EventData.BucketIoFailed11                             │
+│ $.Event.EventData.BucketIoFailed12                             │
+│ $.Event.EventData.BucketIoFailed2                              │
+│ $.Event.EventData.BucketIoFailed3                              │
+│ $.Event.EventData.BucketIoFailed4                              │
+│ $.Event.EventData.BucketIoFailed5                              │
+│ $.Event.EventData.BucketIoFailed6                              │
+│ $.Event.EventData.BucketIoFailed7                              │
+│ $.Event.EventData.BucketIoFailed8                              │
+│ $.Event.EventData.BucketIoFailed9                              │
+│ $.Event.EventData.BucketIoLatency10_100ns                      │
+│ $.Event.EventData.BucketIoLatency11_100ns                      │
+│ $.Event.EventData.BucketIoLatency12_100ns                      │
+│ $.Event.EventData.BucketIoLatency1_100ns                       │
+│ $.Event.EventData.BucketIoLatency2_100ns                       │
+│ $.Event.EventData.BucketIoLatency3_100ns                       │
+│ $.Event.EventData.BucketIoLatency4_100ns                       │
+│ $.Event.EventData.BucketIoLatency5_100ns                       │
+│ $.Event.EventData.BucketIoLatency6_100ns                       │
+│ $.Event.EventData.BucketIoLatency7_100ns                       │
+│ $.Event.EventData.BucketIoLatency8_100ns                       │
+│ $.Event.EventData.BucketIoLatency9_100ns                       │
+│ $.Event.EventData.BucketIoSuccess1                             │
+│ $.Event.EventData.BucketIoSuccess10                            │
+│ $.Event.EventData.BucketIoSuccess11                            │
+│ $.Event.EventData.BucketIoSuccess12                            │
+│ $.Event.EventData.BucketIoSuccess2                             │
+│ $.Event.EventData.BucketIoSuccess3                             │
+│ $.Event.EventData.BucketIoSuccess4                             │
+│ $.Event.EventData.BucketIoSuccess5                             │
+│ $.Event.EventData.BucketIoSuccess6                             │
+│ $.Event.EventData.BucketIoSuccess7                             │
+│ $.Event.EventData.BucketIoSuccess8                             │
+│ $.Event.EventData.BucketIoSuccess9                             │
+│ $.Event.EventData.BusType                                      │
+│ $.Event.EventData.ClassDeviceGuid                              │
+│ $.Event.EventData.DeviceQueueIoBusyCount                       │
+│ $.Event.EventData.DeviceQueueIoPausedCount                     │
+│ $.Event.EventData.DeviceQueueIoPausedForUntaggedCount          │
+│ $.Event.EventData.DeviceQueueIoUntaggedCommandOutstandingCount │
+│ $.Event.EventData.DeviceQueueIoWaitExceededTimeoutCount        │
+│ $.Event.EventData.FirmwareRevision                             │
+│ $.Event.EventData.HighLatencyIoCount                           │
+│ $.Event.EventData.IoLatencyBuckets                             │
+│ $.Event.EventData.IoTimeout_s                                  │
+│ $.Event.EventData.LUN                                          │
+│ $.Event.EventData.MaxDeviceQueueCount                          │
+│ $.Event.EventData.MaxDeviceQueueIoWaitDuration_100ns           │
+│ $.Event.EventData.MaxFlushLatency_100ns                        │
+│ $.Event.EventData.MaxOutstandingCount                          │
+│ $.Event.EventData.MaxReadWriteLatency_100ns                    │
+│ $.Event.EventData.MaxUnmapLatency_100ns                        │
+│ $.Event.EventData.MiniportName                                 │
+│ $.Event.EventData.PathID                                       │
+│ $.Event.EventData.PortNumber                                   │
+│ $.Event.EventData.ProductId                                    │
+│ $.Event.EventData.SerialNumber                                 │
+│ $.Event.EventData.SystemUptime_s                               │
+│ $.Event.EventData.TargetID                                     │
+│ $.Event.EventData.TotalDeviceQueueIoCount                      │
+│ $.Event.EventData.TotalDeviceQueueIoWaitDuration_100ns         │
+│ $.Event.EventData.TotalIoCount                                 │
+│ $.Event.EventData.TotalReadBytes                               │
+│ $.Event.EventData.TotalWriteBytes                              │
+│ $.Event.EventData.VendorId                                     │
+│ $.Event.EventData.Version                                      │
+└────────────────────────────────────────────────────────────────┘
+                             71 rows
+```

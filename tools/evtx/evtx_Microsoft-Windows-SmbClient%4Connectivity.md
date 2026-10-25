@@ -61,23 +61,23 @@ memory D SELECT Event.System.Computer, Event.EventData.ServerName, Event.EventDa
 ```
 fullkey
 ```sql
-memory D SELECT je.fullkey
+memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\SmbClient%4Connectivity-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '30805' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌────────────────────────────────────┐
-│              fullkey               │
-│              varchar               │
-├────────────────────────────────────┤
-│ $.Event.EventData.Address          │
-│ $.Event.EventData.AddressLength    │
-│ $.Event.EventData.ServerName       │
-│ $.Event.EventData.ServerNameLength │
-│ $.Event.EventData.SessionId        │
-│ $.Event.EventData.Status           │
-│ $.Event.EventData.TreeId           │
-└────────────────────────────────────┘
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Address          │           10 │
+│ $.Event.EventData.AddressLength    │           10 │
+│ $.Event.EventData.ServerName       │           10 │
+│ $.Event.EventData.ServerNameLength │           10 │
+│ $.Event.EventData.SessionId        │           10 │
+│ $.Event.EventData.Status           │           10 │
+│ $.Event.EventData.TreeId           │           10 │
+└────────────────────────────────────┴──────────────┘
 ```
 
 
@@ -105,23 +105,23 @@ memory D SELECT Event.System.Computer, Event.EventData.ServerName,
 ```
 fullkey
 ```sql
-memory D SELECT je.fullkey
+memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\SmbClient%4Connectivity-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '30806' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌────────────────────────────────────┐
-│              fullkey               │
-│              varchar               │
-├────────────────────────────────────┤
-│ $.Event.EventData.Address          │
-│ $.Event.EventData.AddressLength    │
-│ $.Event.EventData.ServerName       │
-│ $.Event.EventData.ServerNameLength │
-│ $.Event.EventData.SessionId        │
-│ $.Event.EventData.Status           │
-│ $.Event.EventData.TreeId           │
-└────────────────────────────────────┘
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Address          │            8 │
+│ $.Event.EventData.AddressLength    │            8 │
+│ $.Event.EventData.ServerName       │            8 │
+│ $.Event.EventData.ServerNameLength │            8 │
+│ $.Event.EventData.SessionId        │            8 │
+│ $.Event.EventData.Status           │            8 │
+│ $.Event.EventData.TreeId           │            8 │
+└────────────────────────────────────┴──────────────┘
 ```
 
 
@@ -145,23 +145,23 @@ memory D SELECT Event.System.Computer, Event.EventData.ServerName, Event.EventDa
 ```
 fullkey
 ```sql
-memory D SELECT je.fullkey
+memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\SmbClient%4Connectivity-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '30807' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌────────────────────────────────────┐
-│              fullkey               │
-│              varchar               │
-├────────────────────────────────────┤
-│ $.Event.EventData.Address          │
-│ $.Event.EventData.AddressLength    │
-│ $.Event.EventData.ServerName       │
-│ $.Event.EventData.ServerNameLength │
-│ $.Event.EventData.SessionId        │
-│ $.Event.EventData.Status           │
-│ $.Event.EventData.TreeId           │
-└────────────────────────────────────┘
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.Address          │           10 │
+│ $.Event.EventData.AddressLength    │           10 │
+│ $.Event.EventData.ServerName       │           10 │
+│ $.Event.EventData.ServerNameLength │           10 │
+│ $.Event.EventData.SessionId        │           10 │
+│ $.Event.EventData.Status           │           10 │
+│ $.Event.EventData.TreeId           │           10 │
+└────────────────────────────────────┴──────────────┘
 ```
 Status
 Status

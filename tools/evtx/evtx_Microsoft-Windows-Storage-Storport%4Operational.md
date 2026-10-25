@@ -1,5 +1,5 @@
 ```powershell
-PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f StorageSpaces-Driver%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-Storage-Storport%4Operational.evtx
+PS C:\Users\SANSDFIR> .\evtx_dump-v0.12.3.exe -o jsonl -f Storage-Storport%4Operational.json C:\Windows\System32\winevt\logs\Microsoft-Windows-Storage-Storport%4Operational.evtx
 PS C:\Users\SANSDFIR>
 ```
 

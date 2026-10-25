@@ -37,7 +37,7 @@ memory D SELECT Event.System.EventID, COUNT(*)
 
 ## 31001 (SMB Client: DiagReasonISC)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.PrincipalName, Event.EventData.ServerName, Event.EventData.UserName,  Event.EventData.Status, Event.EventData.SecurityStatus, Event.EventData.Reason, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.PrincipalName, Event.EventData.ServerName, Event.EventData.UserName, Event.EventData.Status, Event.EventData.SecurityStatus, Event.EventData.Reason, COUNT(*)
          FROM read_json('.\SmbClient%4Security-wkstn03.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 31001
@@ -114,4 +114,52 @@ Status
 3221226036: user is currently locked out
 0x0: Status OK
 0: Status OK
+```
+
+
+
+## 31010 (The SMB client failed to connect to the share)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.ShareName, Event.EventData.ObjectName, Event.EventData.Status, Event.EventData.Reason, COUNT(*)
+         FROM read_json('.\SmbClient%4Security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 31010
+         GROUP BY ALL
+         ORDER BY ALL;
+┌─────────────────────┬────────────────────────────┬────────────┬────────────┬────────┬──────────────┐
+│      Computer       │         ShareName          │ ObjectName │   Status   │ Reason │ count_star() │
+│       varchar       │          varchar           │  varchar   │   int64    │ int64  │    int64     │
+├─────────────────────┼────────────────────────────┼────────────┼────────────┼────────┼──────────────┤
+│ rd01.shieldbase.com │ \172.16.6.12\c$            │            │ 3221225506 │     12 │          210 │
+│ rd01.shieldbase.com │ \172.16.6.13\c$            │            │ 3221225506 │     12 │          658 │
+│ rd01.shieldbase.com │ \172.16.6.14\c$            │            │ 3221225506 │     12 │           27 │
+│ rd01.shieldbase.com │ \172.16.6.19\c$            │            │ 3221225506 │     12 │          453 │
+│ rd01.shieldbase.com │ \dev01.shieldbase.com\C$   │            │ 3221225506 │     12 │          911 │
+│ rd01.shieldbase.com │ \dev01.shieldbase.com\c$   │            │ 3221225506 │     12 │           50 │
+│ rd01.shieldbase.com │ \rd09.shieldbase.com\c$    │            │ 3221225506 │     12 │            5 │
+│ rd01.shieldbase.com │ \wkstn01.shieldbase.com\c$ │            │ 3221225506 │     12 │            2 │
+└─────────────────────┴────────────────────────────┴────────────┴────────────┴────────┴──────────────
+```
+fullkey
+```sql
+memory D SELECT je.fullkey
+         FROM read_json_objects('.\SmbClient%4Security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '31010' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┐
+│              fullkey               │
+│              varchar               │
+├────────────────────────────────────┤
+│ $.Event.EventData.ObjectName       │
+│ $.Event.EventData.ObjectNameLength │
+│ $.Event.EventData.Reason           │
+│ $.Event.EventData.ShareName        │
+│ $.Event.EventData.ShareNameLength  │
+│ $.Event.EventData.Status           │
+└────────────────────────────────────┘
+```
+Reason
+```
+12: Access Denied.
 ```

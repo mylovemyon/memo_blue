@@ -37,18 +37,18 @@ memory D SELECT Event.System.EventID, COUNT(*)
 
 ## 31001 (SMB Client: DiagReasonISC)
 ```sql
-memory D SELECT Event.System.Computer, Event.EventData.PrincipalName, Event.EventData.ServerName, Event.EventData.UserName, Event.EventData.Status, Event.EventData.SecurityStatus, Event.EventData.Reason, COUNT(*)
+memory D SELECT Event.System.Computer, Event.EventData.ServerName, Event.EventData.PrincipalName, Event.EventData.UserName, Event.EventData.Status, Event.EventData.SecurityStatus, Event.EventData.Reason, COUNT(*)
          FROM read_json('.\SmbClient%4Security-wkstn03.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 31001
          GROUP BY ALL
-         ORDER BY ALL;
-┌────────────────────────┬──────────────────────────┬──────────────────────┬──────────┬────────────┬────────────────┬────────┬──────────────┐
-│        Computer        │      PrincipalName       │      ServerName      │ UserName │   Status   │ SecurityStatus │ Reason │ count_star() │
-│        varchar         │         varchar          │       varchar        │ varchar  │   int64    │     int64      │ int64  │    int64     │
-├────────────────────────┼──────────────────────────┼──────────────────────┼──────────┼────────────┼────────────────┼────────┼──────────────┤
-│ wkstn03.shieldbase.com │ cifs/dc01.shieldbase.com │ \dc01.shieldbase.com │          │ 3221225626 │     3221225626 │     10 │            1 │
-└────────────────────────┴──────────────────────────┴──────────────────────┴──────────┴────────────┴────────────────┴────────┴──────────────┘
+         ORDER BY Event.EventData.ServerName;
+┌────────────────────────┬──────────────────────┬──────────────────────────┬──────────┬────────────┬────────────────┬────────┬──────────────┐
+│        Computer        │      ServerName      │      PrincipalName       │ UserName │   Status   │ SecurityStatus │ Reason │ count_star() │
+│        varchar         │       varchar        │         varchar          │ varchar  │   int64    │     int64      │ int64  │    int64     │
+├────────────────────────┼──────────────────────┼──────────────────────────┼──────────┼────────────┼────────────────┼────────┼──────────────┤
+│ wkstn03.shieldbase.com │ \dc01.shieldbase.com │ cifs/dc01.shieldbase.com │          │ 3221225626 │     3221225626 │     10 │            1 │
+└────────────────────────┴──────────────────────┴──────────────────────────┴──────────┴────────────┴────────────────┴────────┴──────────────┘
 ```
 fullkey
 ```sql
@@ -125,7 +125,7 @@ memory D SELECT Event.System.Computer, Event.EventData.ShareName, Event.EventDat
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 31010
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.ShareName;
 ┌─────────────────────┬────────────────────────────┬────────────┬────────────┬────────┬──────────────┐
 │      Computer       │         ShareName          │ ObjectName │   Status   │ Reason │ count_star() │
 │       varchar       │          varchar           │  varchar   │   int64    │ int64  │    int64     │

@@ -157,86 +157,86 @@ memory D SELECT Event.System.Computer, Event.EventData.LUN, Event.EventData.Prod
 ```
 fullkey
 ```sql
-memory D SELECT je.fullkey
+memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\Storage-Storport%4Operational-rd01.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '505' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌────────────────────────────────────────────────────────────────┐
-│                            fullkey                             │
-│                            varchar                             │
-├────────────────────────────────────────────────────────────────┤
-│ $.Event.EventData.AdapterGuid                                  │
-│ $.Event.EventData.AdapterSerialNumber                          │
-│ $.Event.EventData.BootDevice                                   │
-│ $.Event.EventData.BucketIoFailed1                              │
-│ $.Event.EventData.BucketIoFailed10                             │
-│ $.Event.EventData.BucketIoFailed11                             │
-│ $.Event.EventData.BucketIoFailed12                             │
-│ $.Event.EventData.BucketIoFailed2                              │
-│ $.Event.EventData.BucketIoFailed3                              │
-│ $.Event.EventData.BucketIoFailed4                              │
-│ $.Event.EventData.BucketIoFailed5                              │
-│ $.Event.EventData.BucketIoFailed6                              │
-│ $.Event.EventData.BucketIoFailed7                              │
-│ $.Event.EventData.BucketIoFailed8                              │
-│ $.Event.EventData.BucketIoFailed9                              │
-│ $.Event.EventData.BucketIoLatency10_100ns                      │
-│ $.Event.EventData.BucketIoLatency11_100ns                      │
-│ $.Event.EventData.BucketIoLatency12_100ns                      │
-│ $.Event.EventData.BucketIoLatency1_100ns                       │
-│ $.Event.EventData.BucketIoLatency2_100ns                       │
-│ $.Event.EventData.BucketIoLatency3_100ns                       │
-│ $.Event.EventData.BucketIoLatency4_100ns                       │
-│ $.Event.EventData.BucketIoLatency5_100ns                       │
-│ $.Event.EventData.BucketIoLatency6_100ns                       │
-│ $.Event.EventData.BucketIoLatency7_100ns                       │
-│ $.Event.EventData.BucketIoLatency8_100ns                       │
-│ $.Event.EventData.BucketIoLatency9_100ns                       │
-│ $.Event.EventData.BucketIoSuccess1                             │
-│ $.Event.EventData.BucketIoSuccess10                            │
-│ $.Event.EventData.BucketIoSuccess11                            │
-│ $.Event.EventData.BucketIoSuccess12                            │
-│ $.Event.EventData.BucketIoSuccess2                             │
-│ $.Event.EventData.BucketIoSuccess3                             │
-│ $.Event.EventData.BucketIoSuccess4                             │
-│ $.Event.EventData.BucketIoSuccess5                             │
-│ $.Event.EventData.BucketIoSuccess6                             │
-│ $.Event.EventData.BucketIoSuccess7                             │
-│ $.Event.EventData.BucketIoSuccess8                             │
-│ $.Event.EventData.BucketIoSuccess9                             │
-│ $.Event.EventData.BusType                                      │
-│ $.Event.EventData.ClassDeviceGuid                              │
-│ $.Event.EventData.DeviceQueueIoBusyCount                       │
-│ $.Event.EventData.DeviceQueueIoPausedCount                     │
-│ $.Event.EventData.DeviceQueueIoPausedForUntaggedCount          │
-│ $.Event.EventData.DeviceQueueIoUntaggedCommandOutstandingCount │
-│ $.Event.EventData.DeviceQueueIoWaitExceededTimeoutCount        │
-│ $.Event.EventData.FirmwareRevision                             │
-│ $.Event.EventData.HighLatencyIoCount                           │
-│ $.Event.EventData.IoLatencyBuckets                             │
-│ $.Event.EventData.IoTimeout_s                                  │
-│ $.Event.EventData.LUN                                          │
-│ $.Event.EventData.MaxDeviceQueueCount                          │
-│ $.Event.EventData.MaxDeviceQueueIoWaitDuration_100ns           │
-│ $.Event.EventData.MaxFlushLatency_100ns                        │
-│ $.Event.EventData.MaxOutstandingCount                          │
-│ $.Event.EventData.MaxReadWriteLatency_100ns                    │
-│ $.Event.EventData.MaxUnmapLatency_100ns                        │
-│ $.Event.EventData.MiniportName                                 │
-│ $.Event.EventData.PathID                                       │
-│ $.Event.EventData.PortNumber                                   │
-│ $.Event.EventData.ProductId                                    │
-│ $.Event.EventData.SerialNumber                                 │
-│ $.Event.EventData.SystemUptime_s                               │
-│ $.Event.EventData.TargetID                                     │
-│ $.Event.EventData.TotalDeviceQueueIoCount                      │
-│ $.Event.EventData.TotalDeviceQueueIoWaitDuration_100ns         │
-│ $.Event.EventData.TotalIoCount                                 │
-│ $.Event.EventData.TotalReadBytes                               │
-│ $.Event.EventData.TotalWriteBytes                              │
-│ $.Event.EventData.VendorId                                     │
-│ $.Event.EventData.Version                                      │
-└────────────────────────────────────────────────────────────────┘
-                             71 rows
+┌────────────────────────────────────────────────────────────────┬──────────────┐
+│                            fullkey                             │ count_star() │
+│                            varchar                             │    int64     │
+├────────────────────────────────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.AdapterGuid                                  │         2596 │
+│ $.Event.EventData.AdapterSerialNumber                          │         2596 │
+│ $.Event.EventData.BootDevice                                   │         2596 │
+│ $.Event.EventData.BucketIoFailed1                              │         2596 │
+│ $.Event.EventData.BucketIoFailed10                             │         2596 │
+│ $.Event.EventData.BucketIoFailed11                             │         2596 │
+│ $.Event.EventData.BucketIoFailed12                             │         2596 │
+│ $.Event.EventData.BucketIoFailed2                              │         2596 │
+│ $.Event.EventData.BucketIoFailed3                              │         2596 │
+│ $.Event.EventData.BucketIoFailed4                              │         2596 │
+│ $.Event.EventData.BucketIoFailed5                              │         2596 │
+│ $.Event.EventData.BucketIoFailed6                              │         2596 │
+│ $.Event.EventData.BucketIoFailed7                              │         2596 │
+│ $.Event.EventData.BucketIoFailed8                              │         2596 │
+│ $.Event.EventData.BucketIoFailed9                              │         2596 │
+│ $.Event.EventData.BucketIoLatency10_100ns                      │         2596 │
+│ $.Event.EventData.BucketIoLatency11_100ns                      │         2596 │
+│ $.Event.EventData.BucketIoLatency12_100ns                      │         2596 │
+│ $.Event.EventData.BucketIoLatency1_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency2_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency3_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency4_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency5_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency6_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency7_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency8_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoLatency9_100ns                       │         2596 │
+│ $.Event.EventData.BucketIoSuccess1                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess10                            │         2596 │
+│ $.Event.EventData.BucketIoSuccess11                            │         2596 │
+│ $.Event.EventData.BucketIoSuccess12                            │         2596 │
+│ $.Event.EventData.BucketIoSuccess2                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess3                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess4                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess5                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess6                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess7                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess8                             │         2596 │
+│ $.Event.EventData.BucketIoSuccess9                             │         2596 │
+│ $.Event.EventData.BusType                                      │         2596 │
+│ $.Event.EventData.ClassDeviceGuid                              │         2596 │
+│ $.Event.EventData.DeviceQueueIoBusyCount                       │         2596 │
+│ $.Event.EventData.DeviceQueueIoPausedCount                     │         2596 │
+│ $.Event.EventData.DeviceQueueIoPausedForUntaggedCount          │         2596 │
+│ $.Event.EventData.DeviceQueueIoUntaggedCommandOutstandingCount │         2596 │
+│ $.Event.EventData.DeviceQueueIoWaitExceededTimeoutCount        │         2596 │
+│ $.Event.EventData.FirmwareRevision                             │         2596 │
+│ $.Event.EventData.HighLatencyIoCount                           │         2596 │
+│ $.Event.EventData.IoLatencyBuckets                             │         2596 │
+│ $.Event.EventData.IoTimeout_s                                  │         2596 │
+│ $.Event.EventData.LUN                                          │         2596 │
+│ $.Event.EventData.MaxDeviceQueueCount                          │         2596 │
+│ $.Event.EventData.MaxDeviceQueueIoWaitDuration_100ns           │         2596 │
+│ $.Event.EventData.MaxFlushLatency_100ns                        │         2596 │
+│ $.Event.EventData.MaxOutstandingCount                          │         2596 │
+│ $.Event.EventData.MaxReadWriteLatency_100ns                    │         2596 │
+│ $.Event.EventData.MaxUnmapLatency_100ns                        │         2596 │
+│ $.Event.EventData.MiniportName                                 │         2596 │
+│ $.Event.EventData.PathID                                       │         2596 │
+│ $.Event.EventData.PortNumber                                   │         2596 │
+│ $.Event.EventData.ProductId                                    │         2596 │
+│ $.Event.EventData.SerialNumber                                 │         2596 │
+│ $.Event.EventData.SystemUptime_s                               │         2596 │
+│ $.Event.EventData.TargetID                                     │         2596 │
+│ $.Event.EventData.TotalDeviceQueueIoCount                      │         2596 │
+│ $.Event.EventData.TotalDeviceQueueIoWaitDuration_100ns         │         2596 │
+│ $.Event.EventData.TotalIoCount                                 │         2596 │
+│ $.Event.EventData.TotalReadBytes                               │         2596 │
+│ $.Event.EventData.TotalWriteBytes                              │         2596 │
+│ $.Event.EventData.VendorId                                     │         2596 │
+│ $.Event.EventData.Version                                      │         2596 │
+└────────────────────────────────────────────────────────────────┴──────────────┘
+  71 rows                                                             2 columns
 ```

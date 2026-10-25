@@ -67,7 +67,7 @@ memory D SELECT Event.System.Computer, Event.EventData.UserContext, Event.EventD
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 100 AND Event.EventData.TaskName LIkE '\SRL%'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.UserContext, Event.EventData.TaskName;
 ┌─────────────────────┬─────────────────────┬───────────────────────┬──────────────┐
 │      Computer       │     UserContext     │       TaskName        │ count_star() │
 │       varchar       │       varchar       │        varchar        │    int64     │
@@ -104,7 +104,7 @@ memory D SELECT Event.System.Computer, Event.EventData.UserContext, Event.EventD
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 102 AND Event.EventData.TaskName LIkE '\SRL%'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.UserContext, Event.EventData.TaskName;
 ┌─────────────────────┬─────────────────────┬───────────────────────┬──────────────┐
 │      Computer       │     UserContext     │       TaskName        │ count_star() │
 │       varchar       │       varchar       │        varchar        │    int64     │
@@ -134,14 +134,14 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
-## 106 (Scheduled Task created)
+## 106 (Scheduled Task created) 
 ```sql
 memory D SELECT Event.System.Computer, Event.EventData.UserContext, Event.EventData.TaskName, COUNT(*)
          FROM read_json('.\TaskScheduler%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 106 AND Event.EventData.TaskName LIkE '\SRL%'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.UserContext, Event.EventData.TaskName;
 ┌─────────────────────┬────────────────────┬───────────────────────┬──────────────┐
 │      Computer       │    UserContext     │       TaskName        │ count_star() │
 │       varchar       │      varchar       │        varchar        │    int64     │
@@ -177,7 +177,7 @@ memory D SELECT Event.System.Computer, Event.EventData.UserName, Event.EventData
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 119 AND Event.EventData.TaskName LIkE '\SRL%'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.UserName, Event.EventData.TaskName;
 ┌─────────────────────┬────────────────────┬───────────────────────┬──────────────┐
 │      Computer       │      UserName      │       TaskName        │ count_star() │
 │       varchar       │      varchar       │        varchar        │    int64     │
@@ -213,7 +213,7 @@ memory D SELECT Event.System.Computer, Event.EventData.Priority, Event.EventData
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 129 AND Event.EventData.TaskName LIkE '\SRL%'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.Priority, Event.EventData.TaskName, Event.EventData.Path;
 ┌─────────────────────┬──────────┬───────────────────────┬───────────────────────────────────┬──────────────┐
 │      Computer       │ Priority │       TaskName        │               Path                │ count_star() │
 │       varchar       │  int64   │        varchar        │              varchar              │    int64     │
@@ -251,7 +251,7 @@ memory D SELECT Event.System.Computer, Event.EventData.UserName, Event.EventData
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 140
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.UserName, Event.EventData.TaskName;
 ┌─────────────────────┬─────────────────────┬─────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │      UserName       │                                    TaskName                                     │ count_star() │
 │       varchar       │       varchar       │                                     varchar                                     │    int64     │
@@ -308,7 +308,7 @@ memory D SELECT Event.System.Computer, Event.EventData.UserName, Event.EventData
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 141
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.UserName, Event.EventData.TaskName;
 ┌─────────────────────┬─────────────────────┬─────────────────────────────────────────────────────────────────────────────────┬──────────────┐
 │      Computer       │      UserName       │                                    TaskName                                     │ count_star() │
 │       varchar       │       varchar       │                                     varchar                                     │    int64     │
@@ -351,7 +351,7 @@ memory D SELECT Event.System.Computer, Event.EventData.TaskName, Event.EventData
          WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
          AND Event.System.EventID = 200 AND Event.EventData.TaskName LIKE '\SRL%'
          GROUP BY ALL
-         ORDER BY ALL;
+         ORDER BY Event.EventData.TaskName, Event.EventData.ActionName;
 ┌─────────────────────┬───────────────────────┬───────────────────────────────────┬──────────────┐
 │      Computer       │       TaskName        │            ActionName             │ count_star() │
 │       varchar       │        varchar        │              varchar              │    int64     │
@@ -377,5 +377,46 @@ memory D SELECT je.fullkey, COUNT(*)
 │ $.Event.EventData.EnginePID        │        13485 │
 │ $.Event.EventData.TaskInstanceId   │        13485 │
 │ $.Event.EventData.TaskName         │        13485 │
+└────────────────────────────────────┴──────────────┘
+```
+
+
+
+## 201 (Scheduled Task completed)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.TaskName, Event.EventData.ActionName, Event.EventData.ResultCode, COUNT(*)
+         FROM read_json('.\TaskScheduler%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 201 AND Event.EventData.TaskName LIKE '\SRL%'
+         GROUP BY ALL
+         ORDER BY Event.EventData.TaskName, Event.EventData.ActionName, Event.EventData.ResultCode;
+┌─────────────────────┬───────────────────────┬───────────────────────────────────┬────────────┬──────────────┐
+│      Computer       │       TaskName        │            ActionName             │ ResultCode │ count_star() │
+│       varchar       │        varchar        │              varchar              │   int64    │    int64     │
+├─────────────────────┼───────────────────────┼───────────────────────────────────┼────────────┼──────────────┤
+│ rd01.shieldbase.com │ \SRL Update Service   │ C:\Windows\System32\STUN.exe      │ 2147943691 │            3 │
+│ rd01.shieldbase.com │ \SRL User Maintenance │ C:\Windows\System32\SRLUpdate.exe │          0 │            1 │
+│ rd01.shieldbase.com │ \SRL User Maintenance │ C:\Windows\System32\SRLUpdate.exe │ 2147942404 │            2 │
+│ rd01.shieldbase.com │ \SRL User Maintenance │ C:\Windows\System32\SRLUpdate.exe │ 2147943691 │            1 │
+└─────────────────────┴───────────────────────┴───────────────────────────────────┴────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\TaskScheduler%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '201' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.#attributes      │        12893 │
+│ $.Event.EventData.#attributes.Name │        12893 │
+│ $.Event.EventData.ActionName       │        12893 │
+│ $.Event.EventData.EnginePID        │        12893 │
+│ $.Event.EventData.ResultCode       │        12893 │
+│ $.Event.EventData.TaskInstanceId   │        12893 │
+│ $.Event.EventData.TaskName         │        12893 │
 └────────────────────────────────────┴──────────────┘
 ```

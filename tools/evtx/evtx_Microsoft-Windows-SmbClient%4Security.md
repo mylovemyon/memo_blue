@@ -52,27 +52,71 @@ memory D SELECT Event.System.Computer, Event.EventData.ServerName, Event.EventDa
 ```
 fullkey
 ```sql
-memory D SELECT je.fullkey
+memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\SmbClient%4Security-wkstn03.json') AS e, json_tree(e.json) AS je
          WHERE e.json->>'$.Event.System.EventID' = '31001' AND je.fullkey LIKE '$.Event.EventData.%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌───────────────────────────────────────┐
-│                fullkey                │
-│                varchar                │
-├───────────────────────────────────────┤
-│ $.Event.EventData.LogonId             │
-│ $.Event.EventData.PrincipalName       │
-│ $.Event.EventData.PrincipalNameLength │
-│ $.Event.EventData.Reason              │
-│ $.Event.EventData.SecurityStatus      │
-│ $.Event.EventData.ServerName          │
-│ $.Event.EventData.ServerNameLength    │
-│ $.Event.EventData.Status              │
-│ $.Event.EventData.UserName            │
-│ $.Event.EventData.UserNameLength      │
-└───────────────────────────────────────┘
-                 10 rows
+┌───────────────────────────────────────┬──────────────┐
+│                fullkey                │ count_star() │
+│                varchar                │    int64     │
+├───────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.LogonId             │            1 │
+│ $.Event.EventData.PrincipalName       │            1 │
+│ $.Event.EventData.PrincipalNameLength │            1 │
+│ $.Event.EventData.Reason              │            1 │
+│ $.Event.EventData.SecurityStatus      │            1 │
+│ $.Event.EventData.ServerName          │            1 │
+│ $.Event.EventData.ServerNameLength    │            1 │
+│ $.Event.EventData.Status              │            1 │
+│ $.Event.EventData.UserName            │            1 │
+│ $.Event.EventData.UserNameLength      │            1 │
+└───────────────────────────────────────┴──────────────┘
+  10 rows                                    2 columns
+```
+
+
+
+## 31010 (The SMB client failed to connect to the share)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.ShareName, Event.EventData.ObjectName, hex(Event.EventData.Status), Event.EventData.Reason, COUNT(*)
+         FROM read_json('.\SmbClient%4Security-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 31010
+         GROUP BY ALL
+         ORDER BY Event.EventData.ShareName;
+┌─────────────────────┬────────────────────────────┬────────────┬───────────────────────────────┬────────┬──────────────┐
+│      Computer       │         ShareName          │ ObjectName │ hex("Event".EventData.Status) │ Reason │ count_star() │
+│       varchar       │          varchar           │  varchar   │            varchar            │ int64  │    int64     │
+├─────────────────────┼────────────────────────────┼────────────┼───────────────────────────────┼────────┼──────────────┤
+│ rd01.shieldbase.com │ \172.16.6.12\c$            │            │ C0000022                      │     12 │          210 │
+│ rd01.shieldbase.com │ \172.16.6.13\c$            │            │ C0000022                      │     12 │          658 │
+│ rd01.shieldbase.com │ \172.16.6.14\c$            │            │ C0000022                      │     12 │           27 │
+│ rd01.shieldbase.com │ \172.16.6.19\c$            │            │ C0000022                      │     12 │          453 │
+│ rd01.shieldbase.com │ \dev01.shieldbase.com\C$   │            │ C0000022                      │     12 │          911 │
+│ rd01.shieldbase.com │ \dev01.shieldbase.com\c$   │            │ C0000022                      │     12 │           50 │
+│ rd01.shieldbase.com │ \rd09.shieldbase.com\c$    │            │ C0000022                      │     12 │            5 │
+│ rd01.shieldbase.com │ \wkstn01.shieldbase.com\c$ │            │ C0000022                      │     12 │            2 │
+└─────────────────────┴────────────────────────────┴────────────┴───────────────────────────────┴────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\SmbClient%4Security-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '31010' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌────────────────────────────────────┬──────────────┐
+│              fullkey               │ count_star() │
+│              varchar               │    int64     │
+├────────────────────────────────────┼──────────────┤
+│ $.Event.EventData.ObjectName       │         2316 │
+│ $.Event.EventData.ObjectNameLength │         2316 │
+│ $.Event.EventData.Reason           │         2316 │
+│ $.Event.EventData.ShareName        │         2316 │
+│ $.Event.EventData.ShareNameLength  │         2316 │
+│ $.Event.EventData.Status           │         2316 │
+└────────────────────────────────────┴──────────────┘
 ```
 Status
 | Return value/code | Description |
@@ -1876,47 +1920,3 @@ Status
 | 0xC03A0019<br>STATUS\_VHD\_DIFFERENCING\_CHAIN\_ERROR\_IN\_PARENT | The chain of virtual hard disks is inaccessible. There was an error opening a virtual hard disk further up the chain. |
 | 0xC05D0000<br>STATUS\_SMB\_NO\_PREAUTH\_INTEGRITY\_HASH\_OVERLAP | Returned in response to a client negotiate request when the server does not support any of the hash algorithms in the request. |
 | 0xC05D0001<br>STATUS\_SMB\_BAD\_CLUSTER\_DIALECT | The current cluster functional level does not support this SMB dialect. |
-
-
-
-## 31010 (The SMB client failed to connect to the share)
-```sql
-memory D SELECT Event.System.Computer, Event.EventData.ShareName, Event.EventData.ObjectName, hex(Event.EventData.Status), Event.EventData.Reason, COUNT(*)
-         FROM read_json('.\SmbClient%4Security-rd01.json', sample_size = -1, map_inference_threshold = -1)
-         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
-         AND Event.System.EventID = 31010
-         GROUP BY ALL
-         ORDER BY Event.EventData.ShareName;
-┌─────────────────────┬────────────────────────────┬────────────┬───────────────────────────────┬────────┬──────────────┐
-│      Computer       │         ShareName          │ ObjectName │ hex("Event".EventData.Status) │ Reason │ count_star() │
-│       varchar       │          varchar           │  varchar   │            varchar            │ int64  │    int64     │
-├─────────────────────┼────────────────────────────┼────────────┼───────────────────────────────┼────────┼──────────────┤
-│ rd01.shieldbase.com │ \172.16.6.12\c$            │            │ C0000022                      │     12 │          210 │
-│ rd01.shieldbase.com │ \172.16.6.13\c$            │            │ C0000022                      │     12 │          658 │
-│ rd01.shieldbase.com │ \172.16.6.14\c$            │            │ C0000022                      │     12 │           27 │
-│ rd01.shieldbase.com │ \172.16.6.19\c$            │            │ C0000022                      │     12 │          453 │
-│ rd01.shieldbase.com │ \dev01.shieldbase.com\C$   │            │ C0000022                      │     12 │          911 │
-│ rd01.shieldbase.com │ \dev01.shieldbase.com\c$   │            │ C0000022                      │     12 │           50 │
-│ rd01.shieldbase.com │ \rd09.shieldbase.com\c$    │            │ C0000022                      │     12 │            5 │
-│ rd01.shieldbase.com │ \wkstn01.shieldbase.com\c$ │            │ C0000022                      │     12 │            2 │
-└─────────────────────┴────────────────────────────┴────────────┴───────────────────────────────┴────────┴──────────────┘
-```
-fullkey
-```sql
-memory D SELECT je.fullkey
-         FROM read_json_objects('.\SmbClient%4Security-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '31010' AND je.fullkey LIKE '$.Event.EventData.%'
-         GROUP BY je.fullkey
-         ORDER BY je.fullkey;
-┌────────────────────────────────────┐
-│              fullkey               │
-│              varchar               │
-├────────────────────────────────────┤
-│ $.Event.EventData.ObjectName       │
-│ $.Event.EventData.ObjectNameLength │
-│ $.Event.EventData.Reason           │
-│ $.Event.EventData.ShareName        │
-│ $.Event.EventData.ShareNameLength  │
-│ $.Event.EventData.Status           │
-└────────────────────────────────────┘
-```

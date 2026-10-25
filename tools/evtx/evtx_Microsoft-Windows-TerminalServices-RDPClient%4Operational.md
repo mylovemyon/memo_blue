@@ -96,14 +96,15 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '1025' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE e.json->>'$.Event.System.EventID' = '1025' AND je.fullkey LIKE '$.Event.EventData%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌─────────┬──────────────┐
-│ fullkey │ count_star() │
-│ varchar │    int64     │
-└─────────┴──────────────┘
-          0 rows
+┌───────────────────┬──────────────┐
+│      fullkey      │ count_star() │
+│      varchar      │    int64     │
+├───────────────────┼──────────────┤
+│ $.Event.EventData │            1 │
+└───────────────────┴──────────────┘
 ```
 
 
@@ -405,14 +406,15 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '1103' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE e.json->>'$.Event.System.EventID' = '1103' AND je.fullkey LIKE '$.Event.EventData%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌─────────┬──────────────┐
-│ fullkey │ count_star() │
-│ varchar │    int64     │
-└─────────┴──────────────┘
-          0 rows
+┌───────────────────┬──────────────┐
+│      fullkey      │ count_star() │
+│      varchar      │    int64     │
+├───────────────────┼──────────────┤
+│ $.Event.EventData │            1 │
+└───────────────────┴──────────────┘
 ```
 
 
@@ -436,12 +438,13 @@ fullkey
 ```sql
 memory D SELECT je.fullkey, COUNT(*)
          FROM read_json_objects('.\TerminalServices-RDPClient%4Operational-rd01.json') AS e, json_tree(e.json) AS je
-         WHERE e.json->>'$.Event.System.EventID' = '1105' AND je.fullkey LIKE '$.Event.EventData.%'
+         WHERE e.json->>'$.Event.System.EventID' = '1105' AND je.fullkey LIKE '$.Event.EventData%'
          GROUP BY je.fullkey
          ORDER BY je.fullkey;
-┌─────────┬──────────────┐
-│ fullkey │ count_star() │
-│ varchar │    int64     │
-└─────────┴──────────────┘
-          0 rows
+┌───────────────────┬──────────────┐
+│      fullkey      │ count_star() │
+│      varchar      │    int64     │
+├───────────────────┼──────────────┤
+│ $.Event.EventData │            1 │
+└───────────────────┴──────────────┘
 ```

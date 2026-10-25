@@ -129,6 +129,168 @@ memory D SELECT je.fullkey, COUNT(*)
 
 
 
+## 9705 (Started enumeration of commands for registry key)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.KeyName, COUNT(*)
+         FROM read_json('.\Shell-Core%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 9705
+         GROUP BY ALL
+         ORDER BY Event.EventData.KeyName;
+┌─────────────────────┬───────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                      KeyName                      │ count_star() │
+│       varchar       │                      varchar                      │    int64     │
+├─────────────────────┼───────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ Software\Microsoft\Windows\CurrentVersion\Run     │           20 │
+│ rd01.shieldbase.com │ Software\Microsoft\Windows\CurrentVersion\RunOnce │           13 │
+└─────────────────────┴───────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '9705' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────┬──────────────┐
+│          fullkey          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ $.Event.EventData.KeyName │           33 │
+└───────────────────────────┴──────────────┘
+```
+
+
+
+## 9706 (Finished enumeration of commands for registry key)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.KeyName, COUNT(*)
+         FROM read_json('.\Shell-Core%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 9706
+         GROUP BY ALL
+         ORDER BY Event.EventData.KeyName;
+┌─────────────────────┬───────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                      KeyName                      │ count_star() │
+│       varchar       │                      varchar                      │    int64     │
+├─────────────────────┼───────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ Software\Microsoft\Windows\CurrentVersion\Run     │           20 │
+│ rd01.shieldbase.com │ Software\Microsoft\Windows\CurrentVersion\RunOnce │           13 │
+└─────────────────────┴───────────────────────────────────────────────────┴──────────────┘
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '9706' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────┬──────────────┐
+│          fullkey          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ $.Event.EventData.KeyName │           33 │
+└───────────────────────────┴──────────────┘
+```
+
+
+
+## 9707 (Started execution of command)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.Command, COUNT(*)
+         FROM read_json('.\Shell-Core%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 9707
+         GROUP BY ALL
+         ORDER BY Event.EventData.Command;
+┌─────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                                             Command                                             │ count_star() │
+│       varchar       │                                             varchar                                             │    int64     │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 21.220.1024.0005"                                                                               │            1 │
+│ rd01.shieldbase.com │ 22.248.1127.0001"                                                                               │            1 │
+│ rd01.shieldbase.com │ 22.253.1204.0001"                                                                               │            1 │
+│ rd01.shieldbase.com │ Ec2Install.exe" /burn.runonce                                                                   │            1 │
+│ rd01.shieldbase.com │ OneDrive.exe" /background                                                                       │            9 │
+│ rd01.shieldbase.com │ OneDriveSetup.exe /thfirstsetup                                                                 │            1 │
+│ rd01.shieldbase.com │ OneDriveSetup.exe"                                                                              │            6 │
+│ rd01.shieldbase.com │ SecurityHealthSystray.exe                                                                       │           10 │
+│ rd01.shieldbase.com │ amd64"                                                                                          │            1 │
+│ rd01.shieldbase.com │ chrmstp.exe" --configure-user-settings --verbose-logging --system-level --channel=stable        │            1 │
+│ rd01.shieldbase.com │ ie4uinit.exe -UserConfig                                                                        │            1 │
+│ rd01.shieldbase.com │ msedge.exe" --no-startup-window --win-session-start /prefetch:5                                 │            1 │
+│ rd01.shieldbase.com │ setup.exe" --configure-user-settings --verbose-logging --system-level --msedge --channel=stable │            1 │
+│ rd01.shieldbase.com │ setup.exe" --msedgewebview --delete-old-versions --system-level --verbose-logging --on-logon    │            1 │
+│ rd01.shieldbase.com │ slack.exe" --process-start-args --startup                                                       │            8 │
+│ rd01.shieldbase.com │ unregmp2.exe /FirstLogon                                                                        │            2 │
+└─────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+  16 rows                                                                                                                    3 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '9707' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────┬──────────────┐
+│          fullkey          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ $.Event.EventData.Command │           46 │
+└───────────────────────────┴──────────────┘
+```
+
+
+
+## 9708 (Finished execution of command)
+```sql
+memory D SELECT Event.System.Computer, Event.EventData.Command, COUNT(*)
+         FROM read_json('.\Shell-Core%4Operational-rd01.json', sample_size = -1, map_inference_threshold = -1)
+         WHERE Event.System.TimeCreated."#attributes".SystemTime >= TIMESTAMP '2023-01-01 00:00:00' AND Event.System.TimeCreated."#attributes".SystemTime < TIMESTAMP '2023-02-01 00:00:00'
+         AND Event.System.EventID = 9708
+         GROUP BY ALL
+         ORDER BY Event.EventData.Command;
+┌─────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
+│      Computer       │                                             Command                                             │ count_star() │
+│       varchar       │                                             varchar                                             │    int64     │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ rd01.shieldbase.com │ 21.220.1024.0005"                                                                               │            1 │
+│ rd01.shieldbase.com │ 22.248.1127.0001"                                                                               │            1 │
+│ rd01.shieldbase.com │ 22.253.1204.0001"                                                                               │            1 │
+│ rd01.shieldbase.com │ Ec2Install.exe" /burn.runonce                                                                   │            1 │
+│ rd01.shieldbase.com │ OneDrive.exe" /background                                                                       │            9 │
+│ rd01.shieldbase.com │ OneDriveSetup.exe /thfirstsetup                                                                 │            1 │
+│ rd01.shieldbase.com │ OneDriveSetup.exe"                                                                              │            6 │
+│ rd01.shieldbase.com │ SecurityHealthSystray.exe                                                                       │           10 │
+│ rd01.shieldbase.com │ amd64"                                                                                          │            1 │
+│ rd01.shieldbase.com │ chrmstp.exe" --configure-user-settings --verbose-logging --system-level --channel=stable        │            1 │
+│ rd01.shieldbase.com │ ie4uinit.exe -UserConfig                                                                        │            1 │
+│ rd01.shieldbase.com │ msedge.exe" --no-startup-window --win-session-start /prefetch:5                                 │            1 │
+│ rd01.shieldbase.com │ setup.exe" --configure-user-settings --verbose-logging --system-level --msedge --channel=stable │            1 │
+│ rd01.shieldbase.com │ setup.exe" --msedgewebview --delete-old-versions --system-level --verbose-logging --on-logon    │            1 │
+│ rd01.shieldbase.com │ slack.exe" --process-start-args --startup                                                       │            8 │
+│ rd01.shieldbase.com │ unregmp2.exe /FirstLogon                                                                        │            2 │
+└─────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+  16 rows                                                                                                                    3 columns
+```
+fullkey
+```sql
+memory D SELECT je.fullkey, COUNT(*)
+         FROM read_json_objects('.\Shell-Core%4Operational-rd01.json') AS e, json_tree(e.json) AS je
+         WHERE e.json->>'$.Event.System.EventID' = '9708' AND je.fullkey LIKE '$.Event.EventData.%'
+         GROUP BY je.fullkey
+         ORDER BY je.fullkey;
+┌───────────────────────────┬──────────────┐
+│          fullkey          │ count_star() │
+│          varchar          │    int64     │
+├───────────────────────────┼──────────────┤
+│ $.Event.EventData.Command │           46 │
+│ $.Event.EventData.PID     │           46 │
+└───────────────────────────┴──────────────┘
+```
+
+
 
 
 ## 28115 (Shortcut creation log after program installation)

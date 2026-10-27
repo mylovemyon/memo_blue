@@ -424,3 +424,22 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴──────────────────────┴─────────────────────────┴─────────────────────────┴──────────────┘
   18 rows                                                                                                                                                                                   9 columns
 ```
+
+### 0x08 (SMB_COM_CREATE_DIRECTORY)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x08" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file -e smb.file_attribute -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x08.csv
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.file", "smb.file_attribute", "smb.last_write.time", "smb.file_size", COUNT(*)
+         FROM read_csv_auto('0x08.csv')
+         WHERE "smb.cmd" = '0x08'
+         GROUP BY ALL
+         ORDER BY "smb.path", "smb.mid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬─────────────────────────┬────────────────────┬──────────────────────────┬───────────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.mid │        smb.file         │ smb.file_attribute │   smb.last_write.time    │ smb.file_size │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │         varchar         │       int64        │ timestamp with time zone │     int64     │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼─────────────────────────┼────────────────────┼──────────────────────────┼───────────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      11 │ \\torture_qfileinfo.txt │               NULL │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      11 │ NULL                    │                 32 │ 2006-02-17 14:31:58+09   │             7 │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────────────────────┴────────────────────┴──────────────────────────┴───────────────┴──────────────┘
+```

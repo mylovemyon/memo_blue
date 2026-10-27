@@ -443,3 +443,26 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      11 │ NULL                    │                 32 │ 2006-02-17 14:31:58+09   │             7 │            1 │
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────────────────────┴────────────────────┴──────────────────────────┴───────────────┴──────────────┘
 ```
+
+### 0x09 (SMB_COM_SET_INFORMATION)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x09" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file -e smb.file_attribute -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x09.csv
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.file_attribute", "smb.last_write.time", "smb.file", COUNT(*)
+         FROM read_csv_auto('0x09.csv')
+         WHERE "smb.cmd" = '0x09'
+         GROUP BY ALL
+         ORDER BY "smb.path", "smb.mid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬────────────────────┬──────────────────────────┬────────────────────────────────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.mid │ smb.file_attribute │   smb.last_write.time    │              smb.file              │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │       int64        │ timestamp with time zone │              varchar               │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼────────────────────┼──────────────────────────┼────────────────────────────────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      25 │                  1 │ 2005-11-18 14:31:58+09   │ \\testsfileinfo\\fname_test_18.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      25 │               NULL │ NULL                     │ NULL                               │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      29 │                128 │ 1970-01-01 09:00:00+09   │ \\testsfileinfo\\fname_test_18.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      29 │               NULL │ NULL                     │ NULL                               │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      33 │                  0 │ 1970-01-01 09:00:00+09   │ \\testsfileinfo\\fname_test_18.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      33 │               NULL │ NULL                     │ NULL                               │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴────────────────────┴──────────────────────────┴────────────────────────────────────┴──────────────┘
+```

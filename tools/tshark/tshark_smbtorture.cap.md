@@ -398,28 +398,27 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
          FROM read_csv_auto('0x07.csv')
          WHERE "smb.cmd" = '0x07'
          GROUP BY ALL
-         ORDER BY "smb.path", "smb.old_file", "smb.flags.response"
-         LIMIT 20;
+         ORDER BY "smb.path", "smb.old_file", "smb.flags.response";
 ┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬──────────────────────┬─────────────────────────┬─────────────────────────┬──────────────┐
 │     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.search.attribute │      smb.old_file       │        smb.file         │ count_star() │
 │     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │        int64         │         varchar         │         varchar         │    int64     │
 ├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼──────────────────────┼─────────────────────────┼─────────────────────────┼──────────────┤
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\*.txt     │ \\testrename\\test1.txt │            2 │
 │ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\*.txt     │ \\testrename\\*.bak     │            2 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\*.txt     │ \\testrename\\test1.txt │            2 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\*.txt     │ \\testrename\\test1.txt │            2 │
 │ 192.168.114.129 │ 192.168.114.1   │ C000000F             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\*.txt     │ \\testrename\\*.bak     │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\*.txt     │ \\testrename\\test1.txt │            2 │
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\*.txt     │ \\testrename\\*.bak     │            1 │
 │ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\test1.bak │ \\testrename\\*.txt     │            1 │
 │ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    2 │ \\testrename\\test1.bak │ \\testrename\\*.txt     │            1 │
 │ 192.168.114.129 │ 192.168.114.1   │ C000000F             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test1.bak │ \\testrename\\*.txt     │            1 │
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test1.bak │ \\testrename\\*.txt     │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\test1.txt │ \\testrename\\test1.txt │            1 │
 │ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\test1.txt │ \\testrename\\test2.txt │            3 │
-│ 192.168.114.129 │ 192.168.114.1   │ C0000043             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test1.txt │ \\testrename\\test2.txt │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\test1.txt │ \\testrename\\test1.txt │            1 │
 │ 192.168.114.129 │ 192.168.114.1   │ C0000034             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test1.txt │ \\testrename\\test1.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000043             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test1.txt │ \\testrename\\test2.txt │            1 │
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test1.txt │ \\testrename\\test2.txt │            2 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\test2.txt │ \\testrename\\test1.txt │            1 │
 │ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\test2.txt │ \\testrename\\test2.txt │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\testrename\\test2.txt │ \\testrename\\test1.txt │            1 │
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test2.txt │ \\testrename\\test2.txt │            1 │
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\testrename\\test2.txt │ \\testrename\\test1.txt │            1 │
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴──────────────────────┴─────────────────────────┴─────────────────────────┴──────────────┘

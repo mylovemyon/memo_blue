@@ -138,7 +138,7 @@ Index  NT Transaction Sub-Commands Calls    Min SRT    Max SRT    Avg SRT    Sum
 
 ## smb.cmd
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.signature -e smb.uid -e smb.mid -e smb.error_class -e smb.error_code -e smb.nt_status -e smb.path -e smb.dir_name -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x01.csv
-### 0x00
+### 0x00 ((SMB_COM_CREATE_DIRECTORY))
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x00" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.dir_name -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x00.csv
 ```
@@ -191,7 +191,7 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file"
   10 rows                                                                                                               6 columns
 ```
 
-### 0x01
+### 0x01 ((SMB_COM_DELETE_DIRECTORY))
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.dir_name -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x01.csv
 ```
@@ -244,7 +244,7 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file"
   10 rows                                                                                                               6 columns
 ```
 
-### 0x02
+### 0x02 (SMB_COM_OPEN)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x02.csv
 ```
@@ -282,7 +282,7 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
   20 rows                                                                                                                                                                                          10 columns
 ```
 
-### 0x03
+### 0x03 (SMB_COM_CREATE)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x03" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file_attribute -e smb.create.time -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x03.csv
 ```
@@ -307,7 +307,7 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴────────────────────┴──────────────────────────┴───────────────────────────────┴──────────────┘
 ```
 
-### 0x04
+### 0x04 (SMB_COM_CLOSE)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x04" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.fid -e smb.last_write.time -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x04.csv
 ```
@@ -333,5 +333,58 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
 │ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │       5 │ 1970-01-01 09:00:00+09   │           40 │
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │       5 │ NULL                     │           40 │
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴──────────────────────────┴──────────────┘
+  10 rows                                                                                                                                             8 columns
+```
+
+### 0x05 (SMB_COM_FLUSH)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x05" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.fid -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x05.csv
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.fid", COUNT(*)
+         FROM read_csv_auto('0x05.csv')
+         WHERE "smb.cmd" = '0x05'
+         GROUP BY ALL
+         ORDER BY "smb.path", "smb.fid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.fid │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │   16386 │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000008             │ true               │ \\\\192.168.114.129\\TEST │   16386 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │   16387 │            2 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000008             │ true               │ \\\\192.168.114.129\\TEST │   16387 │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │   16387 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │   65535 │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │   65535 │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴──────────────┘
+```
+
+### 0x06 (SMB_COM_DELETE)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x06" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.search.attribute -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x06.csv
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.search.attribute", "smb.file", COUNT(*)
+         FROM read_csv_auto('0x06.csv')
+         WHERE "smb.cmd" = '0x06'
+         GROUP BY ALL
+         ORDER BY "smb.path", "smb.file", "smb.flags.response"
+         LIMIT 10;
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬──────────────────────┬─────────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.search.attribute │  smb.file   │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │        int64         │   varchar   │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼──────────────────────┼─────────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ ..          │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C000003B             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ ..          │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                    0 │ \\..        │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C000003B             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\..        │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                   22 │ \\SRVB9D82  │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\SRVB9D82  │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                   22 │ \\composite │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000034             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\composite │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │                   22 │ \\mkdirtest │            2 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000034             │ true               │ \\\\192.168.114.129\\TEST │                 NULL │ \\mkdirtest │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴──────────────────────┴─────────────┴──────────────┘
   10 rows                                                                                                                                             8 columns
 ```

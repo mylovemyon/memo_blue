@@ -321,7 +321,7 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 222" -T json 
 ## 0x02 (SMB_COM_OPEN)
 https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/ec064de8-6538-401e-8c73-b37231c36f2b
 ```json
-PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15733" -T json -J smb
+PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15751" -T json -J smb
 [
   {
     "_index": "packets-2005-11-19",
@@ -383,7 +383,7 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15733" -T jso
             },
             "smb.pid": "31043",
             "smb.uid": "2048",
-            "smb.mid": "20"
+            "smb.mid": "29"
           },
           "Open Request (0x02)": {
             "smb.wct": "2",
@@ -415,7 +415,7 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15733" -T jso
 ]
 ```
 ```json
-PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15734" -T json -J smb
+PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15752" -T json -J smb
 [
   {
     "_index": "packets-2005-11-19",
@@ -440,10 +440,10 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15734" -T jso
         "smb": {
           "SMB Header": {
             "smb.server_component": "0x424d53ff",
-            "smb.response_to": "15733",
-            "smb.time": "0.001457000",
+            "smb.response_to": "15751",
+            "smb.time": "0.000949000",
             "smb.cmd": "0x02",
-            "smb.nt_status": "0xc0000034",
+            "smb.nt_status": "0x00000000",
             "smb.flags": "0x88",
             "smb.flags_tree": {
               "smb.flags.response": "1",
@@ -479,10 +479,33 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15734" -T jso
             },
             "smb.pid": "31043",
             "smb.uid": "2048",
-            "smb.mid": "20"
+            "smb.mid": "29"
           },
           "Open Response (0x02)": {
-            "smb.wct": "0",
+            "smb.wct": "7",
+            "smb.fid": "0x4003",
+            "smb.fid_tree": {
+              "smb.fid.opened_in": "15752"
+            },
+            "smb.file_attribute": "0x0020",
+            "smb.file_attribute_tree": {
+              "smb.file_attribute.archive": "1",
+              "smb.file_attribute.directory": "0",
+              "smb.file_attribute.volume": "0",
+              "smb.file_attribute.system": "0",
+              "smb.file_attribute.hidden": "0",
+              "smb.file_attribute.read_only": "0"
+            },
+            "smb.last_write.time": "2006-02-17T05:32:14.000000000Z",
+            "smb.file_size": "7",
+            "smb.access.granted": "0x00ff",
+            "smb.access.granted_tree": {
+              "smb.access.writethrough": "0",
+              "smb.access.caching": "0",
+              "smb.access.locality": "0",
+              "smb.access.sharing": "7",
+              "smb.access.mode": "7"
+            },
             "smb.bcc": "0"
           }
         }

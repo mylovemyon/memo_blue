@@ -514,3 +514,175 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15752" -T jso
   }
 ]
 ```
+
+
+
+## 0x03 (SMB_COM_CREATE)
+```json
+PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 16643" -T json -J smb
+[
+  {
+    "_index": "packets-2005-11-19",
+    "_score": null,
+    "_source": {
+      "layers": {
+        "frame": {
+          "filtered": "frame"
+        },
+        "eth": {
+          "filtered": "eth"
+        },
+        "ip": {
+          "filtered": "ip"
+        },
+        "tcp": {
+          "filtered": "tcp"
+        },
+        "nbss": {
+          "filtered": "nbss"
+        },
+        "smb": {
+          "SMB Header": {
+            "smb.server_component": "0x424d53ff",
+            "smb.cmd": "0x03",
+            "smb.nt_status": "0x00000000",
+            "smb.flags": "0x08",
+            "smb.flags_tree": {
+              "smb.flags.response": "0",
+              "smb.flags.notify": "0",
+              "smb.flags.oplock": "0",
+              "smb.flags.canon": "0",
+              "smb.flags.caseless": "1",
+              "smb.flags.receive_buffer": "0",
+              "smb.flags.lock": "0"
+            },
+            "smb.flags2": "0xc803",
+            "smb.flags2_tree": {
+              "smb.flags2.string": "1",
+              "smb.flags2.nt_error": "1",
+              "smb.flags2.roe": "0",
+              "smb.flags2.dfs": "0",
+              "smb.flags2.esn": "1",
+              "smb.flags2.reparse_path": "0",
+              "smb.flags2.long_names_used": "0",
+              "smb.flags2.sec_sig_required": "0",
+              "smb.flags2.compressed": "0",
+              "smb.flags2.sec_sig": "0",
+              "smb.flags2.ea": "1",
+              "smb.flags2.long_names_allowed": "1"
+            },
+            "smb.pid.high": "0",
+            "smb.signature": "00:00:00:00:00:00:00:00",
+            "smb.reserved": "00:00",
+            "smb.tid": "2048",
+            "smb.tid_tree": {
+              "smb.path": "\\\\192.168.114.129\\TEST",
+              "smb.fid.mapped_in": "15702"
+            },
+            "smb.pid": "31043",
+            "smb.uid": "2048",
+            "smb.mid": "434"
+          },
+          "Create Request (0x03)": {
+            "smb.wct": "3",
+            "smb.file_attribute": "0x0000",
+            "smb.file_attribute_tree": {
+              "smb.file_attribute.archive": "0",
+              "smb.file_attribute.directory": "0",
+              "smb.file_attribute.volume": "0",
+              "smb.file_attribute.system": "0",
+              "smb.file_attribute.hidden": "0",
+              "smb.file_attribute.read_only": "0"
+            },
+            "smb.create.time": "1970-01-01T00:00:00.000000000Z",
+            "smb.bcc": "57",
+            "smb.buffer_format": "4",
+            "smb.file": "\\rawopen\\torture_create.txt"
+          }
+        }
+      }
+    }
+  }
+]
+```
+```json
+PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 16644" -T json -J smb
+[
+  {
+    "_index": "packets-2005-11-19",
+    "_score": null,
+    "_source": {
+      "layers": {
+        "frame": {
+          "filtered": "frame"
+        },
+        "eth": {
+          "filtered": "eth"
+        },
+        "ip": {
+          "filtered": "ip"
+        },
+        "tcp": {
+          "filtered": "tcp"
+        },
+        "nbss": {
+          "filtered": "nbss"
+        },
+        "smb": {
+          "SMB Header": {
+            "smb.server_component": "0x424d53ff",
+            "smb.response_to": "16643",
+            "smb.time": "0.001451000",
+            "smb.cmd": "0x03",
+            "smb.nt_status": "0x00000000",
+            "smb.flags": "0x88",
+            "smb.flags_tree": {
+              "smb.flags.response": "1",
+              "smb.flags.notify": "0",
+              "smb.flags.oplock": "0",
+              "smb.flags.canon": "0",
+              "smb.flags.caseless": "1",
+              "smb.flags.receive_buffer": "0",
+              "smb.flags.lock": "0"
+            },
+            "smb.flags2": "0xc803",
+            "smb.flags2_tree": {
+              "smb.flags2.string": "1",
+              "smb.flags2.nt_error": "1",
+              "smb.flags2.roe": "0",
+              "smb.flags2.dfs": "0",
+              "smb.flags2.esn": "1",
+              "smb.flags2.reparse_path": "0",
+              "smb.flags2.long_names_used": "0",
+              "smb.flags2.sec_sig_required": "0",
+              "smb.flags2.compressed": "0",
+              "smb.flags2.sec_sig": "0",
+              "smb.flags2.ea": "1",
+              "smb.flags2.long_names_allowed": "1"
+            },
+            "smb.pid.high": "0",
+            "smb.signature": "00:00:00:00:00:00:00:00",
+            "smb.reserved": "00:00",
+            "smb.tid": "2048",
+            "smb.tid_tree": {
+              "smb.path": "\\\\192.168.114.129\\TEST",
+              "smb.fid.mapped_in": "15702"
+            },
+            "smb.pid": "31043",
+            "smb.uid": "2048",
+            "smb.mid": "434"
+          },
+          "Create Response (0x03)": {
+            "smb.wct": "1",
+            "smb.fid": "0x8009",
+            "smb.fid_tree": {
+              "smb.fid.opened_in": "16644"
+            },
+            "smb.bcc": "0"
+          }
+        }
+      }
+    }
+  }
+]
+```

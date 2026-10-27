@@ -135,7 +135,9 @@ Index  NT Transaction Sub-Commands Calls    Min SRT    Max SRT    Avg SRT    Sum
 ```
 
 # smb
+
 ## smb.cmd
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.signature -e smb.uid -e smb.mid -e smb.error_class -e smb.error_code -e smb.nt_status -e smb.path -e smb.dir_name -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x01.csv
 ### 0x00
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x00" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.dir_name -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x00.csv
@@ -191,33 +193,58 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file"
 
 ### 0x01
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.signature -e smb.uid -e smb.mid -e smb.error_class -e smb.error_code -e smb.nt_status -e smb.path -e smb.dir_name -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x01.csv
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.dir_name -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x01.csv
 ```
 ```sql
-memory D SELECT timezone('UTC', "frame.time_utc") AS time_utc, "ip.src", "ip.dst", "smb.cmd", "smb.flags.response", "smb.signature", "smb.uid", "smb.mid", hex("smb.error_class"), hex("smb.error_code"), hex("smb.nt_status"), "smb.path", "smb.dir_name", "smb.file", COUNT(*)
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.path", "smb.dir_name", COUNT(*)
          FROM read_csv_auto('0x01.csv')
+         WHERE "smb.cmd" = '0x01' AND "smb.flags.response" = false
          GROUP BY ALL
-         ORDER BY time_utc, "smb.uid", "smb.mid"
+         ORDER BY "smb.path", "smb.dir_name"
          LIMIT 10;
-┌────────────────────────────┬─────────────────┬─────────────────┬─────────┬────────────────────┬──────────────────┬─────────┬─────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────────┬──────────────────┬──────────────────┬──────────────┐
-│          time_utc          │     ip.src      │     ip.dst      │ smb.cmd │ smb.flags.response │  smb.signature   │ smb.uid │ smb.mid │ hex("smb.error_class") │ hex("smb.error_code") │ hex("smb.nt_status") │         smb.path          │   smb.dir_name   │     smb.file     │ count_star() │
-│         timestamp          │     varchar     │     varchar     │  int64  │      boolean       │     varchar      │  int64  │  int64  │        varchar         │        varchar        │       varchar        │          varchar          │     varchar      │     varchar      │    int64     │
-├────────────────────────────┼─────────────────┼─────────────────┼─────────┼────────────────────┼──────────────────┼─────────┼─────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────────┼──────────────────┼──────────────────┼──────────────┤
-│ 2005-11-19 03:31:58.788975 │ 192.168.114.1   │ 192.168.114.129 │       1 │ false              │ 0000000000000000 │    2048 │       9 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ \\testsfileinfo  │ NULL             │            1 │
-│ 2005-11-19 03:31:58.790701 │ 192.168.114.129 │ 192.168.114.1   │       1 │ true               │ 0000000000000000 │    2048 │       9 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ NULL             │ \\testsfileinfo  │            1 │
-│ 2005-11-19 03:32:04.393642 │ 192.168.114.1   │ 192.168.114.129 │       1 │ false              │ 0000000000000000 │    2048 │    1587 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ \\testsearch     │ NULL             │            1 │
-│ 2005-11-19 03:32:04.400712 │ 192.168.114.129 │ 192.168.114.1   │       1 │ true               │ 0000000000000000 │    2048 │    1587 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ NULL             │ \\testsearch     │            1 │
-│ 2005-11-19 03:32:07.627161 │ 192.168.114.1   │ 192.168.114.129 │       1 │ false              │ 0000000000000000 │    2048 │    3003 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ \\testsearch     │ NULL             │            1 │
-│ 2005-11-19 03:32:07.634918 │ 192.168.114.129 │ 192.168.114.1   │       1 │ true               │ 0000000000000000 │    2048 │    3003 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ NULL             │ \\testsearch     │            1 │
-│ 2005-11-19 03:32:07.944859 │ 192.168.114.1   │ 192.168.114.129 │       1 │ false              │ 0000000000000000 │    2048 │    3068 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ \\testsearch     │ NULL             │            1 │
-│ 2005-11-19 03:32:07.950285 │ 192.168.114.129 │ 192.168.114.1   │       1 │ true               │ 0000000000000000 │    2048 │    3068 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ NULL             │ \\testsearch     │            1 │
-│ 2005-11-19 03:32:08.991434 │ 192.168.114.1   │ 192.168.114.129 │       1 │ false              │ 0000000000000000 │    2048 │    3979 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ \\testsearch\\d0 │ NULL             │            1 │
-│ 2005-11-19 03:32:08.991983 │ 192.168.114.129 │ 192.168.114.1   │       1 │ true               │ 0000000000000000 │    2048 │    3979 │ NULL                   │ NULL                  │ 0                    │ \\\\192.168.114.129\\TEST │ NULL             │ \\testsearch\\d0 │            1 │
-└────────────────────────────┴─────────────────┴─────────────────┴─────────┴────────────────────┴──────────────────┴─────────┴─────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────────┴──────────────────┴──────────────────┴──────────────┘
-  10 rows                                                                                                                                                                                                                                                                            15 columns
+┌───────────────┬─────────────────┬──────────────────────┬───────────────────────────┬──────────────────────────────────┬──────────────┐
+│    ip.src     │     ip.dst      │ hex("smb.nt_status") │         smb.path          │           smb.dir_name           │ count_star() │
+│    varchar    │     varchar     │       varchar        │          varchar          │             varchar              │    int64     │
+├───────────────┼─────────────────┼──────────────────────┼───────────────────────────┼──────────────────────────────────┼──────────────┤
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                      │            1 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir           │            5 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                     │            1 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt                 │            1 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S            │            1 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98      │            1 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawcontext                     │            3 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawioctl                       │            1 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawopen                        │            2 │
+│ 192.168.114.1 │ 192.168.114.129 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.dir │            4 │
+└───────────────┴─────────────────┴──────────────────────┴───────────────────────────┴──────────────────────────────────┴──────────────┘
+  10 rows                                                                                                                    6 columns
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file", COUNT(*)
+         FROM read_csv_auto('0x01.csv')
+         WHERE "smb.cmd" = '0x01' AND "smb.flags.response" = true
+         GROUP BY ALL
+         ORDER BY "smb.path", "smb.file"
+         LIMIT 10;
+┌─────────────────┬───────────────┬──────────────────────┬───────────────────────────┬─────────────────────────────┬──────────────┐
+│     ip.src      │    ip.dst     │ hex("smb.nt_status") │         smb.path          │          smb.file           │ count_star() │
+│     varchar     │    varchar    │       varchar        │          varchar          │           varchar           │    int64     │
+├─────────────────┼───────────────┼──────────────────────┼───────────────────────────┼─────────────────────────────┼──────────────┤
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │            1 │
+│ 192.168.114.129 │ 192.168.114.1 │ C0000103             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
+│ 192.168.114.129 │ 192.168.114.1 │ C0000034             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            3 │
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │            1 │
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │            1 │
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │            1 │
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │            1 │
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawcontext                │            3 │
+│ 192.168.114.129 │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawioctl                  │            1 │
+└─────────────────┴───────────────┴──────────────────────┴───────────────────────────┴─────────────────────────────┴──────────────┘
+  10 rows                                                                                                               6 columns
 ```
 
-## 0x02
+### 0x02
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.signature -e smb.uid -e smb.mid -e smb.error_class -e smb.error_code -e smb.nt_status -e smb.file -e smb.access.sharing -e smb.access.mode -e smb.fid -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x02.csv
 ```

@@ -158,7 +158,7 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 224" -T json 
 
 
 
-## 0x01
+## 0x01 (SMB_COM_DELETE_DIRECTORY)
 https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/0bca354c-42d9-46b7-a0ae-d8c6870242ca
 ```json
 PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 221" -T json -J smb
@@ -318,40 +318,176 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 222" -T json 
 
 
 
-## 0x02
+## 0x02 (SMB_COM_OPEN)
 https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/ec064de8-6538-401e-8c73-b37231c36f2b
-```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.signature -e smb.uid -e smb.mid -e smb.error_class -e smb.error_code -e smb.nt_status -e smb.file -e smb.access.sharing -e smb.access.mode -e smb.fid -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x02.csv
+```json
+PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15733" -T json -J smb
+[
+  {
+    "_index": "packets-2005-11-19",
+    "_score": null,
+    "_source": {
+      "layers": {
+        "frame": {
+          "filtered": "frame"
+        },
+        "eth": {
+          "filtered": "eth"
+        },
+        "ip": {
+          "filtered": "ip"
+        },
+        "tcp": {
+          "filtered": "tcp"
+        },
+        "nbss": {
+          "filtered": "nbss"
+        },
+        "smb": {
+          "SMB Header": {
+            "smb.server_component": "0x424d53ff",
+            "smb.cmd": "0x02",
+            "smb.nt_status": "0x00000000",
+            "smb.flags": "0x08",
+            "smb.flags_tree": {
+              "smb.flags.response": "0",
+              "smb.flags.notify": "0",
+              "smb.flags.oplock": "0",
+              "smb.flags.canon": "0",
+              "smb.flags.caseless": "1",
+              "smb.flags.receive_buffer": "0",
+              "smb.flags.lock": "0"
+            },
+            "smb.flags2": "0xc803",
+            "smb.flags2_tree": {
+              "smb.flags2.string": "1",
+              "smb.flags2.nt_error": "1",
+              "smb.flags2.roe": "0",
+              "smb.flags2.dfs": "0",
+              "smb.flags2.esn": "1",
+              "smb.flags2.reparse_path": "0",
+              "smb.flags2.long_names_used": "0",
+              "smb.flags2.sec_sig_required": "0",
+              "smb.flags2.compressed": "0",
+              "smb.flags2.sec_sig": "0",
+              "smb.flags2.ea": "1",
+              "smb.flags2.long_names_allowed": "1"
+            },
+            "smb.pid.high": "0",
+            "smb.signature": "00:00:00:00:00:00:00:00",
+            "smb.reserved": "00:00",
+            "smb.tid": "2048",
+            "smb.tid_tree": {
+              "smb.path": "\\\\192.168.114.129\\TEST",
+              "smb.fid.mapped_in": "15702"
+            },
+            "smb.pid": "31043",
+            "smb.uid": "2048",
+            "smb.mid": "20"
+          },
+          "Open Request (0x02)": {
+            "smb.wct": "2",
+            "smb.access.desired": "0x00ff",
+            "smb.access.desired_tree": {
+              "smb.access.writethrough": "0",
+              "smb.access.caching": "0",
+              "smb.access.locality": "0",
+              "smb.access.sharing": "7",
+              "smb.access.mode": "7"
+            },
+            "smb.search.attribute": "0x0000",
+            "smb.search.attribute_tree": {
+              "smb.search.attribute.read_only": "0",
+              "smb.search.attribute.hidden": "0",
+              "smb.search.attribute.system": "0",
+              "smb.search.attribute.volume": "0",
+              "smb.search.attribute.directory": "0",
+              "smb.search.attribute.archive": "0"
+            },
+            "smb.bcc": "53",
+            "smb.buffer_format": "4",
+            "smb.file": "\\rawopen\\torture_open.txt"
+          }
+        }
+      }
+    }
+  }
+]
 ```
-```sql
-memory D SELECT timezone('UTC', "frame.time_utc") AS time_utc, "ip.src", "ip.dst", "smb.cmd", "smb.flags.response", "smb.signature", "smb.uid", "smb.mid", hex("smb.error_class"), hex("smb.error_code"), hex("smb.nt_status"), "smb.file", "smb.access.sharing", "smb.access.mode", "smb.fid", "smb.last_write.time", "smb.file_size", COUNT(*)
-         FROM read_csv_auto('0x02.csv')
-         GROUP BY ALL
-         ORDER BY time_utc;
-┌────────────────────────────┬─────────────────┬─────────────────┬─────────┬────────────────────┬──────────────────┬─────────┬─────────┬────────────────────────┬───────────────────────┬──────────────────────┬─────────────────────────────┬────────────────────┬─────────────────┬─────────┬──────────────────────────┬───────────────┬──────────────┐
-│          time_utc          │     ip.src      │     ip.dst      │ smb.cmd │ smb.flags.response │  smb.signature   │ smb.uid │ smb.mid │ hex("smb.error_class") │ hex("smb.error_code") │ hex("smb.nt_status") │          smb.file           │ smb.access.sharing │ smb.access.mode │ smb.fid │   smb.last_write.time    │ smb.file_size │ count_star() │
-│         timestamp          │     varchar     │     varchar     │  int64  │      boolean       │     varchar      │  int64  │  int64  │        varchar         │        varchar        │       varchar        │           varchar           │       int64        │      int64      │  int64  │ timestamp with time zone │     int64     │    int64     │
-├────────────────────────────┼─────────────────┼─────────────────┼─────────┼────────────────────┼──────────────────┼─────────┼─────────┼────────────────────────┼───────────────────────┼──────────────────────┼─────────────────────────────┼────────────────────┼─────────────────┼─────────┼──────────────────────────┼───────────────┼──────────────┤
-│ 2005-11-19 03:32:14.673931 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      20 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  7 │               7 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.675388 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      20 │ NULL                   │ NULL                  │ C0000034             │ NULL                        │               NULL │            NULL │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.679815 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      29 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  7 │               7 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.680764 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      29 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  7 │               7 │   16387 │ 2006-02-17 14:32:14+09   │             7 │            1 │
-│ 2005-11-19 03:32:14.70511  │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      32 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  7 │               7 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.705524 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      32 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  7 │               7 │   16387 │ 2006-02-17 14:32:14+09   │             7 │            1 │
-│ 2005-11-19 03:32:14.708386 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      37 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  0 │               0 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.709424 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      37 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  0 │               0 │   16388 │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 2005-11-19 03:32:14.710849 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      41 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  0 │               1 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.71148  │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      41 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  0 │               1 │   16389 │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 2005-11-19 03:32:14.713179 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      45 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  0 │               2 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.713483 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      45 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  0 │               2 │   16390 │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 2005-11-19 03:32:14.715195 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      49 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  2 │               2 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:14.715467 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      49 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  2 │               2 │   16391 │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 2005-11-19 03:32:14.716214 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      52 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  4 │               2 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:15.706766 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      52 │ NULL                   │ NULL                  │ C0000043             │ NULL                        │               NULL │            NULL │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:15.707192 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      53 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  4 │               0 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:15.707715 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      53 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  4 │               0 │   16392 │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 2005-11-19 03:32:15.710867 │ 192.168.114.1   │ 192.168.114.129 │       2 │ false              │ 0000000000000000 │    2048 │      58 │ NULL                   │ NULL                  │ 0                    │ \\rawopen\\torture_open.txt │                  0 │               0 │    NULL │ NULL                     │          NULL │            1 │
-│ 2005-11-19 03:32:15.711281 │ 192.168.114.129 │ 192.168.114.1   │       2 │ true               │ 0000000000000000 │    2048 │      58 │ NULL                   │ NULL                  │ 0                    │ NULL                        │                  0 │               0 │   16393 │ 2005-11-19 14:32:16+09   │             7 │            1 │
-└────────────────────────────┴─────────────────┴─────────────────┴─────────┴────────────────────┴──────────────────┴─────────┴─────────┴────────────────────────┴───────────────────────┴──────────────────────┴─────────────────────────────┴────────────────────┴─────────────────┴─────────┴──────────────────────────┴───────────────┴──────────────┘
-  20 rows                                                                                                                                                                                                                                                                                                                                    18 columns
+```json
+PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 15734" -T json -J smb
+[
+  {
+    "_index": "packets-2005-11-19",
+    "_score": null,
+    "_source": {
+      "layers": {
+        "frame": {
+          "filtered": "frame"
+        },
+        "eth": {
+          "filtered": "eth"
+        },
+        "ip": {
+          "filtered": "ip"
+        },
+        "tcp": {
+          "filtered": "tcp"
+        },
+        "nbss": {
+          "filtered": "nbss"
+        },
+        "smb": {
+          "SMB Header": {
+            "smb.server_component": "0x424d53ff",
+            "smb.response_to": "15733",
+            "smb.time": "0.001457000",
+            "smb.cmd": "0x02",
+            "smb.nt_status": "0xc0000034",
+            "smb.flags": "0x88",
+            "smb.flags_tree": {
+              "smb.flags.response": "1",
+              "smb.flags.notify": "0",
+              "smb.flags.oplock": "0",
+              "smb.flags.canon": "0",
+              "smb.flags.caseless": "1",
+              "smb.flags.receive_buffer": "0",
+              "smb.flags.lock": "0"
+            },
+            "smb.flags2": "0xc803",
+            "smb.flags2_tree": {
+              "smb.flags2.string": "1",
+              "smb.flags2.nt_error": "1",
+              "smb.flags2.roe": "0",
+              "smb.flags2.dfs": "0",
+              "smb.flags2.esn": "1",
+              "smb.flags2.reparse_path": "0",
+              "smb.flags2.long_names_used": "0",
+              "smb.flags2.sec_sig_required": "0",
+              "smb.flags2.compressed": "0",
+              "smb.flags2.sec_sig": "0",
+              "smb.flags2.ea": "1",
+              "smb.flags2.long_names_allowed": "1"
+            },
+            "smb.pid.high": "0",
+            "smb.signature": "00:00:00:00:00:00:00:00",
+            "smb.reserved": "00:00",
+            "smb.tid": "2048",
+            "smb.tid_tree": {
+              "smb.path": "\\\\192.168.114.129\\TEST",
+              "smb.fid.mapped_in": "15702"
+            },
+            "smb.pid": "31043",
+            "smb.uid": "2048",
+            "smb.mid": "20"
+          },
+          "Open Response (0x02)": {
+            "smb.wct": "0",
+            "smb.bcc": "0"
+          }
+        }
+      }
+    }
+  }
+]
 ```

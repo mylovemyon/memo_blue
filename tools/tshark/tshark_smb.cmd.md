@@ -1,4 +1,4 @@
-## 0x00
+## 0x00 (SMB_COM_CREATE_DIRECTORY)
 https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/e6e870ad-7037-4b79-ac54-4a42a1ba4561
 ```json
 PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 223" -T json -J smb

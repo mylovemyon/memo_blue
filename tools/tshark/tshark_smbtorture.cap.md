@@ -246,38 +246,63 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file"
 
 ### 0x02
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.mid -e smb.file -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x02.csv
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x02.csv
 ```
 ```sql
-memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.mid", "smb.file", "smb.last_write.time", "smb.file_size", COUNT(*)
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.file", "smb.last_write.time", "smb.file_size", COUNT(*)
          FROM read_csv_auto('0x02.csv')
          WHERE "smb.cmd" = '0x02'
          GROUP BY ALL
-         ORDER BY "smb.mid", "smb.flags.response";
-┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬─────────┬─────────────────────────────┬──────────────────────────┬───────────────┬──────────────┐
-│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │ smb.mid │          smb.file           │   smb.last_write.time    │ smb.file_size │ count_star() │
-│     varchar     │     varchar     │       varchar        │      boolean       │  int64  │           varchar           │ timestamp with time zone │     int64     │    int64     │
-├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼─────────┼─────────────────────────────┼──────────────────────────┼───────────────┼──────────────┤
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      20 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ C0000034             │ true               │      20 │ NULL                        │ NULL                     │          NULL │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      29 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      29 │ NULL                        │ 2006-02-17 14:32:14+09   │             7 │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      32 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      32 │ NULL                        │ 2006-02-17 14:32:14+09   │             7 │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      37 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      37 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      41 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      41 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      45 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      45 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      49 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      49 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      52 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ C0000043             │ true               │      52 │ NULL                        │ NULL                     │          NULL │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      53 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      53 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
-│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │      58 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
-│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │      58 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
-└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴─────────┴─────────────────────────────┴──────────────────────────┴───────────────┴──────────────┘
-  20 rows                                                                                                                                                               9 columns
+         ORDER BY "smb.path", "smb.mid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬─────────────────────────────┬──────────────────────────┬───────────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.mid │          smb.file           │   smb.last_write.time    │ smb.file_size │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │           varchar           │ timestamp with time zone │     int64     │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼─────────────────────────────┼──────────────────────────┼───────────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      20 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000034             │ true               │ \\\\192.168.114.129\\TEST │      20 │ NULL                        │ NULL                     │          NULL │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      29 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      29 │ NULL                        │ 2006-02-17 14:32:14+09   │             7 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      32 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      32 │ NULL                        │ 2006-02-17 14:32:14+09   │             7 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      37 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      37 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      41 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      41 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      45 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      45 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      49 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      49 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      52 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000043             │ true               │ \\\\192.168.114.129\\TEST │      52 │ NULL                        │ NULL                     │          NULL │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      53 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      53 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      58 │ \\rawopen\\torture_open.txt │ NULL                     │          NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      58 │ NULL                        │ 2005-11-19 14:32:16+09   │             7 │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────────────────────────┴──────────────────────────┴───────────────┴──────────────┘
+  20 rows                                                                                                                                                                                          10 columns
+```
+
+### 0x03
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x03" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file_attribute -e smb.create.time -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x03.csv
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.file_attribute", "smb.create.time", "smb.file", COUNT(*)
+         FROM read_csv_auto('0x03.csv')
+         WHERE "smb.cmd" = '0x03'
+         GROUP BY ALL
+         ORDER BY "smb.path", "smb.mid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬────────────────────┬──────────────────────────┬───────────────────────────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.mid │ smb.file_attribute │     smb.create.time      │           smb.file            │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │       int64        │ timestamp with time zone │            varchar            │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼────────────────────┼──────────────────────────┼───────────────────────────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     434 │                  0 │ 1970-01-01 09:00:00+09   │ \\rawopen\\torture_create.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     434 │               NULL │ NULL                     │ NULL                          │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     435 │                  0 │ 1970-01-01 09:00:00+09   │ \\rawopen\\torture_create.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     435 │               NULL │ NULL                     │ NULL                          │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     439 │                  0 │ 2005-11-22 14:32:18+09   │ \\rawopen\\torture_create.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     439 │               NULL │ NULL                     │ NULL                          │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     443 │                  2 │ 2005-11-22 14:32:18+09   │ \\rawopen\\torture_create.txt │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     443 │               NULL │ NULL                     │ NULL                          │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴────────────────────┴──────────────────────────┴───────────────────────────────┴──────────────┘
 ```

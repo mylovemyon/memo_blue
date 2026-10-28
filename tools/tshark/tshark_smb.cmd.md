@@ -1692,7 +1692,8 @@ PS C:\Users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 254" -T json 
 
 
 
-## 0x0A
+## 0x0A (SMB_COM_READ)
+https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/b88922dd-b18e-46e0-9f74-08eaace9a95c
 ```json
 PS C:\users\Public> tshark -r .\smbtorture.cap -Y "frame.number == 17669" -T json -J smb
 [

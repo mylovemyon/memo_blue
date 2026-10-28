@@ -539,7 +539,7 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
   18 rows                                                                                                                                                                           10 columns
 ```
 
-## 0x0C (SMB_COM_LOCK_BYTE_RANGE)
+### 0x0C (SMB_COM_LOCK_BYTE_RANGE)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0C || smb.cmd == 0x0D" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.pid -e smb.mid -e smb.fid -e smb.count -e smb.offset  -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x0C.csv
 ```
@@ -661,4 +661,23 @@ memory D SELECT "ip.src", "ip.dst", "smb.cmd", hex("smb.nt_status"), "smb.flags.
 │ 192.168.114.129 │ 192.168.114.1   │      13 │ 0                    │ true               │ \\\\192.168.114.129\\TEST │   31262 │      69 │   16385 │      NULL │       NULL │            1 │
 └─────────────────┴─────────────────┴─────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────┴─────────┴───────────┴────────────┴──────────────┘
   44 rows                                                                                                                                                                        12 columns
+```
+
+### 0x0E (SMB_COM_CREATE_TEMPORARY)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0E" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.create.time -e smb.dir_name -e smb.fid -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x0E.csv
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.mid", "smb.fid", "smb.create.time", "smb.dir_name", "smb.fid", "smb.file", COUNT(*)
+         FROM read_csv_auto('0x0E.csv')
+         WHERE "smb.cmd" = '0x0E' OR "smb.cmd" == '0x0E'
+         GROUP BY ALL
+         ORDER BY "smb.mid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬─────────┬─────────┬──────────────────────────┬──────────────┬─────────┬──────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.mid │ smb.mid │ smb.fid │     smb.create.time      │ smb.dir_name │ smb.fid │ smb.file │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │  int64  │  int64  │ timestamp with time zone │   varchar    │  int64  │ varchar  │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼─────────┼─────────┼──────────────────────────┼──────────────┼─────────┼──────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     447 │     447 │    NULL │ 2005-11-22 14:32:18+09   │ \\rawopen    │    NULL │ NULL     │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     447 │     447 │   32781 │ NULL                     │ NULL         │   32781 │ SRVB9D82 │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────┴─────────┴──────────────────────────┴──────────────┴─────────┴──────────┴──────────────┘
 ```

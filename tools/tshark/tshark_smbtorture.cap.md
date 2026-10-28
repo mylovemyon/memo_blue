@@ -681,3 +681,29 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     447 │     447 │   32781 │ NULL                     │ NULL         │   32781 │ SRVB9D82 │            1 │
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────┴─────────┴──────────────────────────┴──────────────┴─────────┴──────────┴──────────────┘
 ```
+
+## 0x0F (SMB_COM_CREATE_DIRECTORY)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0F" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file_attribute -e smb.create.time -e smb.file -e smb.fid -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x0F.csv
+```
+```sql
+memory D
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.file_attribute", "smb.create.time", "smb.file", "smb.fid", COUNT(*)
+         FROM read_csv_auto('0x0F.csv')
+         WHERE "smb.cmd" = '0x0F'
+         GROUP BY ALL
+         ORDER BY "smb.mid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬────────────────────┬──────────────────────────┬──────────────────────────────┬─────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.mid │ smb.file_attribute │     smb.create.time      │           smb.file           │ smb.fid │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │       int64        │ timestamp with time zone │           varchar            │  int64  │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼────────────────────┼──────────────────────────┼──────────────────────────────┼─────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     422 │                  0 │ 1970-01-01 09:00:00+09   │ \\rawopen\\torture_mknew.txt │    NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     422 │               NULL │ NULL                     │ NULL                         │   32774 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     423 │                  0 │ 1970-01-01 09:00:00+09   │ \\rawopen\\torture_mknew.txt │    NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000035             │ true               │ \\\\192.168.114.129\\TEST │     423 │               NULL │ NULL                     │ NULL                         │    NULL │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     426 │                  0 │ 2005-11-22 14:32:18+09   │ \\rawopen\\torture_mknew.txt │    NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     426 │               NULL │ NULL                     │ NULL                         │   32775 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │     430 │                  2 │ 2005-11-22 14:32:18+09   │ \\rawopen\\torture_mknew.txt │    NULL │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │     430 │               NULL │ NULL                     │ NULL                         │   32776 │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴────────────────────┴──────────────────────────┴──────────────────────────────┴─────────┴──────────────┘
+```

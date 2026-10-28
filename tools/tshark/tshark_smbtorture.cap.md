@@ -425,7 +425,7 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
   18 rows                                                                                                                                                                                   9 columns
 ```
 
-### 0x08 (SMB_COM_CREATE_DIRECTORY)
+### 0x08 (SMB_COM_QUERY_INFORMATION)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x08" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file -e smb.file_attribute -e smb.last_write.time -e smb.file_size -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x08.csv
 ```
@@ -465,4 +465,40 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
 │ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      33 │                  0 │ 1970-01-01 09:00:00+09   │ \\testsfileinfo\\fname_test_18.txt │            1 │
 │ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      33 │               NULL │ NULL                     │ NULL                               │            1 │
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴────────────────────┴──────────────────────────┴────────────────────────────────────┴──────────────┘
+```
+
+### 0x0A (SMB_COM_READ)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0A" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.fid -e smb.data_len -e smb.file_data -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x0A.csv
+```
+```sql
+memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.fid", "smb.data_len", from_hex("smb.file_data"[:20]), COUNT(*)
+  FROM read_csv_auto('0x0A.csv')
+  WHERE "smb.cmd" = '0x0A'
+  GROUP BY ALL
+  ORDER BY "smb.mid", "smb.fid", "smb.flags.response";
+┌─────────────────┬─────────────────┬──────────────────────┬────────────────────┬───────────────────────────┬─────────┬─────────┬──────────────┬─────────────────────────────────┬──────────────┐
+│     ip.src      │     ip.dst      │ hex("smb.nt_status") │ smb.flags.response │         smb.path          │ smb.mid │ smb.fid │ smb.data_len │ from_hex("smb.file_data"[:20])  │ count_star() │
+│     varchar     │     varchar     │       varchar        │      boolean       │          varchar          │  int64  │  int64  │    int64     │              blob               │    int64     │
+├─────────────────┼─────────────────┼──────────────────────┼────────────────────┼───────────────────────────┼─────────┼─────────┼──────────────┼─────────────────────────────────┼──────────────┤
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │       9 │   16384 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │       9 │   16384 │            0 │ NULL                            │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      10 │   16384 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      10 │   16384 │            0 │ NULL                            │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      11 │   16385 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000008             │ true               │ \\\\192.168.114.129\\TEST │      11 │   16385 │         NULL │ NULL                            │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      13 │   16384 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      13 │   16384 │            9 │ TEST DATA                       │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      14 │   16384 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      14 │   16384 │            8 │ EST DATA                        │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      15 │   16384 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      15 │   16384 │            0 │ NULL                            │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      18 │   16387 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      18 │   16387 │            0 │ NULL                            │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      37 │   16384 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ 0                    │ true               │ \\\\192.168.114.129\\TEST │      37 │   16384 │         4368 │ @\xD2\x11\x27\xEA\xC8\x95iT\x81 │            1 │
+│ 192.168.114.1   │ 192.168.114.129 │ 0                    │ false              │ \\\\192.168.114.129\\TEST │      39 │   16384 │         NULL │ NULL                            │            1 │
+│ 192.168.114.129 │ 192.168.114.1   │ C0000054             │ true               │ \\\\192.168.114.129\\TEST │      39 │   16384 │         NULL │ NULL                            │            1 │
+└─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────┴──────────────┴─────────────────────────────────┴──────────────┘
+  18 rows                                                                                                                                                                            10 columns
 ```

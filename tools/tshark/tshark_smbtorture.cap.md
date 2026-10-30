@@ -682,12 +682,11 @@ memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", 
 └─────────────────┴─────────────────┴──────────────────────┴────────────────────┴───────────────────────────┴─────────┴─────────┴─────────┴──────────────────────────┴──────────────┴─────────┴──────────┴──────────────┘
 ```
 
-## 0x0F (SMB_COM_CREATE_NEW)
+### 0x0F (SMB_COM_CREATE_NEW)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0F" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.flags.response -e smb.nt_status -e smb.path -e smb.mid -e smb.file_attribute -e smb.create.time -e smb.file -e smb.fid -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x0F.csv
 ```
 ```sql
-memory D
 memory D SELECT "ip.src", "ip.dst", hex("smb.nt_status"), "smb.flags.response", "smb.path", "smb.mid", "smb.file_attribute", "smb.create.time", "smb.file", "smb.fid", COUNT(*)
          FROM read_csv_auto('0x0F.csv')
          WHERE "smb.cmd" = '0x0F'

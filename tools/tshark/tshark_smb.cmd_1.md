@@ -186,3 +186,32 @@ memory D SELECT hex(B."smb.nt_status"), A."smb.path", A."smb.file", B."smb.file_
 │ 0                      │ \\\\192.168.114.129\\TEST │ \\torture_qfileinfo.txt │                 32 │ 2006-02-17 14:31:58+09   │             7 │            1 │
 └────────────────────────┴───────────────────────────┴─────────────────────────┴────────────────────┴──────────────────────────┴───────────────┴──────────────┘
 ```
+
+
+
+## 0x09 (SMB_COM_SET_INFORMATION)
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x09" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.nt_status -e smb.flags.response -e smb.path -e smb.tid -e smb.uid -e smb.mid -e smb.file -e smb.file_attribute -e smb.last_write.time -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x09.csv
+```
+```sql
+memory D SELECT hex(B."smb.nt_status"), A."smb.path", A."smb.file", A."smb.file_attribute", A."smb.last_write.time", COUNT(*)
+         FROM read_csv_auto('0x09.csv') AS A
+         LEFT JOIN read_csv_auto('0x09.csv') AS B
+         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
+         WHERE A."ip.src" = '192.168.114.1' AND A."ip.dst" = '192.168.114.129'
+         AND A."smb.cmd" = '0x09' AND A."smb.flags.response" = 'false'
+         GROUP BY ALL
+         ORDER BY A."smb.path", A."smb.file";
+┌────────────────────────┬───────────────────────────┬────────────────────────────────────┬────────────────────┬──────────────────────────┬──────────────┐
+│ hex(B."smb.nt_status") │         smb.path          │              smb.file              │ smb.file_attribute │   smb.last_write.time    │ count_star() │
+│        varchar         │          varchar          │              varchar               │       int64        │ timestamp with time zone │    int64     │
+├────────────────────────┼───────────────────────────┼────────────────────────────────────┼────────────────────┼──────────────────────────┼──────────────┤
+│ 0                      │ \\\\192.168.114.129\\TEST │ \\testsfileinfo\\fname_test_18.txt │                  1 │ 2005-11-18 14:31:58+09   │            1 │
+│ 0                      │ \\\\192.168.114.129\\TEST │ \\testsfileinfo\\fname_test_18.txt │                  0 │ 1970-01-01 09:00:00+09   │            1 │
+│ 0                      │ \\\\192.168.114.129\\TEST │ \\testsfileinfo\\fname_test_18.txt │                128 │ 1970-01-01 09:00:00+09   │            1 │
+└────────────────────────┴───────────────────────────┴────────────────────────────────────┴────────────────────┴──────────────────────────┴──────────────┘
+```
+
+
+
+## 0x0A (SMB_COM_READ)

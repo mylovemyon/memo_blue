@@ -1,7 +1,29 @@
-## 2.2.1.2.4 SMB_FILE_ATTRIBUTES
-https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/2198f480-e047-4df0-ba64-f28eadef00b9  
-An unsigned 16-bit field that defines the basic file attributes supported by the SMB Protocol. In addition, exclusive search attributes (those Names prefixed with SMB\_SEARCH\_ATTRIBUTE) are defined for use when searching for files within a directory.
+## [2.2 Message Syntax](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/089b6f3e-b91d-4659-83a7-3e50a1a5faf7)
+| Session management | Transaction subprotocol |
+| --- | --- |
+| SMB\_COM\_NEGOTIATE<br>SMB\_COM\_SESSION\_SETUP\_ANDX<br>SMB\_COM\_TREE\_CONNECT<br>SMB\_COM\_TREE\_CONNECT\_ANDX<br>SMB\_COM\_TREE\_DISCONNECT<br>SMB\_COM\_LOGOFF\_ANDX | SMB\_COM\_TRANSACTION<br>SMB\_COM\_TRANSACTION\_SECONDARY<br>SMB\_COM\_TRANSACTION2<br>SMB\_COM\_TRANSACTION2\_SECONDARY<br>SMB\_COM\_NT\_TRANSACT<br>SMB\_COM\_NT\_TRANSACT\_SECONDARY |
 
+| File/directory access methods | Read/write/lock methods |
+| --- | --- |
+| SMB\_COM\_CREATE\_DIRECTORY<br>SMB\_COM\_DELETE\_DIRECTORY<br>SMB\_COM\_OPEN<br>SMB\_COM\_OPEN\_ANDX<br>SMB\_COM\_CREATE<br>SMB\_COM\_CREATE\_NEW<br>SMB\_COM\_CREATE\_TEMPORARY<br>SMB\_COM\_NT\_CREATE\_ANDX<br>SMB\_COM\_CLOSE<br>SMB\_COM\_DELETE | SMB\_COM\_FLUSH<br>SMB\_COM\_SEEK<br>SMB\_COM\_READ<br>SMB\_COM\_LOCK\_AND\_READ<br>SMB\_COM\_LOCK\_BYTE\_RANGE<br>SMB\_COM\_UNLOCK\_BYTE\_RANGE<br>SMB\_COM\_LOCKING\_ANDX<br>SMB\_COM\_READ\_ANDX<br>SMB\_COM\_READ\_RAW<br>SMB\_COM\_READ\_MPX<br>SMB\_COM\_WRITE<br>SMB\_COM\_WRITE\_AND\_CLOSE<br>SMB\_COM\_WRITE\_AND\_UNLOCK<br>SMB\_COM\_WRITE\_ANDX<br>SMB\_COM\_WRITE\_RAW<br>SMB\_COM\_WRITE\_COMPLETE<br>SMB\_COM\_WRITE\_MPX |
+
+| Query directory information | Query/set attributes methods |
+| --- | --- |
+| SMB\_COM\_CHECK\_DIRECTORY<br>SMB\_COM\_SEARCH<br>SMB\_COM\_FIND<br>SMB\_COM\_FIND\_UNIQUE<br>SMB\_COM\_FIND\_CLOSE<br>SMB\_COM\_FIND\_CLOSE2 | SMB\_COM\_RENAME<br>SMB\_COM\_NT\_RENAME<br>SMB\_COM\_QUERY\_INFORMATION<br>SMB\_COM\_SET\_INFORMATION<br>SMB\_COM\_QUERY\_INFORMATION\_DISK<br>SMB\_COM\_QUERY\_INFORMATION2<br>SMB\_COM\_SET\_INFORMATION2 |
+
+| Printing methods | Other |
+| --- | --- |
+| SMB\_COM\_OPEN\_PRINT\_FILE<br>SMB\_COM\_WRITE\_PRINT\_FILE<br>SMB\_COM\_CLOSE\_PRINT\_FILE | SMB\_COM\_ECHO<br>SMB\_COM\_PROCESS\_EXIT<br>SMB\_COM\_NT\_CANCEL<br>SMB\_COM\_INVALID<br>SMB\_COM\_IOCTL<br>SMB\_COM\_NO\_ANDX\_COMMAND |
+
+CIFS has evolved over time. As a result, some commands have become obsolete and other commands have been proposed but never implemented. The client MUST NOT use the commands listed in the table below. The server SHOULD return implementation-specific error codes in response to receiving any of these command requests.
+
+| Obsolete | Reserved but not implemented |
+| --- | --- |
+| SMB\_COM\_COPY<br>SMB\_COM\_MOVE<br>SMB\_COM\_READ\_MPX\_SECONDARY<br>SMB\_COM\_SECURITY\_PACKAGE\_ANDX<br>SMB\_COM\_WRITE\_MPX\_SECONDARY<br>SMB\_COM\_GET\_PRINT\_QUEUE | SMB\_COM\_CLOSE\_AND\_TREE\_DISC<br>SMB\_COM\_FIND\_NOTIFY\_CLOSE<br>SMB\_COM\_IOCTL\_SECONDARY<br>SMB\_COM\_NEW\_FILE\_SIZE<br>SMB\_COM\_QUERY\_SERVER<br>SMB\_COM\_READ\_BULK<br>SMB\_COM\_WRITE\_BULK<br>SMB\_COM\_WRITE\_BULK\_DATA |
+
+
+
+## [2.2.1.2.4 SMB_FILE_ATTRIBUTES](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/2198f480-e047-4df0-ba64-f28eadef00b9)
 | Name and bitmask | Description |
 | --- | --- |
 | SMB\_FILE\_ATTRIBUTE\_NORMAL<br>0x0000 | Normal file. |
@@ -20,8 +42,7 @@ An unsigned 16-bit field that defines the basic file attributes supported by the
 
 
 
-## 2.2.2.1 SMB_COM Command Codes
-https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/32b5d4b7-d90b-483f-ad6a-003fd110f0ec  
+## [2.2.2.1 SMB_COM Command Codes](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/32b5d4b7-d90b-483f-ad6a-003fd110f0ec  )
 Description: A short description of the command. If a code or code range is marked as Reserved, this field lists its intended use.  
 Status: Current status of the command's usage (Deprecated, Obsolescent, or Obsolete) as used in this context.
 - C = Currently used
@@ -78,46 +99,94 @@ Status: Current status of the command's usage (Deprecated, Obsolescent, or Obsol
 | SMB\_COM\_WRITE\_ANDX<br>SMBwriteX | 0x2F | Extended file write with AndX chaining. | C | LANMAN1.0 |
 | SMB\_COM\_NEW\_FILE\_SIZE | 0x30 | Reserved, but not implemented.<br>Also known as SMB\_COM\_SET\_NEW\_SIZE. | N |  |
 | SMB\_COM\_CLOSE\_AND\_TREE\_DISC | 0x31 | Close an open file and tree disconnect. | N | NT LANMAN |
-| [SMB_COM_TRANSACTION2<br>SMBtrans2 | 0x32 | Transaction 2 format request/response. | C | LANMAN1.2 |
-| [SMB_COM_TRANSACTION2_SECONDARY<br>SMBtranss2 | 0x33 | Transaction 2 secondary request. | C | LANMAN1.2 |
-| [SMB_COM_FIND_CLOSE2<br>SMBfindclose | 0x34 | Close an active search. | C | LANMAN1.2 |
-| [SMB_COM_FIND_NOTIFY_CLOSE<br>SMBfindnclose | 0x35 | Notification of the closure of an active search. | N | LANMAN1.2 |
+| SMB_COM_TRANSACTION2<br>SMBtrans2 | 0x32 | Transaction 2 format request/response. | C | LANMAN1.2 |
+| SMB_COM_TRANSACTION2_SECONDARY<br>SMBtranss2 | 0x33 | Transaction 2 secondary request. | C | LANMAN1.2 |
+| SMB_COM_FIND_CLOSE2<br>SMBfindclose | 0x34 | Close an active search. | C | LANMAN1.2 |
+| SMB_COM_FIND_NOTIFY_CLOSE<br>SMBfindnclose | 0x35 | Notification of the closure of an active search. | N | LANMAN1.2 |
 | **Unused** | 0x36<br>...<br>0x5F |  |  |  |
 | **Reserved** | 0x60<br>...<br>0x6F | This range of codes was reserved for use by the "xenix1.1" dialect of SMB. See [\[MSFT-XEXTNP\]](https://go.microsoft.com/fwlink/?LinkId=162042). [\[XOPEN-SMB\]](https://go.microsoft.com/fwlink/?linkid=2297696) page 41 lists this range as "Reserved for proprietary dialects." | X | XENIX |
-| [SMB_COM_TREE_CONNECT<br>SMBtcon | 0x70 | Tree connect. | D | CORE |
-| [SMB_COM_TREE_DISCONNECT<br>SMBtdis | 0x71 | Tree disconnect. | C | CORE |
-| [SMB_COM_NEGOTIATE<br>SMBnegprot | 0x72 | Negotiate protocol dialect. | C | CORE |
-| [SMB_COM_SESSION_SETUP_ANDX<br>SMBsesssetupX | 0x73 | Session Setup with AndX chaining. | C | LANMAN1.0 |
-| [SMB_COM_LOGOFF_ANDX<br>SMBulogoffX | 0x74 | User logoff with AndX chaining. | C | LANMAN1.2 |
-| [SMB_COM_TREE_CONNECT_ANDX<br>SMBtconX | 0x75 | Tree connect with AndX chaining. | C | LANMAN1.0 |
+| SMB_COM_TREE_CONNECT<br>SMBtcon | 0x70 | Tree connect. | D | CORE |
+| SMB_COM_TREE_DISCONNECT<br>SMBtdis | 0x71 | Tree disconnect. | C | CORE |
+| SMB_COM_NEGOTIATE<br>SMBnegprot | 0x72 | Negotiate protocol dialect. | C | CORE |
+| SMB_COM_SESSION_SETUP_ANDX<br>SMBsesssetupX | 0x73 | Session Setup with AndX chaining. | C | LANMAN1.0 |
+| SMB_COM_LOGOFF_ANDX<br>SMBulogoffX | 0x74 | User logoff with AndX chaining. | C | LANMAN1.2 |
+| SMB_COM_TREE_CONNECT_ANDX<br>SMBtconX | 0x75 | Tree connect with AndX chaining. | C | LANMAN1.0 |
 | **Unused** | 0x76<br>...<br>0x7D |  |  |  |
-| [SMB_COM_SECURITY_PACKAGE_ANDX<br>SMBsecpkgX | 0x7E | Negotiate security packages with AndX chaining. | X | LANMAN1.0 |
+| SMB_COM_SECURITY_PACKAGE_ANDX<br>SMBsecpkgX | 0x7E | Negotiate security packages with AndX chaining. | X | LANMAN1.0 |
 | **Unused** | 0x7F |  |  |  |
-| [SMB_COM_QUERY_INFORMATION_DISK<br>SMBdskattr | 0x80 | Retrieve file system information from the server. | D | CORE |
-| [SMB_COM_SEARCH<br>SMBsearch | 0x81 | Directory wildcard search. | D | CORE |
-| [SMB_COM_FIND<br>SMBffirst | 0x82 | Start or continue an extended wildcard directory search. | D | LANMAN1.0 |
-| [SMB_COM_FIND_UNIQUE<br>SMBfunique | 0x83 | Perform a one-time extended wildcard directory search. | D | LANMAN1.0 |
-| [SMB_COM_FIND_CLOSE<br>SMBfclose | 0x84 | End an extended wildcard directory search. | D | LANMAN1.0 |
+| SMB_COM_QUERY_INFORMATION_DISK<br>SMBdskattr | 0x80 | Retrieve file system information from the server. | D | CORE |
+| SMB_COM_SEARCH<br>SMBsearch | 0x81 | Directory wildcard search. | D | CORE |
+| SMB_COM_FIND<br>SMBffirst | 0x82 | Start or continue an extended wildcard directory search. | D | LANMAN1.0 |
+| SMB_COM_FIND_UNIQUE<br>SMBfunique | 0x83 | Perform a one-time extended wildcard directory search. | D | LANMAN1.0 |
+| SMB_COM_FIND_CLOSE<br>SMBfclose | 0x84 | End an extended wildcard directory search. | D | LANMAN1.0 |
 | **Unused** | 0x85<br>...<br>0x9F |  |  |  |
-| [SMB_COM_NT_TRANSACT | 0xA0 | NT format transaction request/response. | C | NT LANMAN |
-| [SMB_COM_NT_TRANSACT_SECONDARY | 0xA1 | NT format transaction secondary request. | C | NT LANMAN |
-| [SMB_COM_NT_CREATE_ANDX | 0xA2 | Create or open a file or a directory. | C | NT LANMAN |
+| SMB_COM_NT_TRANSACT | 0xA0 | NT format transaction request/response. | C | NT LANMAN |
+| SMB_COM_NT_TRANSACT_SECONDARY | 0xA1 | NT format transaction secondary request. | C | NT LANMAN |
+| SMB_COM_NT_CREATE_ANDX | 0xA2 | Create or open a file or a directory. | C | NT LANMAN |
 | **Unused** | 0xA3 |  |  |  |
-| [SMB_COM_NT_CANCEL | 0xA4 | Cancel a request currently pending at the server. | C | NT LANMAN |
-| [SMB_COM_NT_RENAME | 0xA5 | File rename with extended semantics. | O | NT LANMAN |
+| SMB_COM_NT_CANCEL | 0xA4 | Cancel a request currently pending at the server. | C | NT LANMAN |
+| SMB_COM_NT_RENAME | 0xA5 | File rename with extended semantics. | O | NT LANMAN |
 | **Unused** | 0xA6<br>...<br>0xBF |  |  |  |
-| [SMB_COM_OPEN_PRINT_FILE<br>SMBsplopen | 0xC0 | Create a print queue spool file. | C | CORE |
-| [SMB_COM_WRITE_PRINT_FILE<br>SMBsplwr | 0xC1 | Write to a print queue spool file. | D | CORE |
-| [SMB_COM_CLOSE_PRINT_FILE<br>SMBsplclose | 0xC2 | Close a print queue spool file. | D | CORE |
-| [SMB_COM_GET_PRINT_QUEUE<br>SMBsplretq | 0xC3 | Request print queue information. | X | CORE |
+| SMB_COM_OPEN_PRINT_FILE<br>SMBsplopen | 0xC0 | Create a print queue spool file. | C | CORE |
+| SMB_COM_WRITE_PRINT_FILE<br>SMBsplwr | 0xC1 | Write to a print queue spool file. | D | CORE |
+| SMB_COM_CLOSE_PRINT_FILE<br>SMBsplclose | 0xC2 | Close a print queue spool file. | D | CORE |
+| SMB_COM_GET_PRINT_QUEUE<br>SMBsplretq | 0xC3 | Request print queue information. | X | CORE |
 | **Unused** | 0xC4<br>...<br>0xCF |  |  |  |
 | **Reserved** | 0xD0<br>...<br>0xD7 | Messenger Service command codes.<br>This range is reserved for use by the SMB Messenger Service. | O | CORE |
-| [SMB_COM_READ_BULK | 0xD8 | Reserved, but not implemented. | N |  |
-| [SMB_COM_WRITE_BULK | 0xD9 | Reserved, but not implemented. | N |  |
-| [SMB_COM_WRITE_BULK_DATA | 0xDA | Reserved, but not implemented. | N |  |
+| SMB_COM_READ_BULK | 0xD8 | Reserved, but not implemented. | N |  |
+| SMB_COM_WRITE_BULK | 0xD9 | Reserved, but not implemented. | N |  |
+| SMB_COM_WRITE_BULK_DATA | 0xDA | Reserved, but not implemented. | N |  |
 | **Unused** | 0xDB<br>...<br>0xFD |  |  |  |
-| [SMB_COM_INVALID<br>SMBinvalid | 0xFE | As the name suggests, this command code is a designated invalid command and SHOULD NOT be used. | C | LANMAN1.0 |
-| [SMB_COM_NO_ANDX_COMMAND | 0xFF | Also known as the "NIL" command. It identifies the end of an AndX Chain, and is only valid in that context. | C | LANMAN1.0 |
+| SMB_COM_INVALID<br>SMBinvalid | 0xFE | As the name suggests, this command code is a designated invalid command and SHOULD NOT be used. | C | LANMAN1.0 |
+| SMB_COM_NO_ANDX_COMMAND | 0xFF | Also known as the "NIL" command. It identifies the end of an AndX Chain, and is only valid in that context. | C | LANMAN1.0 |
+
+
+
+## [2.2.2.2 Transaction Subcommand Codes](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/14937ad8-38af-4c74-9604-ddb8470d0ed9)
+
+| Name | Code | Description | Status | Earliest dialect |
+| --- | --- | --- | --- | --- |
+| TRANS_MAILSLOT_WRITE | 0x0001 | Allows a client to write data to a specific mailslot on the server. | C | LANMAN1.0 |
+| TRANS_SET_NMPIPE_STATE | 0x0001 | Used to set the read mode and non-blocking mode of a specified named pipe. | C | LANMAN1.0 |
+| TRANS_RAW_READ_NMPIPE | 0x0011 | Allows for a raw read of data from a named pipe. This method of reading data from a named pipe ignores message boundaries even if the pipe was set up as a message mode pipe. | D | LANMAN1.0 |
+| TRANS_QUERY_NMPIPE_STATE | 0x0021 | Allows for a client to retrieve information about a specified named pipe. | C | LANMAN1.0 |
+| TRANS_QUERY_NMPIPE_INFO | 0x0022 | Used to retrieve pipe information about a named pipe. | C | LANMAN1.0 |
+| TRANS_PEEK_NMPIPE | 0x0023 | Used to copy data out of a named pipe without removing it from the named pipe. | C | LANMAN1.0 |
+| TRANS_TRANSACT_NMPIPE | 0x0026 | Used to execute a transacted exchange against a named pipe. This transaction has a constraint that it can be used only on a duplex, message-type pipe. | C | LANMAN1.0 |
+| TRANS_RAW_WRITE_NMPIPE | 0x0031 | Allows for a raw write of data to a named pipe. Raw writes to named pipes put bytes directly into a pipe, regardless of whether it is a message mode pipe or byte mode pipe. | D | LANMAN1.0 |
+| TRANS_READ_NMPIPE | 0x0036 | Allows a client to read data from a named pipe. | C | NT LANMAN |
+| TRANS_WRITE_NMPIPE | 0x0037 | Allows a client to write data to a named pipe. | C | NT LANMAN |
+| TRANS_WAIT_NMPIPE | 0x0053 | Allows a client to be notified when the specified named pipe is available to be connected to. | C | LANMAN1.0 |
+| TRANS_CALL_NMPIPE | 0x0054 | Connect to a named pipe, issue a write to the named pipe, issue a read from the named pipe, and close the named pipe. | C | LANMAN1.0 |
+
+| Name | Code | Description | Status | Earliest dialect |
+| --- | --- | --- | --- | --- |
+| TRANS2_OPEN2 | 0x0000 | Open or create a file and set extended attributes on the file. | C | NT LANMAN |
+| TRANS2_FIND_FIRST2 | 0x0001 | Begin a search for files within a directory or for a directory. | C | NT LANMAN |
+| TRANS2_FIND_NEXT2 | 0x0002 | Continue a search for files within a directory or for a directory. | C | NT LANMAN |
+| TRANS2_QUERY_FS_INFORMATION | 0x0003 | Request information about a file system on the server. | C | LANMAN2.0 |
+| TRANS2_SET_FS_INFORMATION | 0x0004 |  | N | LANMAN2.0 |
+| TRANS2_QUERY_PATH_INFORMATION | 0x0005 | Get information about a specific file or directory using a path. | C | LANMAN2.0 |
+| TRANS2_SET_PATH_INFORMATION | 0x0006 | Set the standard and extended attribute information of a specific file or directory using a path. | C | LANMAN2.0 |
+| TRANS2_QUERY_FILE_INFORMATION | 0x0007 | Get information about a specific file or directory using a **FID**. | C | LANMAN2.0 |
+| TRANS2_SET_FILE_INFORMATION | 0x0008 | Set the standard and extended attribute information of a specific file or directory using a **FID**. | C | LANMAN2.0 |
+| TRANS2_FSCTL | 0x0009 |  | N | LANMAN2.0 |
+| TRANS2_IOCTL2 | 0x000a |  | N | NT LANMAN |
+| TRANS2_FIND_NOTIFY_FIRST | 0x000b |  | X | LANMAN2.0 |
+| TRANS2_FIND_NOTIFY_NEXT | 0x000c |  | X | LANMAN2.0 |
+| TRANS2_CREATE_DIRECTORY | 0x000d | Create a new directory and optionally set the extended attribute information. | C | LANMAN2.0 |
+| TRANS2_SESSION_SETUP | 0x000e |  | N | NT LANMAN |
+| TRANS2_GET_DFS_REFERRAL | 0x0010 | Request a DFS referral for a file or directory. See MS-DFSC section for details. | C | NT LANMAN |
+| TRANS2_REPORT_DFS_INCONSISTENCY | 0x0011 |  | N | NT LANMAN |
+
+| Name | Code | Description | Status | Earliest dialect |
+| --- | --- | --- | --- | --- |
+| NT_TRANSACT_CREATE | 0x0001 | Used to create or open a file or directory when extended attributes (EAs) or a security descriptor (SD) are to be applied. | C | NT LANMAN |
+| NT_TRANSACT_IOCTL | 0x0002 | Allows device and file system control functions to be transferred transparently from client to server. | C | NT LANMAN |
+| NT_TRANSACT_SET_SECURITY_DESC | 0x0003 | Allows a client to change the security descriptor for a file. | C | NT LANMAN |
+| NT_TRANSACT_NOTIFY_CHANGE | 0x0004 | Notifies the client when the directory specified by **FID** is modified. It also returns the names of any files that changed. | C | NT LANMAN |
+| NT_TRANSACT_RENAME | 0x0005 |  | N |  |
+| NT_TRANSACT_QUERY_SECURITY_DESC | 0x0006 | Allows a client to retrieve the security descriptor for a file. | C | NT LANMAN |
 
 
 

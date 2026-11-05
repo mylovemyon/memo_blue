@@ -1,18 +1,40 @@
+# File/directory access methods
+## 0x02 (SMB_COM_OPEN)
+- This is an original Core Protocol command. This command has been deprecated. Client implementations SHOULD use SMB_COM_NT_CREATE_ANDX.
+- This request is used to open an existing regular file. This command MUST NOT be used to open directories or named pipes.
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "ip.addr in {192.168.114.1, 192.168.11.129} && smb.cmd == 0x02" `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.cmd -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
+>> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x02.csv
 ```
--e ip.src
--e ip.dst
--e smb.cmd
--e smb.flags.response
--e smb.nt_status
--e smb.path
--e smb.tid
--e smb.uid
--e smb.mid
--e smb.dir_name
--e smb.file
--e smb.file_attribute
--e smb.create.time
+```sql
+memory D SELECT timezone('UTC', A."frame.time_utc"), A."smb.path", A."smb.file",
+                hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file_attribute", B."smb.last_write.time", B."smb.file_size", B."smb.access.sharing", B."smb.access.mode", COUNT(*)
+         FROM read_csv_auto('0x02.csv') AS A
+         LEFT JOIN read_csv_auto('0x02.csv') AS B
+         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
+         WHERE A."smb.flags.response" = false
+         GROUP BY ALL
+         ORDER BY A."smb.path", A."smb.file", timezone('UTC', A."frame.time_utc") ;
+┌─────────────────────────────────────┬───────────────────────────┬─────────────────────────────┬────────────────────────┬──────────────────┬────────────────────┬──────────────────────────┬───────────────┬────────────────────┬─────────────────┬──────────────┐
+│ timezone('UTC', A."frame.time_utc") │         smb.path          │          smb.file           │ hex(B."smb.nt_status") │ hex(B."smb.fid") │ smb.file_attribute │   smb.last_write.time    │ smb.file_size │ smb.access.sharing │ smb.access.mode │ count_star() │
+│              timestamp              │          varchar          │           varchar           │        varchar         │     varchar      │       int64        │ timestamp with time zone │     int64     │       int64        │      int64      │    int64     │
+├─────────────────────────────────────┼───────────────────────────┼─────────────────────────────┼────────────────────────┼──────────────────┼────────────────────┼──────────────────────────┼───────────────┼────────────────────┼─────────────────┼──────────────┤
+│ 2005-11-19 03:32:14.673931          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000034               │ NULL             │               NULL │ NULL                     │          NULL │               NULL │            NULL │            1 │
+│ 2005-11-19 03:32:14.679815          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 14:32:14+09   │             7 │                  7 │               7 │            1 │
+│ 2005-11-19 03:32:14.70511           │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 14:32:14+09   │             7 │                  7 │               7 │            1 │
+│ 2005-11-19 03:32:14.708386          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4004             │                 32 │ 2005-11-19 14:32:16+09   │             7 │                  0 │               0 │            1 │
+│ 2005-11-19 03:32:14.710849          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4005             │                 32 │ 2005-11-19 14:32:16+09   │             7 │                  0 │               1 │            1 │
+│ 2005-11-19 03:32:14.713179          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4006             │                 32 │ 2005-11-19 14:32:16+09   │             7 │                  0 │               2 │            1 │
+│ 2005-11-19 03:32:14.715195          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4007             │                 32 │ 2005-11-19 14:32:16+09   │             7 │                  2 │               2 │            1 │
+│ 2005-11-19 03:32:14.716214          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000043               │ NULL             │               NULL │ NULL                     │          NULL │               NULL │            NULL │            1 │
+│ 2005-11-19 03:32:15.707192          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4008             │                 32 │ 2005-11-19 14:32:16+09   │             7 │                  4 │               0 │            1 │
+│ 2005-11-19 03:32:15.710867          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4009             │                 32 │ 2005-11-19 14:32:16+09   │             7 │                  0 │               0 │            1 │
+└─────────────────────────────────────┴───────────────────────────┴─────────────────────────────┴────────────────────────┴──────────────────┴────────────────────┴──────────────────────────┴───────────────┴────────────────────┴─────────────────┴──────────────┘
+  10 rows                                                                                                                                                                                                                                              11 columns
 ```
+
+
 
 ## 0x00 (SMB_COM_CREATE_DIRECTORY)
 ```powershell

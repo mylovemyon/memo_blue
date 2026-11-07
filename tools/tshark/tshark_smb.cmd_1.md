@@ -25,31 +25,31 @@ Clients SHOULD use the TRANS2_CREATE_DIRECTORY subcommand.
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "ip.addr in {192.168.114.1, 192.168.11.129} && smb.cmd == 0x00" `
 >> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.file -e smb.flags.response -e smb.nt_status -e smb.path `
->> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x00.csv
+>> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x00.csv
 ```
 ```sql
-memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file", COUNT(*)
-         FROM read_csv_auto('0x00.csv')
+memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file"
+         FROM read_csv_auto('smb_cmd_0x00.csv')
          WHERE "smb.flags.response" = true
          GROUP BY ALL
          ORDER BY "smb.path", "smb.file", timezone('UTC', "frame.time_utc")
          LIMIT 10;
-┌───────────────────────────────────┬───────────────┬──────────────────────┬───────────────────────────┬─────────────────────────────┬──────────────┐
-│ timezone('UTC', "frame.time_utc") │    ip.dst     │ hex("smb.nt_status") │         smb.path          │          smb.file           │ count_star() │
-│             timestamp             │    varchar    │       varchar        │          varchar          │           varchar           │    int64     │
-├───────────────────────────────────┼───────────────┼──────────────────────┼───────────────────────────┼─────────────────────────────┼──────────────┤
-│ 2005-11-19 03:32:19.50011         │ 192.168.114.1 │ C000003B             │ \\\\192.168.114.129\\TEST │ ..\\..\\..                  │            1 │
-│ 2005-11-19 03:38:43.617968        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\composite                 │            1 │
-│ 2005-11-19 03:32:19.464982        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │            1 │
-│ 2005-11-19 03:32:19.466924        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 2005-11-19 03:32:19.468621        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 2005-11-19 03:32:19.497209        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 2005-11-19 03:32:27.398186        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │            1 │
-│ 2005-11-19 03:32:27.400375        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │            1 │
-│ 2005-11-19 03:32:27.404397        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │            1 │
-│ 2005-11-19 03:32:27.407359        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │            1 │
-└───────────────────────────────────┴───────────────┴──────────────────────┴───────────────────────────┴─────────────────────────────┴──────────────┘
-  10 rows                                                                                                                                 6 columns
+┌───────────────────────────────────┬───────────────┬──────────────────────┬───────────────────────────┬─────────────────────────────┐
+│ timezone('UTC', "frame.time_utc") │    ip.dst     │ hex("smb.nt_status") │         smb.path          │          smb.file           │
+│             timestamp             │    varchar    │       varchar        │          varchar          │           varchar           │
+├───────────────────────────────────┼───────────────┼──────────────────────┼───────────────────────────┼─────────────────────────────┤
+│ 2005-11-19 03:32:19.50011         │ 192.168.114.1 │ C000003B             │ \\\\192.168.114.129\\TEST │ ..\\..\\..                  │
+│ 2005-11-19 03:38:43.617968        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\composite                 │
+│ 2005-11-19 03:32:19.464982        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │
+│ 2005-11-19 03:32:19.466924        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:19.468621        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:19.497209        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:27.398186        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │
+│ 2005-11-19 03:32:27.400375        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │
+│ 2005-11-19 03:32:27.404397        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │
+│ 2005-11-19 03:32:27.407359        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │
+└───────────────────────────────────┴───────────────┴──────────────────────┴───────────────────────────┴─────────────────────────────┘
+  10 rows                                                                                                                  5 columns
 ```
 
 
@@ -74,33 +74,33 @@ This request is used to open an existing regular file. This command MUST NOT be 
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "ip.addr in {192.168.114.1, 192.168.11.129} && smb.cmd == 0x02" `
 >> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.cmd -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
->> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x02.csv
+>> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x02.csv
 ```
 ```sql
 memory D SELECT timezone('UTC', A."frame.time_utc"), A."smb.path", A."smb.file",
-                hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file_attribute", timezone('UTC', B."smb.last_write.time"), B."smb.file_size", B."smb.access.sharing", B."smb.access.mode", COUNT(*)
+                hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file_attribute", timezone('UTC', B."smb.last_write.time"), B."smb.file_size", B."smb.access.sharing", B."smb.access.mode"
          FROM read_csv_auto('0x02.csv') AS A
-         LEFT JOIN read_csv_auto('0x02.csv') AS B
+         LEFT JOIN read_csv_auto('smb_cmd_0x02.csv') AS B
          ON B."smb.flags.response" = true AND A."smb.cmd" = B."smb.cmd" AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
          WHERE A."smb.flags.response" = false
          GROUP BY ALL
          ORDER BY A."smb.path", A."smb.file", timezone('UTC', A."frame.time_utc") ;
-┌─────────────────────────────────────┬───────────────────────────┬─────────────────────────────┬────────────────────────┬──────────────────┬────────────────────┬──────────────────────────────────────────┬───────────────┬────────────────────┬─────────────────┬──────────────┐
-│ timezone('UTC', A."frame.time_utc") │         smb.path          │          smb.file           │ hex(B."smb.nt_status") │ hex(B."smb.fid") │ smb.file_attribute │ timezone('UTC', B."smb.last_write.time") │ smb.file_size │ smb.access.sharing │ smb.access.mode │ count_star() │
-│              timestamp              │          varchar          │           varchar           │        varchar         │     varchar      │       int64        │                timestamp                 │     int64     │       int64        │      int64      │    int64     │
-├─────────────────────────────────────┼───────────────────────────┼─────────────────────────────┼────────────────────────┼──────────────────┼────────────────────┼──────────────────────────────────────────┼───────────────┼────────────────────┼─────────────────┼──────────────┤
-│ 2005-11-19 03:32:14.673931          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000034               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │            1 │
-│ 2005-11-19 03:32:14.679815          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 05:32:14                      │             7 │                  7 │               7 │            1 │
-│ 2005-11-19 03:32:14.70511           │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 05:32:14                      │             7 │                  7 │               7 │            1 │
-│ 2005-11-19 03:32:14.708386          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4004             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               0 │            1 │
-│ 2005-11-19 03:32:14.710849          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4005             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               1 │            1 │
-│ 2005-11-19 03:32:14.713179          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4006             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               2 │            1 │
-│ 2005-11-19 03:32:14.715195          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4007             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  2 │               2 │            1 │
-│ 2005-11-19 03:32:14.716214          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000043               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │            1 │
-│ 2005-11-19 03:32:15.707192          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4008             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  4 │               0 │            1 │
-│ 2005-11-19 03:32:15.710867          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4009             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               0 │            1 │
-└─────────────────────────────────────┴───────────────────────────┴─────────────────────────────┴────────────────────────┴──────────────────┴────────────────────┴──────────────────────────────────────────┴───────────────┴────────────────────┴─────────────────┴──────────────┘
-  10 rows                                                                                                                                                                                                                                                              11 columns
+┌─────────────────────────────────────┬───────────────────────────┬─────────────────────────────┬────────────────────────┬──────────────────┬────────────────────┬──────────────────────────────────────────┬───────────────┬────────────────────┬─────────────────┐
+│ timezone('UTC', A."frame.time_utc") │         smb.path          │          smb.file           │ hex(B."smb.nt_status") │ hex(B."smb.fid") │ smb.file_attribute │ timezone('UTC', B."smb.last_write.time") │ smb.file_size │ smb.access.sharing │ smb.access.mode │
+│              timestamp              │          varchar          │           varchar           │        varchar         │     varchar      │       int64        │                timestamp                 │     int64     │       int64        │      int64      │
+├─────────────────────────────────────┼───────────────────────────┼─────────────────────────────┼────────────────────────┼──────────────────┼────────────────────┼──────────────────────────────────────────┼───────────────┼────────────────────┼─────────────────┤
+│ 2005-11-19 03:32:14.673931          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000034               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │
+│ 2005-11-19 03:32:14.679815          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 05:32:14                      │             7 │                  7 │               7 │
+│ 2005-11-19 03:32:14.70511           │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 05:32:14                      │             7 │                  7 │               7 │
+│ 2005-11-19 03:32:14.708386          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4004             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               0 │
+│ 2005-11-19 03:32:14.710849          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4005             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               1 │
+│ 2005-11-19 03:32:14.713179          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4006             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               2 │
+│ 2005-11-19 03:32:14.715195          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4007             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  2 │               2 │
+│ 2005-11-19 03:32:14.716214          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000043               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │
+│ 2005-11-19 03:32:15.707192          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4008             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  4 │               0 │
+│ 2005-11-19 03:32:15.710867          │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4009             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               0 │
+└─────────────────────────────────────┴───────────────────────────┴─────────────────────────────┴────────────────────────┴──────────────────┴────────────────────┴──────────────────────────────────────────┴───────────────┴────────────────────┴─────────────────┘
+  10 rows                                                                                                                                                                                                                                               10 columns
 ```
 
 

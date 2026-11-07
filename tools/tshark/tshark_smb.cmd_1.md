@@ -54,6 +54,40 @@ memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"
 
 
 
+## [0x01 (SMB_COM_DELETE_DIRECTORY)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/0bca354c-42d9-46b7-a0ae-d8c6870242ca)
+This command is used to delete an empty directory.
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.file -e smb.flags.response -e smb.nt_status -e smb.path `
+>> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x01.csv
+```
+```sql
+memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file"
+         FROM read_csv_auto('smb_cmd_0x01.csv')
+         WHERE "smb.flags.response" = true
+         GROUP BY ALL
+         ORDER BY "smb.path", "smb.file", timezone('UTC', "frame.time_utc")
+         LIMIT 10;
+┌───────────────────────────────────┬───────────────┬──────────────────────┬───────────────────────────┬─────────────────────────────┐
+│ timezone('UTC', "frame.time_utc") │    ip.dst     │ hex("smb.nt_status") │         smb.path          │          smb.file           │
+│             timestamp             │    varchar    │       varchar        │          varchar          │           varchar           │
+├───────────────────────────────────┼───────────────┼──────────────────────┼───────────────────────────┼─────────────────────────────┤
+│ 2005-11-19 03:32:19.527264        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │
+│ 2005-11-19 03:32:19.469621        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:19.47027         │ 192.168.114.1 │ C0000034             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:19.497964        │ 192.168.114.1 │ C0000103             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:19.50443         │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:19.510345        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
+│ 2005-11-19 03:32:27.50334         │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │
+│ 2005-11-19 03:32:27.483164        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │
+│ 2005-11-19 03:32:27.48256         │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │
+│ 2005-11-19 03:32:27.481475        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │
+└───────────────────────────────────┴───────────────┴──────────────────────┴───────────────────────────┴─────────────────────────────┘
+  10 rows                                                                                                                  5 columns
+```
+
+
+
 ## [0x02 (SMB_COM_OPEN)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/ec064de8-6538-401e-8c73-b37231c36f2b)
 This is an original Core Protocol command. This command has been deprecated. Client implementations SHOULD use SMB_COM_NT_CREATE_ANDX.  
 This request is used to open an existing regular file. This command MUST NOT be used to open directories or named pipes.  
@@ -105,37 +139,6 @@ memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A
 
 
 # yet
-## 0x01 (SMB_COM_DELETE_DIRECTORY)
-```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.nt_status -e smb.flags.response -e smb.path -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x01.csv
-```
-```sql
-memory D SELECT hex("smb.nt_status"), "smb.path", "smb.file", COUNT(*)
-         FROM read_csv_auto('0x01.csv')
-         WHERE "ip.src" = '192.168.114.129' AND "ip.dst" = '192.168.114.1'
-         AND "smb.cmd" = '0x01' AND "smb.flags.response" = true
-         GROUP BY ALL
-         ORDER BY "smb.path", "smb.file"
-         LIMIT 10;
-┌──────────────────────┬───────────────────────────┬─────────────────────────────┬──────────────┐
-│ hex("smb.nt_status") │         smb.path          │          smb.file           │ count_star() │
-│       varchar        │          varchar          │           varchar           │    int64     │
-├──────────────────────┼───────────────────────────┼─────────────────────────────┼──────────────┤
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │            1 │
-│ C0000103             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            3 │
-│ C0000034             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │            1 │
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │            1 │
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │            1 │
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │            1 │
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\rawcontext                │            3 │
-│ 0                    │ \\\\192.168.114.129\\TEST │ \\rawioctl                  │            1 │
-└──────────────────────┴───────────────────────────┴─────────────────────────────┴──────────────┘
-  10 rows                                                                             4 columns
-```
-
-
 
 ## 0x03 (SMB_COM_CREATE)
 ```powershell

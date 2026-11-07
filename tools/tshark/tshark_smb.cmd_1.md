@@ -147,6 +147,13 @@ The following are the commands that can follow an SMB_COM_OPEN_ANDX in an AndX c
 - SMB_COM_READ_ANDX
 - SMB_COM_IOCTL
 - SMB_COM_NO_ANDX_COMMAND
+
+| Name and <br>bitmask | Values | Meaning |
+| --- | --- | --- |
+| OpenResult<br>0x0003 | 1 | The file existed and was opened. |
+| | 2 | The file did not exist and was therefore created. |
+| | 3 | The file existed and was truncated. |
+| | Other | **Reserved** |
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x2D" `
 >> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.cmd -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.open.action.open -e smb.path -e smb.tid -e smb.uid `
@@ -182,11 +189,7 @@ memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A
 
 
 
-
-
-
-# yet
-## 0x03 (SMB_COM_CREATE)
+## [SMB_COM_CREATE (0x03)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/87622f43-3758-4bf9-b1fb-35109f0e5c15)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x03" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.nt_status -e smb.flags.response -e smb.path -e smb.tid -e smb.uid -e smb.mid -e smb.file_attribute -e smb.create.time -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x03.csv
 ```
@@ -211,6 +214,7 @@ memory D SELECT hex(B."smb.nt_status"), A."smb.path", A."smb.file_attribute", A.
 
 
 
+# yet
 ## 0x06 (SMB_COM_DELETE)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x06" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.nt_status -e smb.flags.response -e smb.path -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x06.csv

@@ -1,35 +1,55 @@
+```
+-e frame.time_utc
+-e ip.src
+-e ip.dst
+-e smb.access.mode
+-e smb.access.sharing
+-e smb.cmd
+-e smb.fid
+-e smb.file
+-e smb.file_attribute
+-e smb.file_size
+-e smb.flags.response
+-e smb.last_write.time
+-e smb.mid
+-e smb.nt_status
+-e smb.path
+-e smb.tid
+-e smb.uid
+```
+
 # File/directory access methods
 ## [0x00 (SMB_COM_CREATE_DIRECTORY)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/e6e870ad-7037-4b79-ac54-4a42a1ba4561)
 This is an original Core Protocol command. This command is deprecated.  
 Clients SHOULD use the TRANS2_CREATE_DIRECTORY subcommand.
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "ip.addr in {192.168.114.1, 192.168.11.129} && smb.cmd == 0x00" `
->> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.cmd -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.file -e smb.flags.response -e smb.nt_status -e smb.path `
 >> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x00.csv
 ```
 ```sql
-memory D SELECT timezone('UTC', "frame.time_utc"), hex("smb.nt_status"), "smb.path", "smb.file", COUNT(*)
+memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file", COUNT(*)
          FROM read_csv_auto('0x00.csv')
          WHERE "smb.flags.response" = true
          GROUP BY ALL
          ORDER BY "smb.path", "smb.file", timezone('UTC', "frame.time_utc")
          LIMIT 10;
-┌───────────────────────────────────┬──────────────────────┬───────────────────────────┬─────────────────────────────┬──────────────┐
-│ timezone('UTC', "frame.time_utc") │ hex("smb.nt_status") │         smb.path          │          smb.file           │ count_star() │
-│             timestamp             │       varchar        │          varchar          │           varchar           │    int64     │
-├───────────────────────────────────┼──────────────────────┼───────────────────────────┼─────────────────────────────┼──────────────┤
-│ 2005-11-19 03:32:19.50011         │ C000003B             │ \\\\192.168.114.129\\TEST │ ..\\..\\..                  │            1 │
-│ 2005-11-19 03:38:43.617968        │ 0                    │ \\\\192.168.114.129\\TEST │ \\composite                 │            1 │
-│ 2005-11-19 03:32:19.464982        │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │            1 │
-│ 2005-11-19 03:32:19.466924        │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 2005-11-19 03:32:19.468621        │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 2005-11-19 03:32:19.497209        │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
-│ 2005-11-19 03:32:27.398186        │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │            1 │
-│ 2005-11-19 03:32:27.400375        │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │            1 │
-│ 2005-11-19 03:32:27.404397        │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │            1 │
-│ 2005-11-19 03:32:27.407359        │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │            1 │
-└───────────────────────────────────┴──────────────────────┴───────────────────────────┴─────────────────────────────┴──────────────┘
-  10 rows                                                                                                                 5 columns
+┌───────────────────────────────────┬───────────────┬──────────────────────┬───────────────────────────┬─────────────────────────────┬──────────────┐
+│ timezone('UTC', "frame.time_utc") │    ip.dst     │ hex("smb.nt_status") │         smb.path          │          smb.file           │ count_star() │
+│             timestamp             │    varchar    │       varchar        │          varchar          │           varchar           │    int64     │
+├───────────────────────────────────┼───────────────┼──────────────────────┼───────────────────────────┼─────────────────────────────┼──────────────┤
+│ 2005-11-19 03:32:19.50011         │ 192.168.114.1 │ C000003B             │ \\\\192.168.114.129\\TEST │ ..\\..\\..                  │            1 │
+│ 2005-11-19 03:38:43.617968        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\composite                 │            1 │
+│ 2005-11-19 03:32:19.464982        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │            1 │
+│ 2005-11-19 03:32:19.466924        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
+│ 2005-11-19 03:32:19.468621        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
+│ 2005-11-19 03:32:19.497209        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │            1 │
+│ 2005-11-19 03:32:27.398186        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │            1 │
+│ 2005-11-19 03:32:27.400375        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │            1 │
+│ 2005-11-19 03:32:27.404397        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │            1 │
+│ 2005-11-19 03:32:27.407359        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │            1 │
+└───────────────────────────────────┴───────────────┴──────────────────────┴───────────────────────────┴─────────────────────────────┴──────────────┘
+  10 rows                                                                                                                                 6 columns
 ```
 
 
@@ -85,6 +105,7 @@ memory D SELECT timezone('UTC', A."frame.time_utc"), A."smb.path", A."smb.file",
 
 
 
+# yet
 ## 0x01 (SMB_COM_DELETE_DIRECTORY)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.nt_status -e smb.flags.response -e smb.path -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x01.csv

@@ -23,7 +23,7 @@
 This is an original Core Protocol command. This command is deprecated.  
 Clients SHOULD use the TRANS2_CREATE_DIRECTORY subcommand.
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "ip.addr in {192.168.114.1, 192.168.11.129} && smb.cmd == 0x00" `
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x00" `
 >> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.file -e smb.flags.response -e smb.nt_status -e smb.path `
 >> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x00.csv
 ```
@@ -72,7 +72,7 @@ This request is used to open an existing regular file. This command MUST NOT be 
 | | 4 | Deny nothing to others |
 | | 0x0080 | **Reserved** |
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "ip.addr in {192.168.114.1, 192.168.11.129} && smb.cmd == 0x02" `
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" `
 >> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.cmd -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
 >> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x02.csv
 ```

@@ -13,13 +13,14 @@
 -e smb.last_write.time
 -e smb.mid
 -e smb.nt_status
+-e smb.open.action.open
 -e smb.path
 -e smb.tid
 -e smb.uid
 ```
 
 # File/directory access methods
-## [0x00 (SMB_COM_CREATE_DIRECTORY)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/e6e870ad-7037-4b79-ac54-4a42a1ba4561)
+## [SMB_COM_CREATE_DIRECTORY (0x00)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/e6e870ad-7037-4b79-ac54-4a42a1ba4561)
 This is an original Core Protocol command. This command is deprecated.  
 Clients SHOULD use the TRANS2_CREATE_DIRECTORY subcommand.
 ```powershell
@@ -54,7 +55,8 @@ memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"
 
 
 
-## [0x01 (SMB_COM_DELETE_DIRECTORY)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/0bca354c-42d9-46b7-a0ae-d8c6870242ca)
+## [SMB_COM_DELETE_DIRECTORY (0x01)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/0bca354c-42d9-46b7-a0ae-d8c6870242ca)
+This is an original Core Protocol command.  
 This command is used to delete an empty directory.
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x01" `
@@ -88,7 +90,7 @@ memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"
 
 
 
-## [0x02 (SMB_COM_OPEN)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/ec064de8-6538-401e-8c73-b37231c36f2b)
+## [SMB_COM_OPEN (0x02)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/ec064de8-6538-401e-8c73-b37231c36f2b)
 This is an original Core Protocol command. This command has been deprecated. Client implementations SHOULD use SMB_COM_NT_CREATE_ANDX.  
 This request is used to open an existing regular file. This command MUST NOT be used to open directories or named pipes.  
 | **Name and bitmask** | **Values** | **Meaning** |
@@ -115,7 +117,7 @@ memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A
                 hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file_attribute", timezone('UTC', B."smb.last_write.time"), B."smb.file_size", B."smb.access.sharing", B."smb.access.mode"
          FROM read_csv_auto('smb_cmd_0x02.csv') AS A
          LEFT JOIN read_csv_auto('smb_cmd_0x02.csv') AS B
-         ON B."smb.flags.response" = true AND A."smb.cmd" = B."smb.cmd" AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
+         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
          WHERE A."smb.flags.response" = false
          GROUP BY ALL
          ORDER BY A."smb.path", A."smb.file", timezone('UTC', A."frame.time_utc");
@@ -138,8 +140,52 @@ memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A
 
 
 
-# yet
+## [SMB_COM_OPEN_ANDX (0x2D)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/49a0f97d-c4a7-48a3-bf50-46d816825729)
+This command is used to create and open a new file or open an existing regular file and chain additional messages along with the request.  
+The following are the commands that can follow an SMB_COM_OPEN_ANDX in an AndX chain:  
+- SMB_COM_READ
+- SMB_COM_READ_ANDX
+- SMB_COM_IOCTL
+- SMB_COM_NO_ANDX_COMMAND
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x2D" `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.cmd -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.open.action.open -e smb.path -e smb.tid -e smb.uid `
+>> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x2D.csv
+```
+```sql
+memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A."smb.file",
+                hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file_attribute", timezone('UTC', B."smb.last_write.time"), B."smb.file_size", B."smb.access.sharing", B."smb.access.mode", B."smb.open.action.open"
+         FROM read_csv_auto('smb_cmd_0x2D.csv') AS A
+         LEFT JOIN read_csv_auto('smb_cmd_0x2D.csv') AS B
+         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
+         WHERE A."smb.flags.response" = false
+         GROUP BY ALL
+         ORDER BY A."smb.path", A."smb.file", timezone('UTC', A."frame.time_utc")
+         LIMIT 10;
+┌─────────────────────────────────────┬───────────────┬───────────────────────────┬──────────────────────────────────┬────────────────────────┬──────────────────┬────────────────────┬──────────────────────────────────────────┬───────────────┬────────────────────┬─────────────────┬──────────────────────┐
+│ timezone('UTC', A."frame.time_utc") │    ip.dst     │         smb.path          │             smb.file             │ hex(B."smb.nt_status") │ hex(B."smb.fid") │ smb.file_attribute │ timezone('UTC', B."smb.last_write.time") │ smb.file_size │ smb.access.sharing │ smb.access.mode │ smb.open.action.open │
+│              timestamp              │    varchar    │          varchar          │             varchar              │        varchar         │     varchar      │       int64        │                timestamp                 │     int64     │       int64        │      int64      │        int64         │
+├─────────────────────────────────────┼───────────────┼───────────────────────────┼──────────────────────────────────┼────────────────────────┼──────────────────┼────────────────────┼──────────────────────────────────────────┼───────────────┼────────────────────┼─────────────────┼──────────────────────┤
+│ 2005-11-19 03:32:16.96084           │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\A.+,;=[].B                     │ 0                      │ 4001             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+│ 2005-11-19 03:32:16.96084           │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\A.+,;=[].B                     │ C0000034               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │                 NULL │
+│ 2005-11-19 03:32:19.411781          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_chained.txt   │ 0                      │ 8001             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+│ 2005-11-19 03:32:19.411781          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_chained.txt   │ 0                      │ 800F             │                 32 │ 2006-02-17 05:32:18                      │             7 │                  0 │               2 │                    1 │
+│ 2005-11-19 03:32:16.975704          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ C002             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+│ 2005-11-19 03:32:16.988214          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ C005             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+│ 2005-11-19 03:32:17.017029          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ C007             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+│ 2005-11-19 03:32:17.029578          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ C009             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+│ 2005-11-19 03:32:17.06999           │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ C00C             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+│ 2005-11-19 03:32:17.075037          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ C00E             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
+└─────────────────────────────────────┴───────────────┴───────────────────────────┴──────────────────────────────────┴────────────────────────┴──────────────────┴────────────────────┴──────────────────────────────────────────┴───────────────┴────────────────────┴─────────────────┴──────────────────────┘
+  10 rows                                                                                                                                                                                                                                                                                           12 columns
+```
 
+
+
+
+
+
+# yet
 ## 0x03 (SMB_COM_CREATE)
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x03" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.nt_status -e smb.flags.response -e smb.path -e smb.tid -e smb.uid -e smb.mid -e smb.file_attribute -e smb.create.time -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x03.csv

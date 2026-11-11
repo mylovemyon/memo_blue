@@ -5,6 +5,7 @@
 -e smb.access.mode
 -e smb.access.sharing
 -e smb.cmd
+-e smb.create.time
 -e smb.fid
 -e smb.file
 -e smb.file_attribute
@@ -212,6 +213,9 @@ memory D SELECT hex(B."smb.nt_status"), A."smb.path", A."smb.file_attribute", A.
 └────────────────────────┴───────────────────────────┴────────────────────┴──────────────────────────┴───────────────────────────────┴──────────────┘
 ```
 
+
+
+## [SMB_COM_CREATE_NEW (0x0F)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/161fa213-ba9d-4bad-9483-29e8b5872dca)
 
 
 # yet

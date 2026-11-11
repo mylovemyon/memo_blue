@@ -130,35 +130,56 @@ This command MUST NOT be used to open directories or named pipes.
 | | 4 | Deny nothing to others |
 | | 0x0080 | **Reserved** |
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" `
->> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
+PS C:\users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x02" `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing `
+>> -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response `
+>> -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
 >> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x02.csv
 ```
 ```sql
-memory D SELECT timezone('UTC', B."frame.time_utc"), B."ip.dst", A."smb.path", A."smb.file",
-                hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file_attribute", timezone('UTC', B."smb.last_write.time"), B."smb.file_size", B."smb.access.sharing", B."smb.access.mode"
-         FROM read_csv_auto('smb_cmd_0x02.csv') AS A
-         LEFT JOIN read_csv_auto('smb_cmd_0x02.csv') AS B
-         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
-         WHERE A."smb.flags.response" = false
+memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
+                "ip.dst",
+                "smb.tid" AS "tid",
+                "smb.uid" AS "uid",
+                "smb.mid" AS "mid",
+                "smb.path" AS "path",
+                "smb.file" AS "fie",
+                hex("smb.nt_status") AS "nt_status",
+                "smb.fid" AS "fid",
+                "smb.file_attribute" AS "file_attribute",
+                timezone('UTC', "smb.last_write.time") AS "last_write.time",
+                "smb.file_size" AS "file_size",
+                "smb.access.sharing" AS "access.sharing",
+                "smb.access.mode" AS "access.mode"
+         FROM read_csv_auto('smb_cmd_0x02.csv')
          GROUP BY ALL
-         ORDER BY A."smb.path", A."smb.file", timezone('UTC', B."frame.time_utc");
-┌─────────────────────────────────────┬───────────────┬───────────────────────────┬─────────────────────────────┬────────────────────────┬──────────────────┬────────────────────┬──────────────────────────────────────────┬───────────────┬────────────────────┬─────────────────┐
-│ timezone('UTC', B."frame.time_utc") │    ip.dst     │         smb.path          │          smb.file           │ hex(B."smb.nt_status") │ hex(B."smb.fid") │ smb.file_attribute │ timezone('UTC', B."smb.last_write.time") │ smb.file_size │ smb.access.sharing │ smb.access.mode │
-│              timestamp              │    varchar    │          varchar          │           varchar           │        varchar         │     varchar      │       int64        │                timestamp                 │     int64     │       int64        │      int64      │
-├─────────────────────────────────────┼───────────────┼───────────────────────────┼─────────────────────────────┼────────────────────────┼──────────────────┼────────────────────┼──────────────────────────────────────────┼───────────────┼────────────────────┼─────────────────┤
-│ 2005-11-19 03:32:14.675388          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000034               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │
-│ 2005-11-19 03:32:14.680764          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 05:32:14                      │             7 │                  7 │               7 │
-│ 2005-11-19 03:32:14.705524          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4003             │                 32 │ 2006-02-17 05:32:14                      │             7 │                  7 │               7 │
-│ 2005-11-19 03:32:14.709424          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4004             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               0 │
-│ 2005-11-19 03:32:14.71148           │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4005             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               1 │
-│ 2005-11-19 03:32:14.713483          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4006             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               2 │
-│ 2005-11-19 03:32:14.715467          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4007             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  2 │               2 │
-│ 2005-11-19 03:32:15.706766          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ C0000043               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │
-│ 2005-11-19 03:32:15.707715          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4008             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  4 │               0 │
-│ 2005-11-19 03:32:15.711281          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0                      │ 4009             │                 32 │ 2005-11-19 05:32:16                      │             7 │                  0 │               0 │
-└─────────────────────────────────────┴───────────────┴───────────────────────────┴─────────────────────────────┴────────────────────────┴──────────────────┴────────────────────┴──────────────────────────────────────────┴───────────────┴────────────────────┴─────────────────┘
-  10 rows                                                                                                                                                                                                                                                               11 columns
+         ORDER BY "tid", "smb.mid", "frame.time_utc";
+┌────────────────────────────┬─────────────────┬───────┬───────┬───────┬───────────────────────────┬─────────────────────────────┬───────────┬───────┬────────────────┬─────────────────────┬───────────┬────────────────┬─────────────┐
+│       frame.time_utc       │     ip.dst      │  tid  │  uid  │  mid  │           path            │             fie             │ nt_status │  fid  │ file_attribute │   last_write.time   │ file_size │ access.sharing │ access.mode │
+│         timestamp          │     varchar     │ int64 │ int64 │ int64 │          varchar          │           varchar           │  varchar  │ int64 │     int64      │      timestamp      │   int64   │     int64      │    int64    │
+├────────────────────────────┼─────────────────┼───────┼───────┼───────┼───────────────────────────┼─────────────────────────────┼───────────┼───────┼────────────────┼─────────────────────┼───────────┼────────────────┼─────────────┤
+│ 2005-11-19 03:32:14.673931 │ 192.168.114.129 │  2048 │  2048 │    20 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              7 │           7 │
+│ 2005-11-19 03:32:14.675388 │ 192.168.114.1   │  2048 │  2048 │    20 │ \\\\192.168.114.129\\TEST │ NULL                        │ C0000034  │  NULL │           NULL │ NULL                │      NULL │           NULL │        NULL │
+│ 2005-11-19 03:32:14.679815 │ 192.168.114.129 │  2048 │  2048 │    29 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              7 │           7 │
+│ 2005-11-19 03:32:14.680764 │ 192.168.114.1   │  2048 │  2048 │    29 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16387 │             32 │ 2006-02-17 05:32:14 │         7 │              7 │           7 │
+│ 2005-11-19 03:32:14.70511  │ 192.168.114.129 │  2048 │  2048 │    32 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              7 │           7 │
+│ 2005-11-19 03:32:14.705524 │ 192.168.114.1   │  2048 │  2048 │    32 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16387 │             32 │ 2006-02-17 05:32:14 │         7 │              7 │           7 │
+│ 2005-11-19 03:32:14.708386 │ 192.168.114.129 │  2048 │  2048 │    37 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              0 │           0 │
+│ 2005-11-19 03:32:14.709424 │ 192.168.114.1   │  2048 │  2048 │    37 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16388 │             32 │ 2005-11-19 05:32:16 │         7 │              0 │           0 │
+│ 2005-11-19 03:32:14.710849 │ 192.168.114.129 │  2048 │  2048 │    41 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              0 │           1 │
+│ 2005-11-19 03:32:14.71148  │ 192.168.114.1   │  2048 │  2048 │    41 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16389 │             32 │ 2005-11-19 05:32:16 │         7 │              0 │           1 │
+│ 2005-11-19 03:32:14.713179 │ 192.168.114.129 │  2048 │  2048 │    45 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              0 │           2 │
+│ 2005-11-19 03:32:14.713483 │ 192.168.114.1   │  2048 │  2048 │    45 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16390 │             32 │ 2005-11-19 05:32:16 │         7 │              0 │           2 │
+│ 2005-11-19 03:32:14.715195 │ 192.168.114.129 │  2048 │  2048 │    49 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              2 │           2 │
+│ 2005-11-19 03:32:14.715467 │ 192.168.114.1   │  2048 │  2048 │    49 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16391 │             32 │ 2005-11-19 05:32:16 │         7 │              2 │           2 │
+│ 2005-11-19 03:32:14.716214 │ 192.168.114.129 │  2048 │  2048 │    52 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              4 │           2 │
+│ 2005-11-19 03:32:15.706766 │ 192.168.114.1   │  2048 │  2048 │    52 │ \\\\192.168.114.129\\TEST │ NULL                        │ C0000043  │  NULL │           NULL │ NULL                │      NULL │           NULL │        NULL │
+│ 2005-11-19 03:32:15.707192 │ 192.168.114.129 │  2048 │  2048 │    53 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              4 │           0 │
+│ 2005-11-19 03:32:15.707715 │ 192.168.114.1   │  2048 │  2048 │    53 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16392 │             32 │ 2005-11-19 05:32:16 │         7 │              4 │           0 │
+│ 2005-11-19 03:32:15.710867 │ 192.168.114.129 │  2048 │  2048 │    58 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_open.txt │ 0         │  NULL │           NULL │ NULL                │      NULL │              0 │           0 │
+│ 2005-11-19 03:32:15.711281 │ 192.168.114.1   │  2048 │  2048 │    58 │ \\\\192.168.114.129\\TEST │ NULL                        │ 0         │ 16393 │             32 │ 2005-11-19 05:32:16 │         7 │              0 │           0 │
+└────────────────────────────┴─────────────────┴───────┴───────┴───────┴───────────────────────────┴─────────────────────────────┴───────────┴───────┴────────────────┴─────────────────────┴───────────┴────────────────┴─────────────┘
+  20 rows                                                                                                                                                                                                                   14 columns
 ```
 
 

@@ -92,8 +92,10 @@ memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"
 
 
 ## [SMB_COM_OPEN (0x02)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/ec064de8-6538-401e-8c73-b37231c36f2b)
-This is an original Core Protocol command. This command has been deprecated. Client implementations SHOULD use SMB_COM_NT_CREATE_ANDX.  
-This request is used to open an existing regular file. This command MUST NOT be used to open directories or named pipes.  
+This is an original Core Protocol command. This command has been deprecated.  
+Client implementations SHOULD use SMB_COM_NT_CREATE_ANDX.  
+This request is used to open an existing regular file.  
+This command MUST NOT be used to open directories or named pipes.  
 | **Name and bitmask** | **Values** | **Meaning** |
 | --- | --- | --- |
 | AccessMode<br>0x0007 | 0 | Open for reading |
@@ -191,26 +193,31 @@ memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A
 
 
 ## [SMB_COM_CREATE (0x03)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/87622f43-3758-4bf9-b1fb-35109f0e5c15)
+This is an original Core Protocol command. This command is deprecated.  
+Implementations SHOULD use SMB_COM_NT_CREATE_ANDX.
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x03" -T fields -e ip.src -e ip.dst -e smb.cmd -e smb.nt_status -e smb.flags.response -e smb.path -e smb.tid -e smb.uid -e smb.mid -e smb.file_attribute -e smb.create.time -e smb.file -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\0x03.csv
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x03" `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.cmd -e smb.create.time -e smb.fid -e smb.file -e smb.file_attribute -e smb.flags.response -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
+>> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x03.csv
 ```
 ```sql
-memory D SELECT hex(B."smb.nt_status"), A."smb.path", A."smb.file_attribute", A."smb.create.time", A."smb.file", COUNT(*)
+memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A."smb.file", A."smb.file_attribute", timezone('UTC', A."smb.create.time"),
+                hex(B."smb.nt_status"), hex(B."smb.fid")
          FROM read_csv_auto('smb_cmd_0x03.csv') AS A
          LEFT JOIN read_csv_auto('smb_cmd_0x03.csv') AS B
          ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
-         WHERE A."ip.src" = '192.168.114.1' AND A."ip.dst" = '192.168.114.129'
-         AND A."smb.flags.response" = false
+         WHERE A."smb.flags.response" = false
          GROUP BY ALL
-         ORDER BY A."smb.path", A."smb.file";
-┌────────────────────────┬───────────────────────────┬────────────────────┬──────────────────────────┬───────────────────────────────┬──────────────┐
-│ hex(B."smb.nt_status") │         smb.path          │ smb.file_attribute │     smb.create.time      │           smb.file            │ count_star() │
-│        varchar         │          varchar          │       int64        │ timestamp with time zone │            varchar            │    int64     │
-├────────────────────────┼───────────────────────────┼────────────────────┼──────────────────────────┼───────────────────────────────┼──────────────┤
-│ 0                      │ \\\\192.168.114.129\\TEST │                  0 │ 2005-11-22 14:32:18+09   │ \\rawopen\\torture_create.txt │            1 │
-│ 0                      │ \\\\192.168.114.129\\TEST │                  2 │ 2005-11-22 14:32:18+09   │ \\rawopen\\torture_create.txt │            1 │
-│ 0                      │ \\\\192.168.114.129\\TEST │                  0 │ 1970-01-01 09:00:00+09   │ \\rawopen\\torture_create.txt │            2 │
-└────────────────────────┴───────────────────────────┴────────────────────┴──────────────────────────┴───────────────────────────────┴──────────────┘
+         ORDER BY A."smb.path", A."smb.file", timezone('UTC', A."frame.time_utc");
+┌─────────────────────────────────────┬───────────────┬───────────────────────────┬───────────────────────────────┬────────────────────┬──────────────────────────────────────┬────────────────────────┬──────────────────┐
+│ timezone('UTC', A."frame.time_utc") │    ip.dst     │         smb.path          │           smb.file            │ smb.file_attribute │ timezone('UTC', A."smb.create.time") │ hex(B."smb.nt_status") │ hex(B."smb.fid") │
+│              timestamp              │    varchar    │          varchar          │            varchar            │       int64        │              timestamp               │        varchar         │     varchar      │
+├─────────────────────────────────────┼───────────────┼───────────────────────────┼───────────────────────────────┼────────────────────┼──────────────────────────────────────┼────────────────────────┼──────────────────┤
+│ 2005-11-19 03:32:19.358149          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_create.txt │                  0 │ 1970-01-01 00:00:00                  │ 0                      │ 8009             │
+│ 2005-11-19 03:32:19.360589          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_create.txt │                  0 │ 1970-01-01 00:00:00                  │ 0                      │ 800A             │
+│ 2005-11-19 03:32:19.36795           │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_create.txt │                  0 │ 2005-11-22 05:32:18                  │ 0                      │ 800B             │
+│ 2005-11-19 03:32:19.384482          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_create.txt │                  2 │ 2005-11-22 05:32:18                  │ 0                      │ 800C             │
+└─────────────────────────────────────┴───────────────┴───────────────────────────┴───────────────────────────────┴────────────────────┴──────────────────────────────────────┴────────────────────────┴──────────────────┘
 ```
 
 
@@ -228,7 +235,7 @@ PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0F" `
 ```
 ```sql
 memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A."smb.file", A."smb.file_attribute", timezone('UTC', A."smb.create.time"),
-                 hex(B."smb.nt_status"), hex(B."smb.fid")
+                hex(B."smb.nt_status"), hex(B."smb.fid")
          FROM read_csv_auto('smb_cmd_0x0F.csv') AS A
          LEFT JOIN read_csv_auto('smb_cmd_0x0F.csv') AS B
          ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"

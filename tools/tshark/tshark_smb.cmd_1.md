@@ -28,33 +28,41 @@
 This is an original Core Protocol command. This command is deprecated.  
 Clients SHOULD use the TRANS2_CREATE_DIRECTORY subcommand.
 ```powershell
-PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x00" `
->> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.file -e smb.flags.response -e smb.nt_status -e smb.path `
+PS C:\users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x00" `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.file -e smb.flags.response -e smb.mid `
+>> -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
 >> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x00.csv
 ```
 ```sql
-memory D SELECT timezone('UTC', "frame.time_utc"), "ip.dst", hex("smb.nt_status"), "smb.path", "smb.file"
+memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
+                "ip.dst",
+                hex("smb.nt_status") AS "nt_status",
+                "smb.tid" AS "tid",
+                "smb.uid" AS "uid",
+                "smb.mid" AS "mid",
+                "smb.path" AS "path",
+                "smb.file" AS "file",
          FROM read_csv_auto('smb_cmd_0x00.csv')
          WHERE "smb.flags.response" = true
          GROUP BY ALL
-         ORDER BY "smb.path", "smb.file", timezone('UTC', "frame.time_utc")
+         ORDER BY "tid", "mid"
          LIMIT 10;
-┌───────────────────────────────────┬───────────────┬──────────────────────┬───────────────────────────┬─────────────────────────────┐
-│ timezone('UTC', "frame.time_utc") │    ip.dst     │ hex("smb.nt_status") │         smb.path          │          smb.file           │
-│             timestamp             │    varchar    │       varchar        │          varchar          │           varchar           │
-├───────────────────────────────────┼───────────────┼──────────────────────┼───────────────────────────┼─────────────────────────────┤
-│ 2005-11-19 03:32:19.50011         │ 192.168.114.1 │ C000003B             │ \\\\192.168.114.129\\TEST │ ..\\..\\..                  │
-│ 2005-11-19 03:38:43.617968        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\composite                 │
-│ 2005-11-19 03:32:19.464982        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest                 │
-│ 2005-11-19 03:32:19.466924        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
-│ 2005-11-19 03:32:19.468621        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
-│ 2005-11-19 03:32:19.497209        │ 192.168.114.1 │ C0000035             │ \\\\192.168.114.129\\TEST │ \\mkdirtest\\mkdir.dir      │
-│ 2005-11-19 03:32:27.398186        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath                │
-│ 2005-11-19 03:32:27.400375        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt            │
-│ 2005-11-19 03:32:27.404397        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S       │
-│ 2005-11-19 03:32:27.407359        │ 192.168.114.1 │ 0                    │ \\\\192.168.114.129\\TEST │ \\rawchkpath\\nt\\V S\\VB98 │
-└───────────────────────────────────┴───────────────┴──────────────────────┴───────────────────────────┴─────────────────────────────┘
-  10 rows                                                                                                                  5 columns
+┌────────────────────────────┬───────────────┬───────────┬───────┬───────┬───────┬───────────────────────────┬──────────────┐
+│       frame.time_utc       │    ip.dst     │ nt_status │  tid  │  uid  │  mid  │           path            │     file     │
+│         timestamp          │    varchar    │  varchar  │ int64 │ int64 │ int64 │          varchar          │   varchar    │
+├────────────────────────────┼───────────────┼───────────┼───────┼───────┼───────┼───────────────────────────┼──────────────┤
+│ 2005-11-19 03:35:38.95636  │ 192.168.114.1 │ 0         │  2048 │  2048 │     6 │ \\\\192.168.114.129\\TEST │ \\rawcontext │
+│ 2005-11-19 03:32:19.464982 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\mkdirtest  │
+│ 2005-11-19 03:35:38.142735 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\rawcontext │
+│ 2005-11-19 03:32:27.398186 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\rawchkpath │
+│ 2005-11-19 03:32:27.307791 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\rawioctl   │
+│ 2005-11-19 03:38:41.356406 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\testsd     │
+│ 2005-11-19 03:32:27.514316 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\testunlink │
+│ 2005-11-19 03:35:23.177188 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\testwrite  │
+│ 2005-11-19 03:38:35.50437  │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\testrename │
+│ 2005-11-19 03:32:23.165435 │ 192.168.114.1 │ 0         │  2048 │  2048 │     7 │ \\\\192.168.114.129\\TEST │ \\test_mux   │
+└────────────────────────────┴───────────────┴───────────┴───────┴───────┴───────┴───────────────────────────┴──────────────┘
+  10 rows                                                                                                         8 columns
 ```
 
 

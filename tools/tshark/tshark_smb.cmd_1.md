@@ -196,8 +196,8 @@ PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x03" -T field
 ```
 ```sql
 memory D SELECT hex(B."smb.nt_status"), A."smb.path", A."smb.file_attribute", A."smb.create.time", A."smb.file", COUNT(*)
-         FROM read_csv_auto('0x03.csv') AS A
-         LEFT JOIN read_csv_auto('0x03.csv') AS B
+         FROM read_csv_auto('smb_cmd_0x03.csv') AS A
+         LEFT JOIN read_csv_auto('smb_cmd_0x03.csv') AS B
          ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
          WHERE A."ip.src" = '192.168.114.1' AND A."ip.dst" = '192.168.114.129'
          AND A."smb.flags.response" = false
@@ -216,6 +216,36 @@ memory D SELECT hex(B."smb.nt_status"), A."smb.path", A."smb.file_attribute", A.
 
 
 ## [SMB_COM_CREATE_NEW (0x0F)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/161fa213-ba9d-4bad-9483-29e8b5872dca)
+This is an original Core Protocol command. This command is deprecated.  
+Implementations SHOULD use SMB_COM_NT_CREATE_ANDX.  
+This command is used to create a new file. It MUST NOT truncate or overwrite an existing file.  
+If a file with the requested pathname already exits, the command MUST fail.  
+This command MUST NOT be used to create directories or named pipes.
+```powershell
+PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0F" `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.cmd -e smb.create.time -e smb.fid -e smb.file -e smb.file_attribute -e smb.flags.response -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
+>> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x0F.csv
+```
+```sql
+memory D SELECT timezone('UTC', A."frame.time_utc"), B."ip.dst", A."smb.path", A."smb.file", A."smb.file_attribute", timezone('UTC', A."smb.create.time"),
+                 hex(B."smb.nt_status"), hex(B."smb.fid")
+         FROM read_csv_auto('smb_cmd_0x0F.csv') AS A
+         LEFT JOIN read_csv_auto('smb_cmd_0x0F.csv') AS B
+         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
+         WHERE A."smb.flags.response" = false
+         GROUP BY ALL
+         ORDER BY A."smb.path", A."smb.file", timezone('UTC', A."frame.time_utc");
+┌─────────────────────────────────────┬───────────────┬───────────────────────────┬──────────────────────────────┬────────────────────┬──────────────────────────────────────┬────────────────────────┬──────────────────┐
+│ timezone('UTC', A."frame.time_utc") │    ip.dst     │         smb.path          │           smb.file           │ smb.file_attribute │ timezone('UTC', A."smb.create.time") │ hex(B."smb.nt_status") │ hex(B."smb.fid") │
+│              timestamp              │    varchar    │          varchar          │           varchar            │       int64        │              timestamp               │        varchar         │     varchar      │
+├─────────────────────────────────────┼───────────────┼───────────────────────────┼──────────────────────────────┼────────────────────┼──────────────────────────────────────┼────────────────────────┼──────────────────┤
+│ 2005-11-19 03:32:19.322976          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_mknew.txt │                  0 │ 1970-01-01 00:00:00                  │ 0                      │ 8006             │
+│ 2005-11-19 03:32:19.325901          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_mknew.txt │                  0 │ 1970-01-01 00:00:00                  │ C0000035               │ NULL             │
+│ 2005-11-19 03:32:19.328741          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_mknew.txt │                  0 │ 2005-11-22 05:32:18                  │ 0                      │ 8007             │
+│ 2005-11-19 03:32:19.349264          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_mknew.txt │                  2 │ 2005-11-22 05:32:18                  │ 0                      │ 8008             │
+└─────────────────────────────────────┴───────────────┴───────────────────────────┴──────────────────────────────┴────────────────────┴──────────────────────────────────────┴────────────────────────┴──────────────────┘
+```
+
 
 
 # yet

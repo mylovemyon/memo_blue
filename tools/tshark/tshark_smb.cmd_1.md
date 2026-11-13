@@ -192,6 +192,17 @@ The following are the commands that can follow an SMB_COM_OPEN_ANDX in an AndX c
 - SMB_COM_IOCTL
 - SMB_COM_NO_ANDX_COMMAND
 
+file_type
+| Name and value | Meaning |
+| --- | --- |
+| FileTypeDisk<br>0x0000 | Disk file or directory. |
+| FileTypeByteModePipe<br>0x0001 | Byte mode named pipe. |
+| FileTypeMessageModePipe<br>0x0002 | Message-mode named pipe. |
+| FileTypePrinter<br>0x0003 | Printer device. |
+| FileTypeCommDevice<br>0x0004 | Character-mode device. When an extended protocol has been negotiated, this value allows a device to be opened for driver-level I/O. This provides direct access to real-time and interactive devices such as modems, scanners, and so on. |
+| FileTypeUnknown<br>0xFFFF | Unknown file type. |
+
+open.action.open
 | Name and <br>bitmask | Values | Meaning |
 | --- | --- | --- |
 | OpenResult<br>0x0003 | 1 | The file existed and was opened. |
@@ -200,35 +211,49 @@ The following are the commands that can follow an SMB_COM_OPEN_ANDX in an AndX c
 | | Other | **Reserved** |
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x2D" `
->> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.open.action.open -e smb.path -e smb.tid -e smb.uid `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.access.mode -e smb.access.sharing `
+>> -e smb.fid -e smb.file -e smb.file_attribute -e smb.file_size -e smb.file_type `
+>> -e smb.flags.response -e smb.last_write.time -e smb.mid -e smb.nt_status -e smb.open.action.open `
+>> -e smb.path -e smb.tid -e smb.uid `
 >> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x2D.csv
 ```
 ```sql
-memory D SELECT timezone('UTC', B."frame.time_utc"), B."ip.dst", A."smb.path", A."smb.file",
-                hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file_attribute", timezone('UTC', B."smb.last_write.time"), B."smb.file_size", B."smb.access.sharing", B."smb.access.mode", B."smb.open.action.open"
-         FROM read_csv_auto('smb_cmd_0x2D.csv') AS A
-         LEFT JOIN read_csv_auto('smb_cmd_0x2D.csv') AS B
-         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
-         WHERE A."smb.flags.response" = false
+memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
+                "ip.dst",
+                "smb.tid" AS "tid",
+                "smb.uid" AS "uid",
+                "smb.mid" AS "mid",
+                "smb.path" AS "path",
+                "smb.file" AS"smb.file",
+                hex("smb.nt_status") AS "nt_status",
+                hex("smb.fid") AS "fid",
+                "smb.file_attribute" AS "file_attribute",
+                timezone('UTC',"smb.last_write.time") AS "last_write.time",
+                "smb.file_size" AS "file_size",
+                "smb.access.sharing" AS "access.sharing",
+                "smb.access.mode" AS "access.mode",
+                "smb.file_type" AS "file_type",
+                "smb.open.action.open" AS "open.action.open"
+         FROM read_csv_auto('smb_cmd_0x2D.csv')
          GROUP BY ALL
-         ORDER BY A."smb.path", A."smb.file", timezone('UTC', B."frame.time_utc")
+         ORDER BY "tid", "mid", "frame.time_utc"
          LIMIT 10;
-┌─────────────────────────────────────┬───────────────┬───────────────────────────┬──────────────────────────────────┬────────────────────────┬──────────────────┬────────────────────┬──────────────────────────────────────────┬───────────────┬────────────────────┬─────────────────┬──────────────────────┐
-│ timezone('UTC', B."frame.time_utc") │    ip.dst     │         smb.path          │             smb.file             │ hex(B."smb.nt_status") │ hex(B."smb.fid") │ smb.file_attribute │ timezone('UTC', B."smb.last_write.time") │ smb.file_size │ smb.access.sharing │ smb.access.mode │ smb.open.action.open │
-│              timestamp              │    varchar    │          varchar          │             varchar              │        varchar         │     varchar      │       int64        │                timestamp                 │     int64     │       int64        │      int64      │        int64         │
-├─────────────────────────────────────┼───────────────┼───────────────────────────┼──────────────────────────────────┼────────────────────────┼──────────────────┼────────────────────┼──────────────────────────────────────────┼───────────────┼────────────────────┼─────────────────┼──────────────────────┤
-│ 2005-11-19 03:32:01.608824          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\A.+,;=[].B                     │ 0                      │ 4001             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-│ 2005-11-19 03:32:16.961129          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\A.+,;=[].B                     │ C0000034               │ NULL             │               NULL │ NULL                                     │          NULL │               NULL │            NULL │                 NULL │
-│ 2005-11-19 03:32:01.935945          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_chained.txt   │ 0                      │ 8001             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-│ 2005-11-19 03:32:19.41718           │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_chained.txt   │ 0                      │ 800F             │                 32 │ 2006-02-17 05:32:18                      │             7 │                  0 │               2 │                    1 │
-│ 2005-11-19 03:32:01.739517          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ 8                │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-│ 2005-11-19 03:32:01.749439          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ C                │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-│ 2005-11-19 03:32:01.754578          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ F                │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-│ 2005-11-19 03:32:01.760656          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ 4003             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-│ 2005-11-19 03:32:01.767721          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ 4007             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-│ 2005-11-19 03:32:01.775083          │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_ntcreatex.txt │ 0                      │ 400A             │                  0 │ 1970-01-01 00:00:00                      │             0 │                  0 │               0 │                    2 │
-└─────────────────────────────────────┴───────────────┴───────────────────────────┴──────────────────────────────────┴────────────────────────┴──────────────────┴────────────────────┴──────────────────────────────────────────┴───────────────┴────────────────────┴─────────────────┴──────────────────────┘
-  10 rows                                                                                                                                                                                                                                                                                           12 columns
+┌────────────────────────────┬─────────────────┬───────┬───────┬───────┬───────────────────────────┬────────────────────────┬───────────┬─────────┬────────────────┬─────────────────────┬───────────┬────────────────┬─────────────┬───────────┬──────────────────┐
+│       frame.time_utc       │     ip.dst      │  tid  │  uid  │  mid  │           path            │        smb.file        │ nt_status │   fid   │ file_attribute │   last_write.time   │ file_size │ access.sharing │ access.mode │ file_type │ open.action.open │
+│         timestamp          │     varchar     │ int64 │ int64 │ int64 │          varchar          │        varchar         │  varchar  │ varchar │     int64      │      timestamp      │   int64   │     int64      │    int64    │   int64   │      int64       │
+├────────────────────────────┼─────────────────┼───────┼───────┼───────┼───────────────────────────┼────────────────────────┼───────────┼─────────┼────────────────┼─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼──────────────────┤
+│ 2005-11-19 03:32:27.861146 │ 192.168.114.129 │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ \\testread\\test.txt   │ 0         │ NULL    │              0 │ NULL                │      NULL │              4 │           2 │      NULL │             NULL │
+│ 2005-11-19 03:32:27.862878 │ 192.168.114.1   │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ NULL                   │ 0         │ 4000    │              0 │ 1970-01-01 00:00:00 │         0 │              0 │           0 │         0 │                2 │
+│ 2005-11-19 03:35:23.177392 │ 192.168.114.129 │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ \\testwrite\\test.txt  │ 0         │ NULL    │              0 │ NULL                │      NULL │              4 │           2 │      NULL │             NULL │
+│ 2005-11-19 03:35:23.240899 │ 192.168.114.1   │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ NULL                   │ 0         │ 4000    │              0 │ 1970-01-01 00:00:00 │         0 │              0 │           0 │         0 │                2 │
+│ 2005-11-19 03:35:36.212333 │ 192.168.114.129 │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ \\testlock\\test.txt   │ 0         │ NULL    │              0 │ NULL                │      NULL │              4 │           2 │      NULL │             NULL │
+│ 2005-11-19 03:35:36.214027 │ 192.168.114.1   │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ NULL                   │ 0         │ 4000    │              0 │ 1970-01-01 00:00:00 │         0 │              0 │           0 │         0 │                2 │
+│ 2005-11-19 03:38:39.626989 │ 192.168.114.129 │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ \\testseek\\test.txt   │ 0         │ NULL    │              0 │ NULL                │      NULL │              4 │           2 │      NULL │             NULL │
+│ 2005-11-19 03:38:39.630317 │ 192.168.114.1   │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ NULL                   │ 0         │ 4000    │              0 │ 1970-01-01 00:00:00 │         0 │              0 │           0 │         0 │                2 │
+│ 2005-11-19 03:32:27.515224 │ 192.168.114.129 │  2048 │  2048 │     9 │ \\\\192.168.114.129\\TEST │ \\testunlink\\test.txt │ 0         │ NULL    │              0 │ NULL                │      NULL │              4 │           2 │      NULL │             NULL │
+│ 2005-11-19 03:32:27.56831  │ 192.168.114.1   │  2048 │  2048 │     9 │ \\\\192.168.114.129\\TEST │ NULL                   │ 0         │ 4000    │              0 │ 1970-01-01 00:00:00 │         0 │              0 │           0 │         0 │                2 │
+└────────────────────────────┴─────────────────┴───────┴───────┴───────┴───────────────────────────┴────────────────────────┴───────────┴─────────┴────────────────┴─────────────────────┴───────────┴────────────────┴─────────────┴───────────┴──────────────────┘
+  10 rows                                                                                                                                                                                                                                               16 columns
 ```
 
 

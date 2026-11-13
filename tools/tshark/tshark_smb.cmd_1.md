@@ -225,10 +225,10 @@ memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
                 "smb.uid" AS "uid",
                 "smb.mid" AS "mid",
                 "smb.path" AS "path",
-                "smb.file" AS"smb.file",
+                "smb.file" AS "file",
                 hex("smb.fid") AS "fid",
                 "smb.file_attribute" AS "file_attribute",
-                timezone('UTC',"smb.last_write.time") AS "last_write.time",
+                timezone('UTC', "smb.last_write.time") AS "last_write.time",
                 "smb.file_size" AS "file_size",
                 "smb.access.sharing" AS "access.sharing",
                 "smb.access.mode" AS "access.mode",
@@ -239,7 +239,7 @@ memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
          ORDER BY "tid", "mid", "frame.time_utc"
          LIMIT 10;
 ┌────────────────────────────┬─────────────────┬───────────┬───────┬───────┬───────┬───────────────────────────┬────────────────────────┬─────────┬────────────────┬─────────────────────┬───────────┬────────────────┬─────────────┬───────────┬──────────────────┐
-│       frame.time_utc       │     ip.dst      │ nt_status │  tid  │  uid  │  mid  │           path            │        smb.file        │   fid   │ file_attribute │   last_write.time   │ file_size │ access.sharing │ access.mode │ file_type │ open.action.open │
+│       frame.time_utc       │     ip.dst      │ nt_status │  tid  │  uid  │  mid  │           path            │          file          │   fid   │ file_attribute │   last_write.time   │ file_size │ access.sharing │ access.mode │ file_type │ open.action.open │
 │         timestamp          │     varchar     │  varchar  │ int64 │ int64 │ int64 │          varchar          │        varchar         │ varchar │     int64      │      timestamp      │   int64   │     int64      │    int64    │   int64   │      int64       │
 ├────────────────────────────┼─────────────────┼───────────┼───────┼───────┼───────┼───────────────────────────┼────────────────────────┼─────────┼────────────────┼─────────────────────┼───────────┼────────────────┼─────────────┼───────────┼──────────────────┤
 │ 2005-11-19 03:32:27.861146 │ 192.168.114.129 │ 0         │  2048 │  2048 │     8 │ \\\\192.168.114.129\\TEST │ \\testread\\test.txt   │ NULL    │              0 │ NULL                │      NULL │              4 │           2 │      NULL │             NULL │
@@ -275,7 +275,7 @@ memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
                 "smb.uid" AS "uid",
                 "smb.mid" AS "mid",
                 "smb.path" AS "path",
-                "smb.file" AS"smb.file",
+                "smb.file" AS "file",
                 "smb.file_attribute" AS "file_attribute",
                 timezone('UTC', "smb.create.time") AS "create.time",
                 hex("smb.fid") AS "fid",
@@ -283,7 +283,7 @@ memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
          GROUP BY ALL
          ORDER BY "tid", "mid", "frame.time_utc";
 ┌────────────────────────────┬─────────────────┬───────────┬───────┬───────┬───────┬───────────────────────────┬───────────────────────────────┬────────────────┬─────────────────────┬─────────┐
-│       frame.time_utc       │     ip.dst      │ nt_status │  tid  │  uid  │  mid  │           path            │           smb.file            │ file_attribute │     create.time     │   fid   │
+│       frame.time_utc       │     ip.dst      │ nt_status │  tid  │  uid  │  mid  │           path            │             file              │ file_attribute │     create.time     │   fid   │
 │         timestamp          │     varchar     │  varchar  │ int64 │ int64 │ int64 │          varchar          │            varchar            │     int64      │      timestamp      │ varchar │
 ├────────────────────────────┼─────────────────┼───────────┼───────┼───────┼───────┼───────────────────────────┼───────────────────────────────┼────────────────┼─────────────────────┼─────────┤
 │ 2005-11-19 03:32:19.358149 │ 192.168.114.129 │ 0         │  2048 │  2048 │   434 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_create.txt │              0 │ 1970-01-01 00:00:00 │ NULL    │
@@ -319,7 +319,7 @@ memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
                 "smb.uid" AS "uid",
                 "smb.mid" AS "mid",
                 "smb.path" AS "path",
-                "smb.file" AS"smb.file",
+                "smb.file" AS "file",
                 "smb.file_attribute" AS "file_attribute",
                 timezone('UTC', "smb.create.time") AS "create.time",
                 hex("smb.fid") AS "fid",
@@ -327,7 +327,7 @@ memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
          GROUP BY ALL
          ORDER BY "tid", "mid", "frame.time_utc";
 ┌────────────────────────────┬─────────────────┬───────────┬───────┬───────┬───────┬───────────────────────────┬──────────────────────────────┬────────────────┬─────────────────────┬─────────┐
-│       frame.time_utc       │     ip.dst      │ nt_status │  tid  │  uid  │  mid  │           path            │           smb.file           │ file_attribute │     create.time     │   fid   │
+│       frame.time_utc       │     ip.dst      │ nt_status │  tid  │  uid  │  mid  │           path            │             file             │ file_attribute │     create.time     │   fid   │
 │         timestamp          │     varchar     │  varchar  │ int64 │ int64 │ int64 │          varchar          │           varchar            │     int64      │      timestamp      │ varchar │
 ├────────────────────────────┼─────────────────┼───────────┼───────┼───────┼───────┼───────────────────────────┼──────────────────────────────┼────────────────┼─────────────────────┼─────────┤
 │ 2005-11-19 03:32:19.322976 │ 192.168.114.129 │ 0         │  2048 │  2048 │   422 │ \\\\192.168.114.129\\TEST │ \\rawopen\\torture_mknew.txt │              0 │ 1970-01-01 00:00:00 │ NULL    │
@@ -347,24 +347,32 @@ memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
 This is an original Core Protocol command. This command is obsolescent.
 ```powershell
 PS C:\Users\Public> tshark.exe -r .\smbtorture.cap -Y "smb.cmd == 0x0E" `
->> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.create.time -e smb.dir_name -e smb.fid -e smb.file -e smb.flags.response -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
+>> -T fields -e frame.time_utc -e ip.src -e ip.dst -e smb.create.time -e smb.dir_name -e smb.fid `
+>> -e smb.file -e smb.flags.response -e smb.mid -e smb.nt_status -e smb.path -e smb.tid -e smb.uid `
 >> -E header=y -E separator="," -E quote=d -t u | Out-File -Encoding utf8 -FilePath .\smb_cmd_0x0E.csv
 ```
 ```sql
-memory D SELECT timezone('UTC', B."frame.time_utc"), B."ip.dst", A."smb.path", A."smb.dir_name", timezone('UTC', A."smb.create.time"),
-                hex(B."smb.nt_status"), hex(B."smb.fid"), B."smb.file"
-         FROM read_csv_auto('smb_cmd_0x0E.csv') AS A
-         LEFT JOIN read_csv_auto('smb_cmd_0x0E.csv') AS B
-         ON B."smb.flags.response" = true AND A."smb.tid" = B."smb.tid" AND A."smb.uid" = B."smb.uid" AND A."smb.mid" = B."smb.mid"
-         WHERE A."smb.flags.response" = false
+memory D SELECT timezone('UTC', "frame.time_utc") AS "frame.time_utc",
+                "ip.dst",
+                hex("smb.nt_status") AS "nt_status",
+                "smb.tid" AS "tid",
+                "smb.uid" AS "uid",
+                "smb.mid" AS "mid",
+                "smb.path" AS "path",
+                "smb.dir_name" AS "dir_name",
+                timezone('UTC', "smb.create.time") AS "create.time",
+                hex("smb.fid") AS "fid",
+               "smb.file" AS "file"
+         FROM read_csv_auto('smb_cmd_0x0E.csv')
          GROUP BY ALL
-         ORDER BY A."smb.path", B."smb.file", timezone('UTC', B."frame.time_utc");
-┌─────────────────────────────────────┬───────────────┬───────────────────────────┬──────────────┬──────────────────────────────────────┬────────────────────────┬──────────────────┬──────────┐
-│ timezone('UTC', A."frame.time_utc") │    ip.dst     │         smb.path          │ smb.dir_name │ timezone('UTC', A."smb.create.time") │ hex(B."smb.nt_status") │ hex(B."smb.fid") │ smb.file │
-│              timestamp              │    varchar    │          varchar          │   varchar    │              timestamp               │        varchar         │     varchar      │ varchar  │
-├─────────────────────────────────────┼───────────────┼───────────────────────────┼──────────────┼──────────────────────────────────────┼────────────────────────┼──────────────────┼──────────┤
-│ 2005-11-19 03:32:19.39454           │ 192.168.114.1 │ \\\\192.168.114.129\\TEST │ \\rawopen    │ 2005-11-22 05:32:18                  │ 0                      │ 800D             │ SRVB9D82 │
-└─────────────────────────────────────┴───────────────┴───────────────────────────┴──────────────┴──────────────────────────────────────┴────────────────────────┴──────────────────┴──────────┘
+         ORDER BY "tid", "mid", "frame.time_utc";
+┌────────────────────────────┬─────────────────┬───────────┬───────┬───────┬───────┬───────────────────────────┬───────────┬─────────────────────┬─────────┬──────────┐
+│       frame.time_utc       │     ip.dst      │ nt_status │  tid  │  uid  │  mid  │           path            │ dir_name  │     create.time     │   fid   │   file   │
+│         timestamp          │     varchar     │  varchar  │ int64 │ int64 │ int64 │          varchar          │  varchar  │      timestamp      │ varchar │ varchar  │
+├────────────────────────────┼─────────────────┼───────────┼───────┼───────┼───────┼───────────────────────────┼───────────┼─────────────────────┼─────────┼──────────┤
+│ 2005-11-19 03:32:19.39454  │ 192.168.114.129 │ 0         │  2048 │  2048 │   447 │ \\\\192.168.114.129\\TEST │ \\rawopen │ 2005-11-22 05:32:18 │ NULL    │ NULL     │
+│ 2005-11-19 03:32:19.397704 │ 192.168.114.1   │ 0         │  2048 │  2048 │   447 │ \\\\192.168.114.129\\TEST │ NULL      │ NULL                │ 800D    │ SRVB9D82 │
+└────────────────────────────┴─────────────────┴───────────┴───────┴───────┴───────┴───────────────────────────┴───────────┴─────────────────────┴─────────┴──────────┘
 ```
 
 

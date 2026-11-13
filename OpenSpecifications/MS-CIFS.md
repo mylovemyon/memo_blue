@@ -23,6 +23,27 @@ CIFS has evolved over time. As a result, some commands have become obsolete and 
 
 
 
+## [2.2.1.2.3 SMB_EXT_FILE_ATTR](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/6008aa8f-d2d8-4366-b775-b81aece05bb1)
+| Name and bitmask | Meaning |
+| --- | --- |
+| ATTR\_READONLY<br>0x00000001 | The file is read only. Applications can read the file but cannot write to it or delete it. |
+| ATTR\_HIDDEN<br>0x00000002 | The file is hidden. It is not to be included in an ordinary directory listing. |
+| ATTR\_SYSTEM<br>0x00000004 | The file is part of or is used exclusively by the operating system. |
+| ATTR\_DIRECTORY<br>0x00000010 | The file is a directory. |
+| ATTR\_ARCHIVE<br>0x00000020 | The file has not been archived since it was last modified. |
+| ATTR\_NORMAL<br>0x00000080 | The file has no other attributes set. This attribute is valid only if used alone. |
+| ATTR\_TEMPORARY<br>0x00000100 | The file is temporary. This is a hint to the cache manager that it does not need to flush the file to backing storage. |
+| ATTR\_COMPRESSED<br>0x00000800 | The file or directory is compressed. For a file, this means that all of the data in the file is compressed. For a directory, this means that compression is the default for newly created files and subdirectories. |
+| POSIX\_SEMANTICS<br>0x01000000 | Indicates that the file is to be accessed according to POSIX rules. This includes allowing multiple files with names differing only in case, for file systems that support such naming. |
+| BACKUP\_SEMANTICS<br>0x02000000 | Indicates that the file is being opened or created for a backup or restore operation. The server SHOULD allow the client to override normal file security checks, provided it has the necessary permission to do so. |
+| DELETE\_ON\_CLOSE<br>0x04000000 | Requests that the server delete the file immediately after all of its handles have been closed. |
+| SEQUENTIAL\_SCAN<br>0x08000000 | Indicates that the file is to be accessed sequentially from beginning to end.|
+| RANDOM\_ACCESS<br>0x10000000 | Indicates that the application is designed to access the file randomly. The server can use this flag to optimize file caching. |
+| NO\_BUFFERING<br>0x20000000 | Requests that the server open the file with no intermediate buffering or caching; the server might not honor the request. The application MUST meet certain requirements when working with files opened with FILE\_FLAG\_NO\_BUFFERING. File access MUST begin at offsets within the file that are integer multiples of the volume's sector size and MUST be for numbers of bytes that are integer multiples of the volume's sector size. For example, if the sector size is 512 bytes, an application can request reads and writes of 512, 1024, or 2048 bytes, but not of 335, 981, or 7171 bytes. |
+| WRITE\_THROUGH<br>0x80000000 | Instructs the operating system to write through any intermediate cache and go directly to the file. The operating system can still cache write operations, but cannot lazily flush them. |
+
+
+
 ## [2.2.1.2.4 SMB_FILE_ATTRIBUTES](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cifs/2198f480-e047-4df0-ba64-f28eadef00b9)
 | Name and bitmask | Description |
 | --- | --- |
